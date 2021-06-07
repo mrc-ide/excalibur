@@ -18,8 +18,8 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-**Ex**pediting **Calib**rations in yo**ur** epidemic models
-The goal of excalibur is to explore the neccessity of calibrations on ODE 
+**Ex**pediating **Calib**rations in yo**ur** epidemic models
+The goal of excalibur is to explore the necessity of calibrations on ODE 
 epidemic models that are intended to predict future epidemic trajectories.
 
 * :warning: This package is work in progress
