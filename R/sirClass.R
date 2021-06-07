@@ -4,7 +4,7 @@
 #'
 #' @inheritParams epiModelClass
 #' @noRd
-SIRModelClass <- setClass(
+methods::setClass(
   "sirModel",
   contains = "epiModel"
 )
@@ -25,7 +25,7 @@ SIRModelClass <- setClass(
 #' @export
 setSIR <- function(N, Beta, Gamma, ProbOfDeath, I0, changeTimes = NULL){
   #set class
-  modelObject <- SIRModelClass()
+  modelObject <- methods::new("sirModel")
   #setup odin model
   #output
   return(modelObject)

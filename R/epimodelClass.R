@@ -5,8 +5,9 @@
 #'
 #' @slot odinModel A slot to contain the generated epidemic model produced by odin
 #' @noRd
-epiModelClass <- setClass(
+methods::setClass(
   "epiModel",
+  contains = "VIRTUAL",
   slots = list(
     odinModel = "environment"
   )
