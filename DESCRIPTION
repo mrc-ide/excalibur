@@ -1,0 +1,23 @@
+Package: excalibur
+Title: Expediting Calibrations in Your Epidemic Model
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Gregory",
+           family = "Barnsley",
+           role = c("aut", "cre"),
+           email = "g.barnsley@imperial.ac.uk",
+           comment = c(ORCID = "0000-0001-7972-0737"))
+Description: Exploring the impact of calibrations on using ODE epidemic models
+             to forcast future scenarios. Uses odin from Imperials' MRC-IDE to 
+             implement models, with the intention to look at calibrations in 
+             squire/nimue.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports: 
+    odin
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
