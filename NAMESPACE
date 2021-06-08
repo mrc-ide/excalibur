@@ -2,4 +2,4 @@
 
 export(setSIR)
 importFrom("odin","odin")
-useDynLib(excalibur)
+useDynLib(excalibur, .registration = TRUE)
