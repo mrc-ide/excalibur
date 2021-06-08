@@ -16,8 +16,8 @@ knitr::opts_chunk$set(
 # excalibur
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/mrc-ide/excalibur/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main&event=pull_request)](https://github.com/mrc-ide/excalibur/actions/workflows/R-CMD-check.yaml)
-[![test-coverage](https://github.com/mrc-ide/excalibur/actions/workflows/test-coverage.yaml/badge.svg?branch=main&event=pull_request)](https://github.com/mrc-ide/excalibur/actions/workflows/test-coverage.yaml)
+[![R-CMD-check](https://github.com/mrc-ide/excalibur/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main)](https://github.com/mrc-ide/excalibur/actions/workflows/R-CMD-check.yaml)
+[![test-coverage](https://github.com/mrc-ide/excalibur/actions/workflows/test-coverage.yaml/badge.svg?branch=main)](https://github.com/mrc-ide/excalibur/actions/workflows/test-coverage.yaml)
 <!-- badges: end -->
 
 **Ex**pediating **Calib**rations in yo**ur** epidemic models
