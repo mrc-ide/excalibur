@@ -1,3 +1,5 @@
+#' @noRd
+methods::setClass("odin_model")
 #' An S4 class to represent generic epidemic models
 #'
 #' All specific epidemic models should inherit from this class. It is not
@@ -9,6 +11,6 @@ methods::setClass(
   "epiModel",
   contains = "VIRTUAL",
   slots = list(
-    odinModel = "ANY"
+    odinModel = "odin_model"
   )
 )
