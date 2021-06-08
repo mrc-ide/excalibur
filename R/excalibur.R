@@ -10,5 +10,5 @@
 NULL
 #general rOxygen comments:
 #' @useDynLib excalibur
-#' @importFrom(odin, odin)
+#' @importFrom "odin" "odin"
 NULL
