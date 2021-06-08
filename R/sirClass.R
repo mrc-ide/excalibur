@@ -22,6 +22,17 @@ methods::setClass(
 #' @param I0 Size of initial infected population.
 #' @param changeTimes If length(Beta)>1 then the corresponding time-points at
 #' which the parameters are changed.
+#' @return A object of class sirModel with odin model code for the same model.
+#' @examples
+#' #Standard SIR with no deaths
+#' model <- setSIR(N = 10, Beta = 1, Gamma = 1/5, ProbOfDeath = 0, I0 = 1)
+#'
+#' #SIR with a 50% probability of death an any time whilst infected
+#' model <- setSIR(N = 10, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
+#'
+#' #SIR with time-varying Beta at 10 and 50 days
+#' model <- setSIR(N = 10, Beta = c(5,1,3), Gamma = 1/5, ProbOfDeath = 0.5,
+#' I0 = 1, changeTimes = c(10, 50))
 #' @export
 setSIR <- function(N, Beta, Gamma, ProbOfDeath, I0, changeTimes = NULL){
   #set class
