@@ -16,9 +16,11 @@ knitr::opts_chunk$set(
 # excalibur
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/mrc-ide/excalibur/workflows/R-CMD-check/badge.svg)](https://github.com/mrc-ide/excalibur/actions)
 <!-- badges: end -->
 
 **Ex**pediating **Calib**rations in yo**ur** epidemic models
+
 The goal of excalibur is to explore the necessity of calibrations on ODE 
 epidemic models that are intended to predict future epidemic trajectories.
 
