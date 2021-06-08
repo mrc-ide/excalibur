@@ -9,6 +9,6 @@ methods::setClass(
   "epiModel",
   contains = "VIRTUAL",
   slots = list(
-    odinModel = "environment"
+    odinModel = "ANY"
   )
 )
