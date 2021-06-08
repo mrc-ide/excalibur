@@ -8,3 +8,6 @@
 #' @docType package
 #' @name excalibur
 NULL
+#general rOxygen comments:
+#' @useDynLib excalibur
+#' @importFrom(odin, odin)
