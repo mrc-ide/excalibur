@@ -26,7 +26,33 @@ methods::setClass(
 setSIR <- function(N, Beta, Gamma, ProbOfDeath, I0, changeTimes = NULL){
   #set class
   modelObject <- methods::new("sirModel")
+  #check for incorrect inputs
+  if(ProbOfDeath > 1 | ProbOfDeath < 0){
+    stop("Probability of death must be between 0 and 1, to convert a rate to a
+         probability use 1-exp(-rate)")
+  }
+  else if(any(c(Beta, Gamma, N, I0, changeTimes) < 0)){
+    stop("Inputs must be positive")
+  }
+  else if(any(c(N, I0)%%1 != 0)){
+    stop("N and I0 must be whole numbers")
+  }
+  else if(!is.null(changeTimes)){
+    if(!identical(sort(changeTimes),changeTimes)){
+      stop("Beta and changeTimes must be in increasing time order")
+    }
+  }
+  #append 0 to change times so that it works with interpolate
+  changeTimes <- c(0,changeTimes)
   #setup odin model
+  modelObject@odinModel <- sirGenerator(
+    betas = Beta,
+    ct = changeTimes,
+    gamma = Gamma,
+    I0 = I0,
+    N = N,
+    pDeath = ProbOfDeath
+  )
   #output
   return(modelObject)
 }
