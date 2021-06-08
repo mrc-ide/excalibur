@@ -9,6 +9,7 @@
 #' @name excalibur
 NULL
 #general rOxygen comments:
+#' @useDynLib excalibur
 #' @useDynLib excalibur, .registration = TRUE
-#' @importFrom "odin" "odin"
+#' @importFrom odin odin
 NULL
