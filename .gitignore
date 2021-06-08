@@ -1,5 +1,9 @@
 .Rproj.user
 .Rhistory
 .Rdata
+.Ruserdata
 .httr-oauth
 .DS_Store
+*.o
+*.so
+*.dll
