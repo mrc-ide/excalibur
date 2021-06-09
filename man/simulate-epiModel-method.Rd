@@ -9,7 +9,8 @@
 \arguments{
 \item{object}{An object of the epiModel class.}
 
-\item{t}{The times at which to simulate from the given epiModel object.}
+\item{t}{The times at which to simulate from the given epiModel object, the
+first time is always taken as the start time.}
 
 \item{tcrit}{Critical times (?).}
 }

@@ -6,14 +6,17 @@ deriv(R) <- I*gamma
 deriv(D) <- I*alpha
 beta <- interpolate(ct, betas, "constant")
 output(beta) <- beta
+N <- S + I + R #Dead are not included
 #initial conditions
-initial(S) <- N - I0
+initial(S) <- S0
 initial(I) <- I0
-initial(R) <- 0
-initial(D) <- 0
+initial(R) <- R0
+initial(D) <- D0
 #parameter values
-N <- user()
+S0 <- user()
 I0 <- user()
+R0 <- user(0)
+D0 <- user(0)
 betas[] <- user()
 ct[] <- user()
 gamma <- user()

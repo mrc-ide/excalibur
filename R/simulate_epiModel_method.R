@@ -7,7 +7,8 @@ NULL
 #' output into a data frame, for easier use.
 #'
 #' @param object An object of the epiModel class.
-#' @param t The times at which to simulate from the given epiModel object.
+#' @param t The times at which to simulate from the given epiModel object, the
+#' first time is always taken as the start time.
 #' @param tcrit Critical times (?).
 #' @return A dataframe of the odin models run output.
 #' @examples
