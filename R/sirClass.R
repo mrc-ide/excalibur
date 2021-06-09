@@ -61,7 +61,9 @@ setSIR <- function(N, Beta, Gamma, ProbOfDeath, I0, changeTimes = NULL){
     ct = changeTimes,
     gamma = Gamma,
     I0 = I0,
-    N = N,
+    S0 = N - I0,
+    R0 = 0,
+    D0 = 0,
     pDeath = ProbOfDeath
   )
   #output
