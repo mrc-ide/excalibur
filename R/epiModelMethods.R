@@ -1,4 +1,5 @@
 #' @include epimodelClass.R
+#' @include currentState_generics.R
 NULL
 
 #' An S4 method run a realisation of an object of the epiModel class
@@ -29,3 +30,12 @@ setMethod("simulate", "epiModel",
             return(results)
           }
           )
+#'
+#' @export
+setMethod("calculateCurrentState", signature("epiModel"),
+          function(epiModel, t){
+            epiModel <- calculateDownstreamExponentialNodes(epiModel, t)
+            epiModel <- estimateInfectiousNodes(epiModel, t)
+            return(epiModel)
+          }
+)
