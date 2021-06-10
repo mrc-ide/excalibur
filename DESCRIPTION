@@ -32,3 +32,4 @@ Collate:
     'odin.R'
     'sir_Class.R'
     'sir_Methods.R'
+    'utilities.R'

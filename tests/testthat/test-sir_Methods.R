@@ -32,17 +32,17 @@ test_that("calculateDownstreamNodes - Compare to known results", {
   expect_equal(model@currentState$R, 10 * 1/5 / (-log(1-0.5)))
 
 
-  model2 <- setSIR(N = 500, Beta = 2, Gamma = 1/2, ProbOfDeath = 0.1, I0 = 1)
-  model2 <- excalibur::calculateDownstreamExponentialNodes(
-    model2, deaths = 50
+  model <- setSIR(N = 500, Beta = 2, Gamma = 1/2, ProbOfDeath = 0.1, I0 = 1)
+  model <- excalibur::calculateDownstreamExponentialNodes(
+    model, deaths = 50
   )
-  expect_equal(model2@currentState$D, 50)
-  expect_equal(model2@currentState$R, 50 * 1/2 / (-log(1-0.1)))
+  expect_equal(model@currentState$D, 50)
+  expect_equal(model@currentState$R, 50 * 1/2 / (-log(1-0.1)))
 
-  model2 <- excalibur::calculateDownstreamExponentialNodes(
-    model2, deaths = 10
+  model <- excalibur::calculateDownstreamExponentialNodes(
+    model, deaths = 10
   )
-  expect_equal(model2@currentState$R, 10 * 1/2 / (-log(1-0.1)))
+  expect_equal(model@currentState$R, 10 * 1/2 / (-log(1-0.1)))
 
 
 
