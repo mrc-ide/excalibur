@@ -29,13 +29,22 @@ setMethod("simulate", "epiModel",
             results <- as.data.frame(results)
             return(results)
           }
-          )
+)
+#' An S4 method to calculate current state of an object of the epiModel class
 #'
+#' Calls two generic functions to calculate the downstream nodes and esimate
+#' the infectious population in turn. These will be specific to each type of
+#' epiModel class.
+#'
+#' @param epiModel The epidemic model, whose current state is to be calculated.
+#' @return An epiModel of object of the same class as that given.
+#' @examples
+#' #to do
 #' @export
 setMethod("calculateCurrentState", signature("epiModel"),
-          function(epiModel, t){
-            epiModel <- calculateDownstreamExponentialNodes(epiModel, t)
-            epiModel <- estimateInfectiousNodes(epiModel, t)
+          function(epiModel, ...){
+            epiModel <- calculateDownstreamExponentialNodes(epiModel, ...)
+            epiModel <- estimateInfectiousNodes(epiModel, ...)
             return(epiModel)
           }
 )
