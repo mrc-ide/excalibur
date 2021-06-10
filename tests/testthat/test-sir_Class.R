@@ -4,10 +4,14 @@ test_that("Class definitions", {
   testModel <- setSIR(N=10, Beta=5, Gamma=3, ProbOfDeath=0.5, I0=1)
 
   expect_true(is.environment(testModel@odinModel))
+  expect_true(is.list(testModel@currentState))
   expect_s4_class(testModel, "sirModel")
   expect_error(testModel@odinModel <- 1)
   expect_error(testModel@odinModel <- "a")
   expect_error(testModel@odinModel <- testModel)
+  expect_error(testModel@currentState <- 1)
+  expect_error(testModel@currentState <- "a")
+  expect_error(testModel@currentState <- testModel)
 })
 
 test_that("odinModel Assignment", {
