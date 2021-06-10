@@ -3,6 +3,7 @@
 export(calculateCurrentState)
 export(setSIR)
 exportMethods(calculateCurrentState)
+exportMethods(calculateDownstreamExponentialNodes)
 exportMethods(simulate)
 importFrom(odin,odin)
 useDynLib(excalibur)
