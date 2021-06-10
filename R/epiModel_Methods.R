@@ -1,5 +1,5 @@
-#' @include epimodelClass.R
-#' @include currentState_generics.R
+#' @include epiModel_Class.R
+#' @include currentState_Generics.R
 NULL
 
 #' An S4 method run a realisation of an object of the epiModel class
