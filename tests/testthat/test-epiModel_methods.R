@@ -22,8 +22,9 @@ test_that("Check print current state", {
 
   model <- setSIR(N= 10, Beta=1, Gamma=1/5, ProbOfDeath = 0, I0 = 1,
                   changeTimes = NULL)
-  expect_null(currentState(model))
+  expect_true(is.list(currentState(model)))
+  expect_equal(length(currentState(model)), 0)
   #asign a list to slot
-  model@currentState <- list(S = 100)
+  model@currentState$S <- 100
   expect_equal(currentState(model), list(S=100))
 })
