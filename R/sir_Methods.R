@@ -105,9 +105,9 @@ setMethod("estimateInfectiousNode", signature("sirModel"),
             Dprev <- deaths[length(deaths)-1]
             Rprev <- Dprev * Gamma/Alpha
             Sprev <- N - Iprev - Dprev - Rprev
-            #calculate I at time by propagating fowards
+            #calculate I at time by propagating forwards
             I <- Iprev*(1-pGamma)*(1-pAlpha) + #proportion not going to R+D
-              rateToRisk(Beta*Iprev/N)*Sprev
+              rateToRisk(Beta*Iprev/N)*Sprev #new infections
             #calculate S
             S <- N - I - epiModel@currentState$R - epiModel@currentState$D
             #assign to list
