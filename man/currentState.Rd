@@ -10,7 +10,7 @@ currentState(epiModel, ...)
 \arguments{
 \item{epiModel}{The epidemic model, whose current state is to be print.}
 
-\item{...}{Any other arguements to provide to the method.}
+\item{...}{Any other arguments to provide to the method.}
 }
 \description{
 A function to return the list of values in the currentState slot of an

@@ -4,6 +4,10 @@
 #'
 #' @section excalibur functions:
 #' setSIR: A function that produces a model of the SIR class in odin
+#' simulate: A method for simulate to generate results from a models odin code.
+#' currentState: Returns the current state of the model, if it has been
+#' calculated.
+#' calculateCurrentState: Calculates the current state of the model.
 #'
 #' @docType package
 #' @name excalibur

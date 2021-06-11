@@ -16,7 +16,7 @@ setGeneric("calculateCurrentState", function(epiModel, ...){
 #' This calculates, for example R and D in an SIRD model.
 #'
 #' @inheritParams calculateCurrentState
-#'
+#' @noRd
 setGeneric("calculateDownstreamExponentialNodes", function(epiModel, ...){
   standardGeneric("calculateDownstreamExponentialNodes")
 })
@@ -26,7 +26,7 @@ setGeneric("calculateDownstreamExponentialNodes", function(epiModel, ...){
 #' This calculates, for example S and I in an SIRD model.
 #'
 #' @inheritParams calculateCurrentState
-#'
+#' @noRd
 setGeneric("estimateInfectiousNode", function(epiModel, ...){
   standardGeneric("estimateInfectiousNode")
 })

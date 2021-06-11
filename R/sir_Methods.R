@@ -22,7 +22,6 @@
 #'
 #' print(model@currentState$D)
 #' print(model@currentState$R)
-#' @export
 setMethod("calculateDownstreamExponentialNodes", signature("sirModel"),
           function(epiModel, deaths){
             totalDeaths <- deaths[length(deaths)]
@@ -64,7 +63,6 @@ setMethod("calculateDownstreamExponentialNodes", signature("sirModel"),
 #'
 #' #check S and I
 #' currentState(model)
-#' @export
 setMethod("estimateInfectiousNode", signature("sirModel"),
           function(epiModel, deaths){
             warning("This currently assumes a constant rate of change for the
