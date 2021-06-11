@@ -4,7 +4,7 @@
 #' At present only has one method, which is for all objects of class "epiModel".
 #'
 #' @param epiModel The epidemic model, whose current state is to be calculated.
-#' @param ... Any other arguements to provide to the method.
+#' @param ... Any other arguments to provide to the method.
 #'
 #' @export
 setGeneric("calculateCurrentState", function(epiModel, ...){
@@ -20,7 +20,7 @@ setGeneric("calculateCurrentState", function(epiModel, ...){
 setGeneric("calculateDownstreamExponentialNodes", function(epiModel, ...){
   standardGeneric("calculateDownstreamExponentialNodes")
 })
-#' A inner function to calculate the states ofnon-exponential model
+#' A inner function to calculate the states of non-exponential model
 #' compartments.
 #'
 #' This calculates, for example S and I in an SIRD model.
@@ -34,7 +34,7 @@ setGeneric("estimateInfectiousNode", function(epiModel, ...){
 #' epimodel object.
 #'
 #' @param epiModel The epidemic model, whose current state is to be print.
-#' @param ... Any other arguements to provide to the method.
+#' @param ... Any other arguments to provide to the method.
 #'
 #' @export
 setGeneric("currentState", function(epiModel, ...){
