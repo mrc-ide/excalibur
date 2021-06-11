@@ -82,10 +82,10 @@ test_that("estimateInfectiousNode - Compare to known results", {
   expect_equal(model@currentState$I, 0)
 
   #simulate a result
-  results <- simulate(model, t = c(0,9,10))
-  infected <- results$I[3]
-  susceptible <- results$S[3]
-  deaths <- results$D[c(2,3)]
+  results <- simulate(model, t = c(9,10))
+  infected <- results$I[2]
+  susceptible <- results$S[2]
+  deaths <- results$D[c(1,2)]
   #estimate
   model <- calculateCurrentState(model, deaths)
   estInfected <- currentState(model)$I
