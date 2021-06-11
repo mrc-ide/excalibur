@@ -39,7 +39,7 @@ library(excalibur)
 model <- setSIR(N = 100, Beta = 1, Gamma = 1/3, ProbOfDeath = 0.1, I0 = 1)
 #Generate some results at times 0, 9 and 10 from the start of the epidemic and
 #store the results from 9 and 10
-deaths <- simulate(model, t = c(0,9,10))$D[c(2,3)]
+deaths <- simulate(model, t = c(9,10))$D
 ##Calculate the current state of the model
 model <- calculateCurrentState(model, deaths)
 #> Warning in .local(epiModel, ...): This currently assumes a constant rate of change for the
@@ -62,9 +62,9 @@ print(currentState(model))
 ##Limitations
 #Currently S and I are estimated with an approximation to an ODE so do not equal
 #what the model would generate exactly
-print(simulate(model, t=c(0,10))$S[2])
+print(simulate(model, t=10)$S)
 #> [1] 32.19971
-print(simulate(model, t=c(0,10))$I[2])
+print(simulate(model, t=10)$I)
 #> [1] 18.52787
 
 #If there is no change in deaths (as might be seen when using real data) then
