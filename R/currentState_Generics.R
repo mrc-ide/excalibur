@@ -10,23 +10,23 @@
 setGeneric("calculateCurrentState", function(epiModel, ...){
   standardGeneric("calculateCurrentState")
 })
-#' A inner function to calculate the states of downstream exponential model
+#' A function to calculate the states of downstream exponential model
 #' compartments.
 #'
 #' This calculates, for example R and D in an SIRD model.
 #'
 #' @inheritParams calculateCurrentState
-#' @noRd
+#' @export
 setGeneric("calculateDownstreamExponentialNodes", function(epiModel, ...){
   standardGeneric("calculateDownstreamExponentialNodes")
 })
-#' A inner function to calculate the states of non-exponential model
+#' A function to calculate the states of non-exponential model
 #' compartments.
 #'
 #' This calculates, for example S and I in an SIRD model.
 #'
 #' @inheritParams calculateCurrentState
-#' @noRd
+#' @export
 setGeneric("estimateInfectiousNode", function(epiModel, ...){
   standardGeneric("estimateInfectiousNode")
 })
