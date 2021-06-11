@@ -39,12 +39,38 @@ setMethod("simulate", "epiModel",
 #' @param epiModel The epidemic model, whose current state is to be calculated.
 #' @return An epiModel of object of the same class as that given.
 #' @examples
-#' #to do
+#' #set up model
+#' model <- setSIR(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
+#' #Set the deaths
+#' deaths <- c(10,20)
+#' #calculate current state
+#' model <- calculateCurrentState(model, deaths)
+#' #return the current state
+#' currentState(model)
 #' @export
 setMethod("calculateCurrentState", signature("epiModel"),
           function(epiModel, ...){
             epiModel <- calculateDownstreamExponentialNodes(epiModel, ...)
             epiModel <- estimateInfectiousNodes(epiModel, ...)
             return(epiModel)
+          }
+)
+#' An S4 method to return current state of an object of the epiModel class
+#'
+#' @param epiModel The epidemic model, whose current state is to be returned.
+#' @return A list of labelled values.
+#' @examples
+#' #set up model
+#' model <- setSIR(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
+#' #Set the deaths
+#' deaths <- c(10,20)
+#' #calculate current state
+#' model <- calculateCurrentState(model, deaths)
+#' #return the current state
+#' currentState(model)
+#' @export
+setMethod("currentState", signature("epiModel"),
+          function(epiModel){
+            return(epiModel@currentState)
           }
 )

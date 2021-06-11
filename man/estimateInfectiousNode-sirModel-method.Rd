@@ -31,9 +31,9 @@ model <- setSIR(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 #Set the deaths (only one entry is required)
 deaths <- c(10,20)
 
-#call the D+R node function
-model <- excalibur::calculateDownstreamExponentialNodes(model, deaths=deaths)
+#call this + the D+R node function
+model <- calculateCurrentState(model, deaths=deaths)
 
-#call this function
-
+#check S and I
+currentState(model)
 }

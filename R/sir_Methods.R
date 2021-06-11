@@ -59,11 +59,11 @@ setMethod("calculateDownstreamExponentialNodes", signature("sirModel"),
 #' #Set the deaths (only one entry is required)
 #' deaths <- c(10,20)
 #'
-#' #call the D+R node function
-#' model <- excalibur::calculateDownstreamExponentialNodes(model, deaths=deaths)
+#' #call this + the D+R node function
+#' model <- calculateCurrentState(model, deaths=deaths)
 #'
-#' #call this function
-#'
+#' #check S and I
+#' currentState(model)
 #' @export
 setMethod("estimateInfectiousNode", signature("sirModel"),
           function(epiModel, deaths){

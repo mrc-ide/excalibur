@@ -29,4 +29,13 @@ setGeneric("calculateDownstreamExponentialNodes", function(epiModel, ...){
 setGeneric("estimateInfectiousNode", function(epiModel, ...){
   standardGeneric("estimateInfectiousNode")
 })
+#' A function to return the list of values in the currentState slot of an
+#' epimodel object.
+#'
+#' @param epiModel The epidemic model, whose current state is to be print.
+#'
+#' @export
+setGeneric("currentState", function(epiModel, ...){
+  standardGeneric("currentState")
+})
 

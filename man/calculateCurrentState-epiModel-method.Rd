@@ -18,5 +18,12 @@ the infectious population in turn. These will be specific to each type of
 epiModel class.
 }
 \examples{
-#to do
+#set up model
+model <- setSIR(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
+#Set the deaths
+deaths <- c(10,20)
+#calculate current state
+model <- calculateCurrentState(model, deaths)
+#return the current state
+currentState(model)
 }
