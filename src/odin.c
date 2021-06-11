@@ -293,13 +293,13 @@ void sirGenerator_rhs(sirGenerator_internal* internal, double t, double * state,
   double S = state[0];
   double I = state[1];
   double R = state[2];
+  double D = state[3];
   dstatedt[2] = I * internal->gamma;
-  double N = S + I + R;
   dstatedt[3] = I * internal->alpha;
   double beta = 0.0;
   cinterpolate_eval(t, internal->interpolate_beta, &beta);
-  dstatedt[1] = beta * S * I / (double) N - I * internal->gamma - I * internal->alpha;
-  dstatedt[0] = -(beta) * S * I / (double) N;
+  dstatedt[1] = beta * S * I / (double) (S + I + R + D) - I * internal->gamma - I * internal->alpha;
+  dstatedt[0] = -(beta) * S * I / (double) (S + I + R + D);
   if (output) {
     output[0] = beta;
   }

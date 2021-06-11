@@ -6,7 +6,7 @@ deriv(R) <- I*gamma
 deriv(D) <- I*alpha
 beta <- interpolate(ct, betas, "constant")
 output(beta) <- beta
-N <- S + I + R #Dead are not included
+N <- S + I + R + D
 #initial conditions
 initial(S) <- S0
 initial(I) <- I0

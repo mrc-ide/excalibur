@@ -11,6 +11,7 @@ methods::setClass(
   "epiModel",
   contains = "VIRTUAL",
   slots = list(
-    odinModel = "odin_model"
+    odinModel = "odin_model",
+    currentState = "list"
   )
 )
