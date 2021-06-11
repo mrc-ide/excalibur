@@ -37,6 +37,7 @@ setMethod("simulate", "epiModel",
 #' epiModel class.
 #'
 #' @param epiModel The epidemic model, whose current state is to be calculated.
+#' @param ... Any other arguements to provide to the method.
 #' @return An epiModel of object of the same class as that given.
 #' @examples
 #' #set up model

@@ -9,6 +9,8 @@ calculateDownstreamExponentialNodes(epiModel, ...)
 }
 \arguments{
 \item{epiModel}{The epidemic model, whose current state is to be calculated.}
+
+\item{...}{Any other arguements to provide to the method.}
 }
 \description{
 This calculates, for example R and D in an SIRD model.

@@ -9,6 +9,8 @@ estimateInfectiousNode(epiModel, ...)
 }
 \arguments{
 \item{epiModel}{The epidemic model, whose current state is to be calculated.}
+
+\item{...}{Any other arguements to provide to the method.}
 }
 \description{
 This calculates, for example S and I in an SIRD model.

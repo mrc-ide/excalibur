@@ -9,6 +9,8 @@ calculateCurrentState(epiModel, ...)
 }
 \arguments{
 \item{epiModel}{The epidemic model, whose current state is to be calculated.}
+
+\item{...}{Any other arguements to provide to the method.}
 }
 \description{
 At present only has one method, which is for all objects of class "epiModel".

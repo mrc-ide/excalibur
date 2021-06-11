@@ -67,10 +67,9 @@ setMethod("calculateDownstreamExponentialNodes", signature("sirModel"),
 #' @export
 setMethod("estimateInfectiousNode", signature("sirModel"),
           function(epiModel, deaths){
-            warning("This currently assumes difference equation framework,
-                    during testing this has led to error from the true sizes
-                    of I and S as large as 10%, when extreme values of
-                    Beta and Gamma are used")
+            warning("This currently assumes a constant rate of change for the
+                    last time step so it will only be close to the true
+                    result.")
             #check for errors in death specification
             sir_Methods_errorChecks(epiModel, deaths, deaths[length(deaths)])
             #additional check
@@ -100,14 +99,16 @@ setMethod("estimateInfectiousNode", signature("sirModel"),
             pGamma <- rateToRisk(Gamma)
             ## risk of infection depends on size of I
             #calculate I at time-1 using new deaths + new recoveries
-            Iprev <- (newR + newD)/(1-(1-pGamma)*(1-pAlpha))
+            Iprev <- (newR + newD)/(Gamma + Alpha)
+            #Iprev <- (newR + newD)/(1-(1-pGamma)*(1-pAlpha))
             #Calculate S and R at time - 1
             Dprev <- deaths[length(deaths)-1]
             Rprev <- Dprev * Gamma/Alpha
             Sprev <- N - Iprev - Dprev - Rprev
             #calculate I at time by propagating forwards
-            I <- Iprev*(1-pGamma)*(1-pAlpha) + #proportion not going to R+D
-              rateToRisk(Beta*Iprev/N)*Sprev #new infections
+            I <- Iprev - newD - newR + Iprev*Beta*Sprev/N
+            #I <- Iprev*(1-pGamma)*(1-pAlpha) + #proportion not going to R+D
+            #  rateToRisk(Beta*Iprev/N)*Sprev #new infections
             #calculate S
             S <- N - I - epiModel@currentState$R - epiModel@currentState$D
             #assign to list

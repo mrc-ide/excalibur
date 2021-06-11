@@ -8,6 +8,8 @@
 }
 \arguments{
 \item{epiModel}{The epidemic model, whose current state is to be calculated.}
+
+\item{...}{Any other arguements to provide to the method.}
 }
 \value{
 An epiModel of object of the same class as that given.

@@ -4,6 +4,7 @@
 #' At present only has one method, which is for all objects of class "epiModel".
 #'
 #' @param epiModel The epidemic model, whose current state is to be calculated.
+#' @param ... Any other arguements to provide to the method.
 #'
 #' @export
 setGeneric("calculateCurrentState", function(epiModel, ...){
@@ -33,6 +34,7 @@ setGeneric("estimateInfectiousNode", function(epiModel, ...){
 #' epimodel object.
 #'
 #' @param epiModel The epidemic model, whose current state is to be print.
+#' @param ... Any other arguements to provide to the method.
 #'
 #' @export
 setGeneric("currentState", function(epiModel, ...){

@@ -48,28 +48,28 @@ test_that("calculateDownstreamNodes - Compare to known results", {
 test_that("estimateInfectiousNode - Error message functions", {
   model <- setSIR(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 
-  expect_error(excalibur::calculateDownstreamExponentialNodes(
-    model, deaths = c(120, 100),
+  expect_error(excalibur::estimateInfectiousNode(
+    model, deaths = c(120, 100)
   ))
-  expect_error(excalibur::calculateDownstreamExponentialNodes(
+  expect_error(excalibur::estimateInfectiousNode(
     model, deaths = c("1","10")
   ))
-  expect_error(excalibur::calculateDownstreamExponentialNodes(
+  expect_error(excalibur::estimateInfectiousNode(
     model, deaths = c(100,2000)
   ))
-  expect_error(excalibur::calculateDownstreamExponentialNodes(
+  expect_error(excalibur::estimateInfectiousNode(
     model, deaths = 100
   ))
 
   model <- setSIR(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0, I0 = 1)
 
-  expect_error(excalibur::calculateDownstreamExponentialNodes(
+  expect_error(excalibur::estimateInfectiousNode(
     model, deaths = c(10,20)
   ))
 })
 
 
-test_that("calculateDownstreamNodes - Compare to known results", {
+test_that("estimateInfectiousNode - Compare to known results", {
   model <- setSIR(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 
   #if no change in deaths then = 0
@@ -91,7 +91,7 @@ test_that("calculateDownstreamNodes - Compare to known results", {
   estInfected <- currentState(model)$I
   estSusceptible <- currentState(model)$S
   #compare
-  accuracy <- 0.01 #allow leway since estimation
+  accuracy <- 0.1 #allow leway since estimation
   expect_true(abs(estInfected - infected)/infected < accuracy)
   expect_true(abs(estSusceptible - susceptible)/susceptible < accuracy)
 })
