@@ -51,7 +51,7 @@ setMethod("simulate", "epiModel",
 setMethod("calculateCurrentState", signature("epiModel"),
           function(epiModel, ...){
             epiModel <- calculateDownstreamExponentialNodes(epiModel, ...)
-            epiModel <- estimateInfectiousNodes(epiModel, ...)
+            epiModel <- estimateInfectiousNode(epiModel, ...)
             return(epiModel)
           }
 )
