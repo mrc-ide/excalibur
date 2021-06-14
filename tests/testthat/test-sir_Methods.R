@@ -49,49 +49,37 @@ test_that("estimateInfectiousNode - Error message functions", {
   model <- setSIR(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 
   expect_error(excalibur::estimateInfectiousNode(
-    model, deaths = c(120, 100)
+    model, deaths = c(80,100)
   ))
   expect_error(excalibur::estimateInfectiousNode(
-    model, deaths = c("1","10")
+    model, deaths = "10"
   ))
   expect_error(excalibur::estimateInfectiousNode(
-    model, deaths = c(100,2000)
-  ))
-  expect_error(excalibur::estimateInfectiousNode(
-    model, deaths = 100
+    model, deaths = 2000
   ))
 
   model <- setSIR(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0, I0 = 1)
 
   expect_error(excalibur::estimateInfectiousNode(
-    model, deaths = c(10,20)
+    model, deaths = 100
   ))
 })
 
 
 test_that("estimateInfectiousNode - Compare to known results", {
-  model <- setSIR(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
-
-  #if no change in deaths then = 0
-  model <- excalibur::calculateDownstreamExponentialNodes(
-    model, deaths = c(50,50)
-  )
-  model <- excalibur::estimateInfectiousNode(
-    model, deaths = c(50,50)
-  )
-  expect_equal(model@currentState$I, 0)
+  model <- setSIR(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.1, I0 = 1)
 
   #simulate a result
-  results <- simulate(model, t = c(9,10))
-  infected <- results$I[2]
-  susceptible <- results$S[2]
-  deaths <- results$D[c(1,2)]
+  results <- simulate(model, t = 10)
+  infected <- results$I
+  susceptible <- results$S
+  deaths <- results$D
   #estimate
   model <- calculateCurrentState(model, deaths)
   estInfected <- currentState(model)$I
   estSusceptible <- currentState(model)$S
   #compare
-  accuracy <- 0.1 #allow leway since estimation
+  accuracy <- 0.01 #allow leway due to round etc.
   expect_true(abs(estInfected - infected)/infected < accuracy)
   expect_true(abs(estSusceptible - susceptible)/susceptible < accuracy)
 })

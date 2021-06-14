@@ -3,7 +3,7 @@
 \name{calculateDownstreamExponentialNodes,sirModel-method}
 \alias{calculateDownstreamExponentialNodes,sirModel-method}
 \title{An S4 method to calculate current state of R and D for an SIR when provided
-with a time-series of deaths}
+with a count of the total number of deaths.}
 \usage{
 \S4method{calculateDownstreamExponentialNodes}{sirModel}(epiModel, deaths)
 }
@@ -11,7 +11,7 @@ with a time-series of deaths}
 \item{epiModel}{The epidemic model of class SIR to have the current state of
 R and D calculated.}
 
-\item{deaths}{A time-series of the cumulative death counts for this model.}
+\item{deaths}{The total death count for this model, so far.}
 }
 \value{
 An object of class sirModel with the values for D and R updated
@@ -28,10 +28,9 @@ These values are then stored in the list in the slot "currentState".
 #create example model
 model <- setSIR(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 #Set the deaths (only one entry is required)
-deaths <- c(10,20)
+deaths <- 20
 #call this function
 model <- excalibur::calculateDownstreamExponentialNodes(model, deaths=deaths)
 
-print(model@currentState$D)
-print(model@currentState$R)
+currentState(model)
 }

@@ -19,7 +19,7 @@ An S4 method to return current state of an object of the epiModel class
 #set up model
 model <- setSIR(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 #Set the deaths
-deaths <- c(10,20)
+deaths <- 20
 #calculate current state
 model <- calculateCurrentState(model, deaths)
 #return the current state
