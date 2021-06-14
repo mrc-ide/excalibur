@@ -24,15 +24,16 @@
 #' @export
 setMethod("calculateDownstreamExponentialNodes", signature("sirModel"),
           function(epiModel, deaths){
+            totalDeaths <- deaths[length(deaths)]
             #check for errors
-            sir_Methods_errorChecks(epiModel, deaths)
+            sir_Methods_errorChecks(epiModel, deaths, totalDeaths)
             #Assigning the total number of deaths
-            epiModel@currentState$D <- deaths
+            epiModel@currentState$D <- totalDeaths
             #Get model parameters
             Alpha <- epiModel@odinModel$contents()$alpha
             Gamma <- epiModel@odinModel$contents()$gamma
             #Calculate the number of recoveries
-            epiModel@currentState$R <- deaths * Gamma/Alpha
+            epiModel@currentState$R <- totalDeaths * Gamma/Alpha
             return(epiModel)
           }
 )
@@ -48,7 +49,8 @@ setMethod("calculateDownstreamExponentialNodes", signature("sirModel"),
 #'
 #' @param epiModel The epidemic model of class SIR to have the current state of
 #' S and I estimated.
-#' @param deaths The total death count for this model, so far.
+#' @param deaths The total death count for this model, up to each of the
+#' changeTimes so far.
 #' @return An object of class sirModel with the values for S and I updated
 #' for the current state.
 #' @examples
@@ -62,12 +64,28 @@ setMethod("calculateDownstreamExponentialNodes", signature("sirModel"),
 #'
 #' #check S and I
 #' currentState(model)
+#'
+#' #model with time-varying Beta
+#' model <- setSIR(N = 100, Beta = c(2,1/2), Gamma = 1/5, ProbOfDeath = 0.5,
+#'  I0 = 1, changeTimes = 5)
+#' #Set the deaths, two entries are required now
+#' deaths <- c(20,30)
+#' #the model assumes that the first number 20 is the number of deaths up to the
+#' #specified change time 5, and that the last number 30 is the number of deaths
+#' #up to the current time.
+#' #if the current state is not past 5, then we would set deaths <- c(20,20)
+#'
+#' #call this + the D+R node function
+#' model <- calculateCurrentState(model, deaths=deaths)
+#'
+#' #check S and I
+#' currentState(model)
+#'
 #' @export
 setMethod("estimateInfectiousNode", signature("sirModel"),
           function(epiModel, deaths){
-            warning("Functionality for time-varying Beta is WIP.")
             #check for errors in death specification
-            sir_Methods_errorChecks(epiModel, deaths)
+            sir_Methods_errorChecks(epiModel, deaths, deaths[length(deaths)])
             #get model parameters
             parameters <- epiModel@odinModel$contents()
             Alpha <- parameters$alpha
@@ -79,16 +97,24 @@ setMethod("estimateInfectiousNode", signature("sirModel"),
             R0 <- parameters$R0
             D0 <- parameters$D0
             N <- S0 + I0 + R0 + D0
+            #more errors checks
+            if(length(deaths) != length(Beta) | length(deaths) != length(changeTimes)){
+              stop("'deaths' should be a cumulative time series counting the
+                      total number of deaths upto a change time for Beta. This
+                      means that length(deaths) = length(Beta) = length(changeTimes) - 1.")
+            }
+            else if(any(deaths < D0)){
+              stop("'deaths' is lower than the initial number of deaths D0")
+            }
             #derive number changes to R via rates
-            recoveries <- deaths*Gamma/Alpha
-            #R0 at current time (assumed to be the last Beta ATM)
-            repoNum <- Beta[length(Beta)]/(Alpha+Gamma)
+            recoveries <- deaths*Gamma/Alpha + R0
+            #add initial states and changes over each beta value
+            newDandR <- diff(c(R0 + D0, recoveries + deaths))
             #Calculate S
             S <- S0 * exp(
-              (R0 + D0 - #the initial state
-                (epiModel@currentState$R + epiModel@currentState$D))* #present state
-                repoNum/
-                N
+              sum(-newDandR * Beta) #Beta times the reduction in S+I whilst it is
+              #in use
+              /(N*(Alpha + Gamma)) #divide through
             )
             #Calculate I
             I <- N - S - epiModel@currentState$R - epiModel@currentState$D
@@ -100,14 +126,14 @@ setMethod("estimateInfectiousNode", signature("sirModel"),
 )
 #' Internal function to run repeat error checks for the SIR methods
 #' @noRd
-sir_Methods_errorChecks <- function(epiModel, deaths){
+sir_Methods_errorChecks <- function(epiModel, deaths, totalDeaths){
   #checking deaths are in the correct format
-  if(length(deaths) > 1 |
-     !is.numeric(deaths)){
-    stop("deaths must be the cumulative number of deaths up to this time.")
+  if(any(deaths>totalDeaths) |
+    !is.numeric(deaths)){
+    stop("deaths must be a series of the cumulative number of deaths up to this time.")
   }
   #checking there are not more deaths than people in model
-  if(deaths > epiModel@odinModel$contents()$S0 +
+  if(totalDeaths > epiModel@odinModel$contents()$S0 +
      epiModel@odinModel$contents()$I0 +
      epiModel@odinModel$contents()$R0 +
      epiModel@odinModel$contents()$D0){

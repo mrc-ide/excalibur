@@ -11,7 +11,8 @@ with a total count of deaths so far}
 \item{epiModel}{The epidemic model of class SIR to have the current state of
 S and I estimated.}
 
-\item{deaths}{The total death count for this model, so far.}
+\item{deaths}{The total death count for this model, up to each of the
+changeTimes so far.}
 }
 \value{
 An object of class sirModel with the values for S and I updated
@@ -36,4 +37,21 @@ model <- calculateCurrentState(model, deaths=deaths)
 
 #check S and I
 currentState(model)
+
+#model with time-varying Beta
+model <- setSIR(N = 100, Beta = c(2,1/2), Gamma = 1/5, ProbOfDeath = 0.5,
+ I0 = 1, changeTimes = 5)
+#Set the deaths, two entries are required now
+deaths <- c(20,30)
+#the model assumes that the first number 20 is the number of deaths up to the
+#specified change time 5, and that the last number 30 is the number of deaths
+#up to the current time.
+#if the current state is not past 5, then we would set deaths <- c(20,20)
+
+#call this + the D+R node function
+model <- calculateCurrentState(model, deaths=deaths)
+
+#check S and I
+currentState(model)
+
 }
