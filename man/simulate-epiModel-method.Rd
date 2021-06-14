@@ -18,8 +18,9 @@ first time is always taken as the start time.}
 A dataframe of the odin models run output.
 }
 \description{
-Essentially a wrapper for the run R6 method for the odin model. Also puts the
-output into a data frame, for easier use.
+Essentially a wrapper for the run R6 method for the odin model. Forces the
+model to start from 0, to keep it consistent. Also puts the output into a
+data frame, for easier use.
 }
 \examples{
 #set up our model
