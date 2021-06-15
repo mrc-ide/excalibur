@@ -102,15 +102,14 @@ particular time *t*, where *β* is the transmission parameter, *γ* the
 rate of recovery, and *α* the rate of death (calculated from the
 probability of death). Then the number of people in the recovered
 population at time *t* is,
-*R*(*t*) = (*D*(*t*) − *D*(0)) × *γ*/*α* + *R*(0)
-. To simplify, let *D*(*i*) + *R*(*i*) = *DR*(*i*). Then by a similar
-argument to that laid out in (Kröger and Schlickeiser 2020), for a
-constant value of *β*,
-*S*(*t*) = *S*(0) × exp ((*DR*(0) − *DR*(*t*)) × *β*/(*N* × (*α* + *γ*)))
-. Then expanded to the time-varying *β* scenario,
-$$S(t)=S(0)\\times\\exp((\\sum\_{i=0}^n(\\mathrm{\\textit{DR}}(t\_{c,i})-\\mathrm{\\textit{DR}}(t\_{c,i+1}))\\times\\beta\_i)/(N\\times(\\alpha + \\gamma)))$$
-, where *t*<sub>*c*, *i*</sub> ≤ *t* &lt; *t*<sub>*c*, *i* + 1</sub>
-means that *β*(*t*) = *β*<sub>*i*</sub> and *t*<sub>*c*, 0</sub> = 0.
+*R*(*t*) = (*D*(*t*) − *D*(0)) × *γ*/*α* + *R*(0). To simplify, let
+*D*(*i*) + *R*(*i*) = *DR*(*i*). Then by a similar argument to that laid
+out in (Kröger and Schlickeiser 2020), for a constant value of *β*,
+*S*(*t*) = *S*(0) × exp ((*DR*(0) − *DR*(*t*)) × *β*/(*N* × (*α* + *γ*))).
+Then expanded to the time-varying *β* scenario,
+*S*(*t*) = *S*(0) × exp ((*s**u**m*<sub>*i* = 0</sub><sup>*n*</sup>(*DR*(*t*<sub>*c*, *i*</sub>) − *DR*(*t*<sub>*c*, *i* + 1</sub>)) × *β*<sub>*i*</sub>)/(*N* × (*α* + *γ*))),
+where *t*<sub>*c*, *i*</sub> ≤ *t* &lt; *t*<sub>*c*, *i* + 1</sub> means
+that *β*(*t*) = *β*<sub>*i*</sub> and *t*<sub>*c*, 0</sub> = 0.
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
