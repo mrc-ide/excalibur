@@ -30,10 +30,13 @@ setMethod("calculateDownstreamExponentialNodes", signature("sirModel"),
             #Assigning the total number of deaths
             epiModel@currentState$D <- totalDeaths
             #Get model parameters
-            Alpha <- epiModel@odinModel$contents()$alpha
-            Gamma <- epiModel@odinModel$contents()$gamma
+            parameters <- epiModel@odinModel$contents()
+            Alpha <- parameters$alpha
+            Gamma <- parameters$gamma
+            D0 <- parameters$D0
+            R0 <- parameters$R0
             #Calculate the number of recoveries
-            epiModel@currentState$R <- totalDeaths * Gamma/Alpha
+            epiModel@currentState$R <- (totalDeaths - D0) * Gamma/Alpha + R0
             return(epiModel)
           }
 )
