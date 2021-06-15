@@ -103,7 +103,7 @@ rate of recovery, and *α* the rate of death (calculated from the
 probability of death). Then the number of people in the recovered
 population at time *t* is,
 
-$R(t)=(D(t)-D(0))/+ R(0). $
+*R*(*t*) = (*D*(*t*) − *D*(0)) × *γ*/*α* + *R*(0).
 
 To simplify, let *D*(*i*) + *R*(*i*) = *DR*(*i*). Then by a similar
 argument to that laid out in (Kröger and Schlickeiser 2020), for a
