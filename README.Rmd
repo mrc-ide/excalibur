@@ -98,7 +98,7 @@ print(simulate(model, t=10))
 Consider the SIRD model with a known number of deaths $D(t)$ a particular time $t$, where $\beta$ is the transmission parameter, $\gamma$ the rate of recovery, and $\alpha$ the rate of death (calculated from the probability of death).
 Then the number of people in the recovered population at time $t$ is, 
 
-$R(t)=\frac{(D(t)-D(0))\times\gamma}{\alpha} + R(0). $
+$R(t)=(D(t)-D(0))\times\gamma/\alpha + R(0). $
 
 To simplify, let $D(i)+R(i)=\mathrm{\textit{DR}}(i)$.
 Then by a similar argument to that laid out in [@analyiticalSIR], for a constant value of $\beta$,
