@@ -106,7 +106,11 @@ Then by a similar argument to that laid out in [@analyiticalSIR], for a constant
 $S(t) = S(0)\times \exp((\mathrm{\textit{DR}}(0)-\mathrm{\textit{DR}}(t))\times\beta/(N\times(\alpha+\gamma)))$.
 \newline
 Then expanded to the time-varying $\beta$ scenario,
-\newline
+
 $S(t)=S(0)\times\exp((\mathrm{sum}_{i=0}^n(\mathrm{\textit{DR}}(t_{c,i})-\mathrm{\textit{DR}}(t_{c,i+1}))\times\beta_i)/(N\times(\alpha + \gamma)))$,
-\newline
+```{=latex}
+\begin{equation}
+S(t)=S(0)\times\exp((\mathrm{sum}_{i=0}^n(\mathrm{\textit{DR}}(t_{c,i})-\mathrm{\textit{DR}}(t_{c,i+1}))\times\beta_i)/(N\times(\alpha + \gamma)))
+\end{equation}
+```
 where $t_{c,i} \leq t < t_{c,i+1}$ means that $\beta(t) = \beta_i$ and $t_{c,0} = 0$.

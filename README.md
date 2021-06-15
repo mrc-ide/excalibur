@@ -107,7 +107,9 @@ population at time *t* is,
 out in (Kröger and Schlickeiser 2020), for a constant value of *β*,
 *S*(*t*) = *S*(0) × exp ((*DR*(0) − *DR*(*t*)) × *β*/(*N* × (*α* + *γ*))).
 Then expanded to the time-varying *β* scenario,
+
 *S*(*t*) = *S*(0) × exp ((*s**u**m*<sub>*i* = 0</sub><sup>*n*</sup>(*DR*(*t*<sub>*c*, *i*</sub>) − *DR*(*t*<sub>*c*, *i* + 1</sub>)) × *β*<sub>*i*</sub>)/(*N* × (*α* + *γ*))),
+
 where *t*<sub>*c*, *i*</sub> ≤ *t* &lt; *t*<sub>*c*, *i* + 1</sub> means
 that *β*(*t*) = *β*<sub>*i*</sub> and *t*<sub>*c*, 0</sub> = 0.
 
