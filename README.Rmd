@@ -107,6 +107,6 @@ $S(t) = S(0)\times \exp((\mathrm{\textit{DR}}(0)-\mathrm{\textit{DR}}(t))\times\
 
 Then expanded to the time-varying $\beta$ scenario,
 
-$S(t)=S(0)\times\exp((\mathrm{sum}_{i=0}^n(\mathrm{\textit{DR}}(t_{c,i})-\mathrm{\textit{DR}}(t_{c,i+1}))\times\beta_i)/(N\times(\alpha + \gamma)))$
+$S(t)=S(0)\times\exp((\mathrm{sum}^n_{i=0}(\mathrm{\textit{DR}}(t_{c,i})-\mathrm{\textit{DR}}(t_{c,i+1}))\times\beta_i)/(N\times(\alpha + \gamma)))$
 
 where $t_{c,i} \leq t < t_{c,i+1}$ means that $\beta(t) = \beta_i$ and $t_{c,0} = 0$.
