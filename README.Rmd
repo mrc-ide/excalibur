@@ -1,5 +1,22 @@
 ---
 output: github_document
+references:
+- id: analyiticalSIR
+  title: Analytical solution of the SIR-model for the temporal evolution of epidemics. Part A time-independent reproduction factor
+  author:
+  - family: Kröger
+    given: M
+  - family: Schlickeiser
+    given: R
+  container-title: Journal of Physics A Mathematical and Theoretical
+  volume: 53
+  URL: 'https://iopscience.iop.org/article/10.1088/1751-8121/abc65d'
+  DOI: 10.1088/abc65d
+  publisher: IOP Science
+  type: article-journal
+  issued:
+    year: 2020
+    month: 12
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -35,13 +52,13 @@ You can install the released version of excalibur from [its Github repository](h
 devtools::install_github("mrc-ide/excalibur")
 ```
 
-## Example
+## Examples
 
 * :warning: This package is WIP so this will change
 
-This is a basic example which shows you how to solve a common problem:
+Estimating the current state for a simple SIRD model:
 
-```{r example}
+```{r example1}
 library(excalibur)
 ##Simulate some deaths to demonstrate calculating the current state of the model
 #Set up an SIR model
@@ -58,3 +75,28 @@ print(currentState(model))
 #rounding in storage etc.
 print(simulate(model, t=10))
 ```
+
+Estimating the current state for a simple SIRD model, with time-varying Beta:
+
+```{r example2}
+library(excalibur)
+#Set up an SIR model, with constant values of Beta that change at the times given
+model <- setSIR(N = 100, Beta = c(5,0.1,2), Gamma = 1/3, ProbOfDeath = 0.1, 
+                I0 = 1, changeTimes = c(4,6))
+#Generate some results, since this is time-varying we need these at the end of
+#each of the changeTimes as well as at the current time
+deaths <- simulate(model, t = c(4,6,10))$D
+##Calculate the current state of the model
+model <- calculateCurrentState(model, deaths)
+#print the current state
+print(currentState(model))
+#for comparison
+print(simulate(model, t=10))
+```
+
+## Method
+Consider the SIRD model with a known number of deaths $D(t)$ a particular time $t$, where $\beta$ is the transmission parameter, $\gamma$ the rate of recovery, and $\alpha$ the rate of death (calculated from the probability of death).
+Then the number of people in the recovered population at time $t$ is, $$R(t)=(D(t)-D(0))\times\gamma/\alpha + R(0)$$.
+To simplify, let $D(i)+R(i)=DR(i)$.
+Then by a similar argument to that laid out in [@analyiticalSIR], for a constant value of $\beta$, $S(t) = S(0)\times \exp((DR(0)-D(t))\times\beta/(N\times(\alpha+\gamma)))$.
+Then expanded to the time-varying $\beta$ scenario, $S(t)=S(0)\times\exp((sum_{i=0}^n(DR(t_{c,i})-DR(t_{c,i+1}))\times\beta_i)/(N\times(\alpha + \gamma)))$, where $t_{c,i} \leq t < t_{c,i+1}$ means that $\beta(t) = \beta_i$ and $t_{c,0} = 0$.
