@@ -30,6 +30,6 @@ Collate:
     'epiModel_Methods.R'
     'excalibur.R'
     'odin.R'
-    'sir_Class.R'
-    'sir_Methods.R'
+    'sird_Class.R'
+    'sird_Methods.R'
     'utilities.R'

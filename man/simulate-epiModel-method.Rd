@@ -4,13 +4,16 @@
 \alias{simulate,epiModel-method}
 \title{An S4 method run a realisation of an object of the epiModel class}
 \usage{
-\S4method{simulate}{epiModel}(object, t, tcrit = NULL)
+\S4method{simulate}{epiModel}(object, t, useCurrent = FALSE, tcrit = NULL)
 }
 \arguments{
 \item{object}{An object of the epiModel class.}
 
 \item{t}{The times at which to simulate from the given epiModel object, the
 first time is always taken as the start time.}
+
+\item{useCurrent}{True or False, tells the function to simulate from the
+current state.}
 
 \item{tcrit}{Critical times (?).}
 }
@@ -24,7 +27,7 @@ data frame, for easier use.
 }
 \examples{
 #set up our model
-model <- setSIR(N = 10, Beta = 1, Gamma = 1/5, ProbOfDeath = 0, I0 = 1)
+model <- setSIRD(N = 10, Beta = 1, Gamma = 1/5, ProbOfDeath = 0, I0 = 1)
 #run the model with simulate
 simulate(model, t = seq(1,10))
 }
