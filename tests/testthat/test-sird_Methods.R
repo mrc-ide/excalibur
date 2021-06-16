@@ -1,5 +1,5 @@
 test_that("calculateDownstreamNodes - Error message functions", {
-  model <- setSIR(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
+  model <- setSIRD(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 
   expect_error(excalibur::calculateDownstreamExponentialNodes(
     model, deaths = c(120, 100),
@@ -11,7 +11,7 @@ test_that("calculateDownstreamNodes - Error message functions", {
     model, deaths = 2000
   ))
 
-  model <- setSIR(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0, I0 = 1)
+  model <- setSIRD(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0, I0 = 1)
 
   expect_error(excalibur::calculateDownstreamExponentialNodes(
     model, deaths = 10
@@ -19,7 +19,7 @@ test_that("calculateDownstreamNodes - Error message functions", {
 })
 
 test_that("calculateDownstreamNodes - Compare to known results", {
-  model <- setSIR(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
+  model <- setSIRD(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
   model <- excalibur::calculateDownstreamExponentialNodes(
     model, deaths = 50
   )
@@ -32,7 +32,7 @@ test_that("calculateDownstreamNodes - Compare to known results", {
   expect_equal(model@currentState$R, 10 * 1/5 / (-log(1-0.5)))
 
 
-  model <- setSIR(N = 500, Beta = 2, Gamma = 1/2, ProbOfDeath = 0.1, I0 = 1)
+  model <- setSIRD(N = 500, Beta = 2, Gamma = 1/2, ProbOfDeath = 0.1, I0 = 1)
   model <- excalibur::calculateDownstreamExponentialNodes(
     model, deaths = 50
   )
@@ -46,7 +46,7 @@ test_that("calculateDownstreamNodes - Compare to known results", {
 })
 
 test_that("estimateInfectiousNode - Error message functions", {
-  model <- setSIR(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
+  model <- setSIRD(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 
   expect_error(excalibur::estimateInfectiousNode(
     model, deaths = c(180,100)
@@ -61,13 +61,13 @@ test_that("estimateInfectiousNode - Error message functions", {
     model, deaths = 2000
   ))
 
-  model <- setSIR(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0, I0 = 1)
+  model <- setSIRD(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0, I0 = 1)
 
   expect_error(excalibur::estimateInfectiousNode(
     model, deaths = 100
   ))
 
-  model <- setSIR(N = 1000, Beta = c(1,5), Gamma = 1/5, ProbOfDeath = 0, I0 = 1,
+  model <- setSIRD(N = 1000, Beta = c(1,5), Gamma = 1/5, ProbOfDeath = 0, I0 = 1,
                   changeTimes = 10)
 
   expect_error(excalibur::estimateInfectiousNode(
@@ -77,7 +77,7 @@ test_that("estimateInfectiousNode - Error message functions", {
 
 
 test_that("estimateInfectiousNode - Compare to known results", {
-  model <- setSIR(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.1, I0 = 1)
+  model <- setSIRD(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.1, I0 = 1)
 
   #simulate a result
   time <- 10
@@ -94,7 +94,7 @@ test_that("estimateInfectiousNode - Compare to known results", {
   expect_true(abs(estInfected - infected)/infected < accuracy)
   expect_true(abs(estSusceptible - susceptible)/susceptible < accuracy)
 
-  model <- setSIR(N = 1000, Beta = c(2,0.5), Gamma = 1/5, ProbOfDeath = 0.1,
+  model <- setSIRD(N = 1000, Beta = c(2,0.5), Gamma = 1/5, ProbOfDeath = 0.1,
                   I0 = 1, changeTimes = 5)
 
   #simulate a result

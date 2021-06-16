@@ -1,4 +1,4 @@
-#' An S4 method to calculate current state of R and D for an SIR when provided
+#' An S4 method to calculate current state of R and D for an SIRD when provided
 #' with a count of the total number of deaths.
 #'
 #' Please note that this method does not guarantee that this state would be
@@ -7,14 +7,14 @@
 #' rate of recovery divided by the rate of death.
 #' These values are then stored in the list in the slot "currentState".
 #'
-#' @param epiModel The epidemic model of class SIR to have the current state of
+#' @param epiModel The epidemic model of class SIRD to have the current state of
 #' R and D calculated.
 #' @param deaths The total death count for this model, so far.
-#' @return An object of class sirModel with the values for D and R updated
+#' @return An object of class sirdModel with the values for D and R updated
 #' for the current state.
 #' @examples
 #' #create example model
-#' model <- setSIR(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
+#' model <- setSIRD(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 #' #Set the deaths (only one entry is required)
 #' deaths <- 20
 #' #call this function
@@ -22,11 +22,11 @@
 #'
 #' currentState(model)
 #' @export
-setMethod("calculateDownstreamExponentialNodes", signature("sirModel"),
+setMethod("calculateDownstreamExponentialNodes", signature("sirdModel"),
           function(epiModel, deaths){
             totalDeaths <- deaths[length(deaths)]
             #check for errors
-            sir_Methods_errorChecks(epiModel, deaths, totalDeaths)
+            sird_Methods_errorChecks(epiModel, deaths, totalDeaths)
             #Assigning the total number of deaths
             epiModel@currentState$D <- totalDeaths
             #Get model parameters
@@ -40,7 +40,7 @@ setMethod("calculateDownstreamExponentialNodes", signature("sirModel"),
             return(epiModel)
           }
 )
-#' An S4 method to estimate current state of S and I for an SIR when provided
+#' An S4 method to estimate current state of S and I for an SIRD when provided
 #' with a total count of deaths so far
 #'
 #' Please note that this method does not guarantee that this state would be
@@ -50,15 +50,15 @@ setMethod("calculateDownstreamExponentialNodes", signature("sirModel"),
 #' At the present time-varying Betas are not adjusted for.
 #' These values are then stored in the list in the slot "currentState".
 #'
-#' @param epiModel The epidemic model of class SIR to have the current state of
+#' @param epiModel The epidemic model of class SIRD to have the current state of
 #' S and I estimated.
 #' @param deaths The total death count for this model, up to each of the
 #' changeTimes so far.
-#' @return An object of class sirModel with the values for S and I updated
+#' @return An object of class sirdModel with the values for S and I updated
 #' for the current state.
 #' @examples
 #' #create example model
-#' model <- setSIR(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
+#' model <- setSIRD(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 #' #Set the deaths (only one entry is required)
 #' deaths <- 20
 #'
@@ -69,7 +69,7 @@ setMethod("calculateDownstreamExponentialNodes", signature("sirModel"),
 #' currentState(model)
 #'
 #' #model with time-varying Beta
-#' model <- setSIR(N = 100, Beta = c(2,1/2), Gamma = 1/5, ProbOfDeath = 0.5,
+#' model <- setSIRD(N = 100, Beta = c(2,1/2), Gamma = 1/5, ProbOfDeath = 0.5,
 #'  I0 = 1, changeTimes = 5)
 #' #Set the deaths, two entries are required now
 #' deaths <- c(20,30)
@@ -86,10 +86,10 @@ setMethod("calculateDownstreamExponentialNodes", signature("sirModel"),
 #' currentState(model)
 #'
 #' @export
-setMethod("estimateInfectiousNode", signature("sirModel"),
+setMethod("estimateInfectiousNode", signature("sirdModel"),
           function(epiModel, deaths){
             #check for errors in death specification
-            sir_Methods_errorChecks(epiModel, deaths, deaths[length(deaths)])
+            sird_Methods_errorChecks(epiModel, deaths, deaths[length(deaths)])
             #get model parameters
             parameters <- epiModel@odinModel$contents()
             Alpha <- parameters$Alpha
@@ -128,9 +128,9 @@ setMethod("estimateInfectiousNode", signature("sirModel"),
             return(epiModel)
           }
 )
-#' Internal function to run repeat error checks for the SIR methods
+#' Internal function to run repeat error checks for the SIRd methods
 #' @noRd
-sir_Methods_errorChecks <- function(epiModel, deaths, totalDeaths){
+sird_Methods_errorChecks <- function(epiModel, deaths, totalDeaths){
   #checking deaths are in the correct format
   if(any(deaths>totalDeaths) |
     !is.numeric(deaths)){

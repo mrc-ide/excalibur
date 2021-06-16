@@ -27,7 +27,7 @@ data frame, for easier use.
 }
 \examples{
 #set up our model
-model <- setSIR(N = 10, Beta = 1, Gamma = 1/5, ProbOfDeath = 0, I0 = 1)
+model <- setSIRD(N = 10, Beta = 1, Gamma = 1/5, ProbOfDeath = 0, I0 = 1)
 #run the model with simulate
 simulate(model, t = seq(1,10))
 }

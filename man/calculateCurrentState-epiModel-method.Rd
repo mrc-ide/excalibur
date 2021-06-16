@@ -9,19 +9,19 @@
 \arguments{
 \item{epiModel}{The epidemic model, whose current state is to be calculated.}
 
-\item{...}{Any other arguements to provide to the method.}
+\item{...}{Any other arguments to provide to the method.}
 }
 \value{
 An epiModel of object of the same class as that given.
 }
 \description{
-Calls two generic functions to calculate the downstream nodes and esimate
+Calls two generic functions to calculate the downstream nodes and estimate
 the infectious population in turn. These will be specific to each type of
 epiModel class.
 }
 \examples{
 #set up model
-model <- setSIR(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
+model <- setSIRD(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 #Set the deaths
 deaths <- 20
 time <- 10

@@ -17,7 +17,7 @@ NULL
 #' @return A dataframe of the odin models run output.
 #' @examples
 #' #set up our model
-#' model <- setSIR(N = 10, Beta = 1, Gamma = 1/5, ProbOfDeath = 0, I0 = 1)
+#' model <- setSIRD(N = 10, Beta = 1, Gamma = 1/5, ProbOfDeath = 0, I0 = 1)
 #' #run the model with simulate
 #' simulate(model, t = seq(1,10))
 #' @export
@@ -53,16 +53,16 @@ setMethod("simulate", "epiModel",
 )
 #' An S4 method to calculate current state of an object of the epiModel class
 #'
-#' Calls two generic functions to calculate the downstream nodes and esimate
+#' Calls two generic functions to calculate the downstream nodes and estimate
 #' the infectious population in turn. These will be specific to each type of
 #' epiModel class.
 #'
 #' @param epiModel The epidemic model, whose current state is to be calculated.
-#' @param ... Any other arguements to provide to the method.
+#' @param ... Any other arguments to provide to the method.
 #' @return An epiModel of object of the same class as that given.
 #' @examples
 #' #set up model
-#' model <- setSIR(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
+#' model <- setSIRD(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 #' #Set the deaths
 #' deaths <- 20
 #' time <- 10
@@ -84,7 +84,7 @@ setMethod("calculateCurrentState", signature("epiModel"),
 #' @return A list of labelled values.
 #' @examples
 #' #set up model
-#' model <- setSIR(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
+#' model <- setSIRD(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 #' #Set the deaths
 #' deaths <- 20
 #' time <- 10
