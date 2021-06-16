@@ -11,6 +11,8 @@ NULL
 #' @param object An object of the epiModel class.
 #' @param t The times at which to simulate from the given epiModel object, the
 #' first time is always taken as the start time.
+#' @param useCurrent True or False, tells the function to simulate from the
+#' current state.
 #' @param tcrit Critical times (?).
 #' @return A dataframe of the odin models run output.
 #' @examples
@@ -20,9 +22,20 @@ NULL
 #' simulate(model, t = seq(1,10))
 #' @export
 setMethod("simulate", "epiModel",
-          function(object, t, tcrit=NULL){
-            #append 0 to the start
-            t <- c(0,t)
+          function(object, t, useCurrent=FALSE, tcrit=NULL){
+            if(useCurrent){
+              userValues <- append(object@parameters, object@currentState)
+              startTime <- userValues$t
+              userValues$t <- NULL
+            }
+            else{
+              userValues <- append(object@parameters, object@initialState)
+              startTime <- 0
+            }
+            #feed values to odin model
+            object@odinModel$set_user(user=userValues)
+            #append startTime to the start
+            t <- c(startTime,t)
             #use odinModel run method
             results <- object@odinModel$run(t, tcrit = tcrit)
             #package as data frame
