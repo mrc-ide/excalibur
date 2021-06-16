@@ -44,20 +44,8 @@ deaths <- simulate(model, t = time)$D
 model <- calculateCurrentState(model, time, deaths)
 #print the current state
 print(currentState(model))
-#> $t
-#> [1] 10
-#> 
-#> $D
-#> [1] 11.83369
-#> 
-#> $R
-#> [1] 37.43873
-#> 
-#> $I
-#> [1] 18.52785
-#> 
-#> $S
-#> [1] 32.19973
+#>    t        D        R        I        S
+#> 1 10 11.83369 37.43873 18.52785 32.19973
 
 ##Limitations
 #Currently I is calculated by subtracting from N, hence will not be exact due to
@@ -83,20 +71,8 @@ deaths <- simulate(model, t = c(4,6,time))$D
 model <- calculateCurrentState(model, time, deaths)
 #print the current state
 print(currentState(model))
-#> $t
-#> [1] 10
-#> 
-#> $D
-#> [1] 23.53816
-#> 
-#> $R
-#> [1] 74.46863
-#> 
-#> $I
-#> [1] 1.977261
-#> 
-#> $S
-#> [1] 0.01595129
+#>    t        D        R        I          S
+#> 1 10 23.53816 74.46863 1.977261 0.01595129
 #for comparison
 print(simulate(model, t=time))
 #>    t          S        I        R        D Beta

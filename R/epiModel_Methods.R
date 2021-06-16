@@ -83,7 +83,7 @@ setMethod("calculateCurrentState", signature("epiModel"),
 #' An S4 method to return current state of an object of the epiModel class
 #'
 #' @param epiModel The epidemic model, whose current state is to be returned.
-#' @return A list of labelled values.
+#' @return A dataframe of labelled values.
 #' @examples
 #' #set up model
 #' model <- setSIRD(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
@@ -97,6 +97,6 @@ setMethod("calculateCurrentState", signature("epiModel"),
 #' @export
 setMethod("currentState", signature("epiModel"),
           function(epiModel){
-            return(epiModel@currentState)
+            return(as.data.frame(epiModel@currentState))
           }
 )

@@ -17,11 +17,11 @@ test_that("Check print current state", {
 
   model <- setSIRD(N= 10, Beta=1, Gamma=1/5, ProbOfDeath = 0, I0 = 1,
                   changeTimes = NULL)
-  expect_true(is.list(currentState(model)))
+  expect_true(is.data.frame(currentState(model)))
   expect_equal(length(currentState(model)), 0)
   #assign a list to slot
   model@currentState$S <- 100
-  expect_equal(currentState(model), list(S=100))
+  expect_equal(currentState(model), data.frame(S=100))
 })
 
 test_that("Simulate from current time",{
