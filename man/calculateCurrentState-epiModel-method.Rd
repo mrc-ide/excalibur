@@ -4,7 +4,7 @@
 \alias{calculateCurrentState,epiModel-method}
 \title{An S4 method to calculate current state of an object of the epiModel class}
 \usage{
-\S4method{calculateCurrentState}{epiModel}(epiModel, ...)
+\S4method{calculateCurrentState}{epiModel}(epiModel, t, ...)
 }
 \arguments{
 \item{epiModel}{The epidemic model, whose current state is to be calculated.}
@@ -24,8 +24,9 @@ epiModel class.
 model <- setSIR(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 #Set the deaths
 deaths <- 20
+time <- 10
 #calculate current state
-model <- calculateCurrentState(model, deaths)
+model <- calculateCurrentState(model, time, deaths)
 #return the current state
 currentState(model)
 }

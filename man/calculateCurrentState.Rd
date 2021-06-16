@@ -5,13 +5,18 @@
 \title{A generic function to call the relevant methods to calculate the current
 state at a given time based upon some inputs}
 \usage{
-calculateCurrentState(epiModel, ...)
+calculateCurrentState(epiModel, t, ...)
 }
 \arguments{
 \item{epiModel}{The epidemic model, whose current state is to be calculated.}
+
+\item{t}{The time this state corresponds to, if the initial conditions
+occured at t=0}
 
 \item{...}{Any other arguments to provide to the method.}
 }
 \description{
 At present only has one method, which is for all objects of class "epiModel".
+Before this is called, it assigns the provided time (t) to the list in the
+slot currentState.
 }

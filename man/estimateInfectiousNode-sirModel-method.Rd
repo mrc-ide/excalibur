@@ -43,13 +43,14 @@ model <- setSIR(N = 100, Beta = c(2,1/2), Gamma = 1/5, ProbOfDeath = 0.5,
  I0 = 1, changeTimes = 5)
 #Set the deaths, two entries are required now
 deaths <- c(20,30)
+time <- 10
 #the model assumes that the first number 20 is the number of deaths up to the
 #specified change time 5, and that the last number 30 is the number of deaths
-#up to the current time.
+#up to the current time (10).
 #if the current state is not past 5, then we would set deaths <- c(20,20)
 
 #call this + the D+R node function
-model <- calculateCurrentState(model, deaths=deaths)
+model <- calculateCurrentState(model, t=time, deaths=deaths)
 
 #check S and I
 currentState(model)

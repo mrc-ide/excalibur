@@ -44,8 +44,9 @@ setMethod("simulate", "epiModel",
 #' model <- setSIR(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 #' #Set the deaths
 #' deaths <- 20
+#' time <- 10
 #' #calculate current state
-#' model <- calculateCurrentState(model, deaths)
+#' model <- calculateCurrentState(model, time, deaths)
 #' #return the current state
 #' currentState(model)
 #' @export
@@ -65,8 +66,9 @@ setMethod("calculateCurrentState", signature("epiModel"),
 #' model <- setSIR(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 #' #Set the deaths
 #' deaths <- 20
+#' time <- 10
 #' #calculate current state
-#' model <- calculateCurrentState(model, deaths)
+#' model <- calculateCurrentState(model, time, deaths)
 #' #return the current state
 #' currentState(model)
 #' @export

@@ -38,11 +38,15 @@ library(excalibur)
 #Set up an SIR model
 model <- setSIR(N = 100, Beta = 1, Gamma = 1/3, ProbOfDeath = 0.1, I0 = 1)
 #Generate some results at time 10 from the start of the epidemic
-deaths <- simulate(model, t = 10)$D
+time <- 10
+deaths <- simulate(model, t = time)$D
 ##Calculate the current state of the model
-model <- calculateCurrentState(model, deaths)
+model <- calculateCurrentState(model, time, deaths)
 #print the current state
 print(currentState(model))
+#> $t
+#> [1] 10
+#> 
 #> $D
 #> [1] 11.83369
 #> 
@@ -58,8 +62,8 @@ print(currentState(model))
 ##Limitations
 #Currently I is calculated by subtracting from N, hence will not be exact due to
 #rounding in storage etc.
-print(simulate(model, t=10))
-#>    t        S        I        R        D beta
+print(simulate(model, t=time))
+#>    t        S        I        R        D Beta
 #> 2 10 32.19971 18.52787 37.43873 11.83369    1
 ```
 
@@ -73,11 +77,15 @@ model <- setSIR(N = 100, Beta = c(5,0.1,2), Gamma = 1/3, ProbOfDeath = 0.1,
                 I0 = 1, changeTimes = c(4,6))
 #Generate some results, since this is time-varying we need these at the end of
 #each of the changeTimes as well as at the current time
-deaths <- simulate(model, t = c(4,6,10))$D
+time <- 10
+deaths <- simulate(model, t = c(4,6,time))$D
 ##Calculate the current state of the model
-model <- calculateCurrentState(model, deaths)
+model <- calculateCurrentState(model, time, deaths)
 #print the current state
 print(currentState(model))
+#> $t
+#> [1] 10
+#> 
 #> $D
 #> [1] 23.53816
 #> 
@@ -90,8 +98,8 @@ print(currentState(model))
 #> $S
 #> [1] 0.01595129
 #for comparison
-print(simulate(model, t=10))
-#>    t          S        I        R        D beta
+print(simulate(model, t=time))
+#>    t          S        I        R        D Beta
 #> 2 10 0.01594839 1.977264 74.46863 23.53816    2
 ```
 

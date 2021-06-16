@@ -80,12 +80,13 @@ test_that("estimateInfectiousNode - Compare to known results", {
   model <- setSIR(N = 1000, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.1, I0 = 1)
 
   #simulate a result
-  results <- simulate(model, t = 10)
+  time <- 10
+  results <- simulate(model, t = time)
   infected <- results$I
   susceptible <- results$S
   deaths <- results$D
   #estimate
-  model <- calculateCurrentState(model, deaths)
+  model <- calculateCurrentState(model, time, deaths)
   estInfected <- currentState(model)$I
   estSusceptible <- currentState(model)$S
   #compare
@@ -97,12 +98,13 @@ test_that("estimateInfectiousNode - Compare to known results", {
                   I0 = 1, changeTimes = 5)
 
   #simulate a result
-  results <- simulate(model, t = 10)
+  time <- 10
+  results <- simulate(model, t = time)
   infected <- results$I
   susceptible <- results$S
-  deaths <- simulate(model, t = c(5,10))$D
+  deaths <- simulate(model, t = c(5,time))$D
   #estimate
-  model <- calculateCurrentState(model, deaths)
+  model <- calculateCurrentState(model, time, deaths)
   estInfected <- currentState(model)$I
   estSusceptible <- currentState(model)$S
   #compare
