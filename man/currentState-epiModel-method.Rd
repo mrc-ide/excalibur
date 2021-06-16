@@ -10,7 +10,7 @@
 \item{epiModel}{The epidemic model, whose current state is to be returned.}
 }
 \value{
-A list of labelled values.
+A dataframe of labelled values.
 }
 \description{
 An S4 method to return current state of an object of the epiModel class
