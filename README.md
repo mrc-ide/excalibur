@@ -35,8 +35,8 @@ Estimating the current state for a simple SIRD model:
 ``` r
 library(excalibur)
 ##Simulate some deaths to demonstrate calculating the current state of the model
-#Set up an SIR model
-model <- setSIR(N = 100, Beta = 1, Gamma = 1/3, ProbOfDeath = 0.1, I0 = 1)
+#Set up an SIRD model
+model <- setSIRD(N = 100, Beta = 1, Gamma = 1/3, ProbOfDeath = 0.1, I0 = 1)
 #Generate some results at time 10 from the start of the epidemic
 time <- 10
 deaths <- simulate(model, t = time)$D
@@ -72,8 +72,8 @@ Beta:
 
 ``` r
 library(excalibur)
-#Set up an SIR model, with constant values of Beta that change at the times given
-model <- setSIR(N = 100, Beta = c(5,0.1,2), Gamma = 1/3, ProbOfDeath = 0.1, 
+#Set up an SIRD model, with constant values of Beta that change at the times given
+model <- setSIRD(N = 100, Beta = c(5,0.1,2), Gamma = 1/3, ProbOfDeath = 0.1, 
                 I0 = 1, changeTimes = c(4,6))
 #Generate some results, since this is time-varying we need these at the end of
 #each of the changeTimes as well as at the current time
