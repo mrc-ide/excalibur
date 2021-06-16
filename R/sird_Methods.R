@@ -61,9 +61,10 @@ setMethod("calculateDownstreamExponentialNodes", signature("sirdModel"),
 #' model <- setSIRD(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
 #' #Set the deaths (only one entry is required)
 #' deaths <- 20
-#'
+#' #Set the time, makes no difference to this calculation, only used for simulate
+#' time <- 10
 #' #call this + the D+R node function
-#' model <- calculateCurrentState(model, deaths=deaths)
+#' model <- calculateCurrentState(model, time, deaths)
 #'
 #' #check S and I
 #' currentState(model)

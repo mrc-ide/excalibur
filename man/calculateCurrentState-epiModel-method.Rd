@@ -9,6 +9,9 @@
 \arguments{
 \item{epiModel}{The epidemic model, whose current state is to be calculated.}
 
+\item{t}{The time this state relates to, if the initial conditions occured at
+0.}
+
 \item{...}{Any other arguments to provide to the method.}
 }
 \value{

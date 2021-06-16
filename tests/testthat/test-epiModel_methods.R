@@ -39,17 +39,17 @@ test_that("Simulate from current time",{
           results2 <- simulate(model, useCurrent = T, t = 20)
           #compare
           accuracy <- 0.01 #allow leway due to round etc.
-          expect_true(abs(results$S - results2$S)/infected < accuracy)
-          expect_true(abs(results$I - results2$I)/infected < accuracy)
-          expect_true(abs(results$R - results2$R)/infected < accuracy)
+          expect_true(abs(results$S - results2$S)/results$S < accuracy)
+          expect_true(abs(results$I - results2$I)/results$I < accuracy)
+          expect_true(abs(results$R - results2$R)/results$R < accuracy)
           expect_equal(results$t, results2$t)
 
           #compare to simulation from initial
           results <- simulate(model, useCurrent = F, t = 30)
           results2 <- simulate(model, useCurrent = T, t = 30)
-          expect_true(abs(results$S - results2$S)/infected < accuracy)
-          expect_true(abs(results$I - results2$I)/infected < accuracy)
-          expect_true(abs(results$R - results2$R)/infected < accuracy)
+          expect_true(abs(results$S - results2$S)/results$S < accuracy)
+          expect_true(abs(results$I - results2$I)/results$I < accuracy)
+          expect_true(abs(results$R - results2$R)/results$R < accuracy)
           expect_equal(results$t, results2$t)
 
 })
