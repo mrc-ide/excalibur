@@ -30,11 +30,10 @@ setMethod("calculateDownstreamExponentialNodes", signature("sirdModel"),
             #Assigning the total number of deaths
             epiModel@currentState$D <- totalDeaths
             #Get model parameters
-            parameters <- epiModel@odinModel$contents()
-            Alpha <- parameters$Alpha
-            Gamma <- parameters$Gamma
-            D0 <- parameters$D0
-            R0 <- parameters$R0
+            Alpha <- epiModel@parameters$Alpha
+            Gamma <- epiModel@parameters$Gamma
+            D0 <- epiModel@initialState$D0
+            R0 <- epiModel@initialState$R0
             #Calculate the number of recoveries
             epiModel@currentState$R <- (totalDeaths - D0) * Gamma/Alpha + R0
             return(epiModel)
@@ -91,15 +90,15 @@ setMethod("estimateInfectiousNode", signature("sirdModel"),
             #check for errors in death specification
             sird_Methods_errorChecks(epiModel, deaths, deaths[length(deaths)])
             #get model parameters
-            parameters <- epiModel@odinModel$contents()
-            Alpha <- parameters$Alpha
-            Gamma <- parameters$Gamma
-            Beta <- parameters$Betas
-            changeTimes <- parameters$changeTimes
-            S0 <- parameters$S0
-            I0 <- parameters$I0
-            R0 <- parameters$R0
-            D0 <- parameters$D0
+            parameters <- epiModel@parameters
+            Alpha <- epiModel@parameters$Alpha
+            Gamma <- epiModel@parameters$Gamma
+            Beta <- epiModel@parameters$Betas
+            changeTimes <- epiModel@parameters$changeTimes
+            S0 <- epiModel@initialState$S0
+            I0 <- epiModel@initialState$I0
+            R0 <- epiModel@initialState$R0
+            D0 <- epiModel@initialState$D0
             N <- S0 + I0 + R0 + D0
             #more errors checks
             if(length(deaths) != length(Beta) | length(deaths) != length(changeTimes)){
