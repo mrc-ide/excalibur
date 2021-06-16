@@ -1,12 +1,17 @@
+#' @include epiModel_Class.R
+#' @include sird_Class.R
+NULL
+
 #' An S4 class to represent an SEIRD epidemic model
 #'
 #' A class to tell the generic functions to apply SEIRD specific methods.
+#' Inherits from sirdModel, so that it can use same downstream node calculation.
 #'
 #' @inheritParams epiModelClass
 #' @noRd
 methods::setClass(
   "seirdModel",
-  contains = "epiModel"
+  contains = "sirdModel"
 )
 
 

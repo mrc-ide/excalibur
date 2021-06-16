@@ -1,3 +1,6 @@
+#' @include epiModel_Class.R
+NULL
+
 #' An S4 class to represent an SIRD epidemic model
 #'
 #' A class to tell the generic functions to apply SIRD specific methods.
