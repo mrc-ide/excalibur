@@ -23,3 +23,33 @@ test_that("Check print current state", {
   model@currentState$S <- 100
   expect_equal(currentState(model), list(S=100))
 })
+
+test_that("Simulate from current time",{
+          #compare to known result
+          model <- setSIR(N = 1000, Beta = c(2,0.5), Gamma = 1/5, ProbOfDeath = 0.1,
+                  I0 = 1, changeTimes = 5)
+          #simulate a result
+          time <- 10
+          results <- simulate(model, t = 20)
+          #death data
+          deaths <- simulate(model, t = c(5,time))$D
+          #estimate
+          model <- calculateCurrentState(model, time, deaths)
+          #simulate from current time
+          results2 <- simulate(model, useCurrent = T, t = 20)
+          #compare
+          accuracy <- 0.01 #allow leway due to round etc.
+          expect_true(abs(results$S - results2$S)/infected < accuracy)
+          expect_true(abs(results$I - results2$I)/infected < accuracy)
+          expect_true(abs(results$R - results2$R)/infected < accuracy)
+          expect_equal(results$t, results2$t)
+
+          #compare to simulation from initial
+          results <- simulate(model, useCurrent = F, t = 30)
+          results2 <- simulate(model, useCurrent = T, t = 30)
+          expect_true(abs(results$S - results2$S)/infected < accuracy)
+          expect_true(abs(results$I - results2$I)/infected < accuracy)
+          expect_true(abs(results$R - results2$R)/infected < accuracy)
+          expect_equal(results$t, results2$t)
+
+})

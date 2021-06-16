@@ -24,12 +24,20 @@ NULL
 setMethod("simulate", "epiModel",
           function(object, t, useCurrent=FALSE, tcrit=NULL){
             if(useCurrent){
-              userValues <- append(object@parameters, object@currentState)
-              startTime <- userValues$t
-              userValues$t <- NULL
+              currentS <- object@currentState
+              #set our start time
+              startTime <- currentS$t
+              #remove t
+              currentS$t <- NULL
+              #append 0 to our values as these are now initial conditions
+              names(currentS) <- paste0(names(currentS), "0")
+              #append to parameters
+              userValues <- append(object@parameters, currentS)
             }
             else{
+              #merge parameters and initial state into one list
               userValues <- append(object@parameters, object@initialState)
+              #set our start time
               startTime <- 0
             }
             #feed values to odin model
