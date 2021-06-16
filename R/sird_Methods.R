@@ -90,7 +90,6 @@ setMethod("estimateInfectiousNode", signature("sirdModel"),
             #check for errors in death specification
             sird_Methods_errorChecks(epiModel, deaths, deaths[length(deaths)])
             #get model parameters
-            parameters <- epiModel@parameters
             Alpha <- epiModel@parameters$Alpha
             Gamma <- epiModel@parameters$Gamma
             Beta <- epiModel@parameters$Betas
