@@ -31,8 +31,8 @@ setMethod("calculateDownstreamExponentialNodes", signature("sirModel"),
             epiModel@currentState$D <- totalDeaths
             #Get model parameters
             parameters <- epiModel@odinModel$contents()
-            Alpha <- parameters$alpha
-            Gamma <- parameters$gamma
+            Alpha <- parameters$Alpha
+            Gamma <- parameters$Gamma
             D0 <- parameters$D0
             R0 <- parameters$R0
             #Calculate the number of recoveries
@@ -91,10 +91,10 @@ setMethod("estimateInfectiousNode", signature("sirModel"),
             sir_Methods_errorChecks(epiModel, deaths, deaths[length(deaths)])
             #get model parameters
             parameters <- epiModel@odinModel$contents()
-            Alpha <- parameters$alpha
-            Gamma <- parameters$gamma
-            Beta <- parameters$betas
-            changeTimes <- parameters$ct
+            Alpha <- parameters$Alpha
+            Gamma <- parameters$Gamma
+            Beta <- parameters$Betas
+            changeTimes <- parameters$changeTimes
             S0 <- parameters$S0
             I0 <- parameters$I0
             R0 <- parameters$R0
@@ -143,7 +143,7 @@ sir_Methods_errorChecks <- function(epiModel, deaths, totalDeaths){
     stop("deaths exceeds model population (N)")
   }
   #if prob of death  = 0
-  if(epiModel@odinModel$contents()$pDeath == 0){
+  if(epiModel@odinModel$contents()$Alpha == 0){
     stop("Since there is no chance of death in this model, it cannot
                    be fit using death data.")
   }

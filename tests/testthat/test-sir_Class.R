@@ -57,11 +57,11 @@ test_that("Odin Model functionality in extreme scenarios",{
 test_that("Odin Model time varying beta functionality",{
 
   #base
-  expect_equal(setSIR(N = 100, Beta = 1, Gamma = 1, ProbOfDeath = 0, I0 = 1, changeTimes=NULL)@odinModel$run(c(1,100))[,"beta"], rep(1,2))
+  expect_equal(setSIR(N = 100, Beta = 1, Gamma = 1, ProbOfDeath = 0, I0 = 1, changeTimes=NULL)@odinModel$run(c(1,100))[,"Beta"], rep(1,2))
   #Two Betas
-  expect_equal(setSIR(N = 100, Beta = c(1,0.5), Gamma = 1, ProbOfDeath = 0, I0 = 1, changeTimes=c(50))@odinModel$run(c(1,100))[,"beta"], c(1,0.5))
+  expect_equal(setSIR(N = 100, Beta = c(1,0.5), Gamma = 1, ProbOfDeath = 0, I0 = 1, changeTimes=c(50))@odinModel$run(c(1,100))[,"Beta"], c(1,0.5))
   #Two Betas, evaluated at change time
-  expect_equal(setSIR(N = 100, Beta = c(1,0.5), Gamma = 1, ProbOfDeath = 0, I0 = 1, changeTimes=c(50))@odinModel$run(c(1,50))[,"beta"], c(1,0.5))
+  expect_equal(setSIR(N = 100, Beta = c(1,0.5), Gamma = 1, ProbOfDeath = 0, I0 = 1, changeTimes=c(50))@odinModel$run(c(1,50))[,"Beta"], c(1,0.5))
   #three Betas
-  expect_equal(setSIR(N = 100, Beta = c(1,0.5,7), Gamma = 1, ProbOfDeath = 0, I0 = 1, changeTimes=c(25,75))@odinModel$run(c(1,50,100))[,"beta"], c(1,0.5,7))
+  expect_equal(setSIR(N = 100, Beta = c(1,0.5,7), Gamma = 1, ProbOfDeath = 0, I0 = 1, changeTimes=c(25,75))@odinModel$run(c(1,50,100))[,"Beta"], c(1,0.5,7))
 })

@@ -55,16 +55,18 @@ setSIR <- function(N, Beta, Gamma, ProbOfDeath, I0, changeTimes = NULL){
   }
   #append 0 to change times so that it works with interpolate
   changeTimes <- c(0,changeTimes)
+  #calculate death rate
+  Alpha <- riskToRate(ProbOfDeath)
   #setup odin model
   modelObject@odinModel <- sirGenerator(
-    betas = Beta,
-    ct = changeTimes,
-    gamma = Gamma,
+    Betas = Beta,
+    changeTimes = changeTimes,
+    Gamma = Gamma,
     I0 = I0,
     S0 = N - I0,
     R0 = 0,
     D0 = 0,
-    pDeath = ProbOfDeath
+    Alpha = Alpha
   )
   #output
   return(modelObject)
