@@ -21,7 +21,8 @@ setSIR(N, Beta, Gamma, ProbOfDeath, I0, changeTimes = NULL)
 which the parameters are changed.}
 }
 \value{
-A object of class sirModel with odin model code for the same model.
+A object of class sirModel with odin model code for the same model,
+and filled slots for parameters and the initial state.
 }
 \description{
 First section of the function is a wrapper for the internal generator

@@ -23,6 +23,24 @@ test_that("odinModel Assignment", {
   expect_true(is.character(testModel@odinModel$ir))
 })
 
+test_that("initialState Assignment", {
+  testModel <- setSIR(N=10, Beta=5, Gamma=3, ProbOfDeath=0.5, I0=1)
+
+  expect_equal(testModel@initialState$S0, 10 - 1)
+  expect_equal(testModel@initialState$I0, 1)
+  expect_equal(testModel@initialState$R0, 0)
+  expect_equal(testModel@initialState$D0, 0)
+})
+
+test_that("parameters Assignment", {
+  testModel <- setSIR(N=10, Beta=5, Gamma=3, ProbOfDeath=0.5, I0=1)
+
+  expect_equal(testModel@parameters$Betas, 5)
+  expect_equal(testModel@parameters$changeTimes, 0)
+  expect_equal(testModel@parameters$Gamma, 3)
+  expect_equal(testModel@parameters$Alpha, riskToRate(0.5))
+})
+
 test_that("Input restrictions", {
 
   expect_error(setSIR(N = "100", Beta = 1, Gamma = 1, ProbOfDeath = 0.1, I0 = 1, changeTimes=NULL))
