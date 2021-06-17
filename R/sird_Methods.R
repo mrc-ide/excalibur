@@ -27,15 +27,16 @@ setMethod("calculateDownstreamExponentialNodes", signature("sirdModel"),
             totalDeaths <- deaths[length(deaths)]
             #check for errors
             sird_Methods_errorChecks(epiModel, deaths, totalDeaths)
-            #Assigning the total number of deaths
-            epiModel@currentState$D <- totalDeaths
             #Get model parameters
             Alpha <- epiModel@parameters$Alpha
             Gamma <- epiModel@parameters$Gamma
             D0 <- epiModel@initialState$D0
             R0 <- epiModel@initialState$R0
             #Calculate the number of recoveries
-            epiModel@currentState$R <- (totalDeaths - D0) * Gamma/Alpha + R0
+            R <- (totalDeaths - D0) * Gamma/Alpha + R0
+            #Assigning
+            epiModel@currentState$D <- totalDeaths
+            epiModel@currentState$R <- R
             return(epiModel)
           }
 )
@@ -121,8 +122,9 @@ setMethod("estimateInfectiousNode", signature("sirdModel"),
             #Calculate I
             I <- N - S - epiModel@currentState$R - epiModel@currentState$D
             #assign to list
-            epiModel@currentState$I <- I
+            #Assigning
             epiModel@currentState$S <- S
+            epiModel@currentState$I <- I
             return(epiModel)
           }
 )
