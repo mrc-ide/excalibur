@@ -69,19 +69,16 @@ setMethod("estimateInfectiousNode", signature("seirdModel"),
             N <- Reduce('+', epiModel@initialState)
             #split current value of I between E and I
             Beta <- tail(Beta, 1)
-            i2 <- -Beta^2 * Lambda * S / N^2
-            i1 <- -Beta * Lambda * (Alpha + Gamma) * S / N
-                  -Lambda * Beta * (Alpha + Gamma + Lambda) * S / N
-                  -(Alpha + Gamma)^3
-            e1 <- Beta * Lambda^2 * S / N
-                  +Lambda^2 * (Alpha + Gamma + Lambda)
-                  +(Alpha + Gamma)^2 * Lambda
-            I1 <- (-(i1-e1) + sqrt((i1-e1)^2 - 4 * i2 * e1 * (N - S - D - R)))/(2*i2)
-            I2 <- (-(i1-e1) - sqrt((i1-e1)^2 - 4 * i2 * e1 * (N - S - D - R)))/(2*i2)
-            if(I1 > 0 & I1 < N){
+            c1 <- -Lambda*Beta^2*S/(N^2)
+            c2 <- -(Lambda*Beta*(2*(Alpha+Gamma)+Lambda)*S/N + (Alpha+Gamma)^3)
+            c3 <- Lambda*(Lambda*Beta*S/N + Lambda*(Alpha+Gamma+Lambda) + (Alpha + Gamma)^2)
+            cDiff <- c2 - c3
+            cSqrt <- sqrt(cDiff^2 - 4* c1 * c3 * (N - S - D - R))
+            I1 <- (-cDiff - cSqrt)/(2*c1)
+            I2 <- (-cDiff + cSqrt)/(2*c1)
+            if(I1 > 0 & I1 < N - S - D - R){
               I <- I1
-            }
-            else{
+            }else{
               I <- I2
             }
             E <- N - I - S - R - D
