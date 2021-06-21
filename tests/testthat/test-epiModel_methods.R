@@ -18,10 +18,11 @@ test_that("Check print current state", {
   model <- setSIRD(N= 10, Beta=1, Gamma=1/5, ProbOfDeath = 0, I0 = 1,
                   changeTimes = NULL)
   expect_true(is.data.frame(currentState(model)))
-  expect_equal(length(currentState(model)), 0)
+  expect_equal(length(currentState(model)), 5)
   #assign a list to slot
   model@currentState$t <- 1
   model@currentState$S <- 100
+  expect_equal(currentState(model), data.frame(t=1, S=100, I = NA, R = NA, D=NA))
   model@currentState$I <- 100
   model@currentState$R <- 100
   model@currentState$D <- 100
