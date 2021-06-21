@@ -20,12 +20,13 @@ trajectories.
 ## Installation
 
 You can install the released version of excalibur from [its Github
-repository](https://github.com/mrc-ide/excalibur) with: This package
-require Odin and Deriv.
+repository](https://github.com/mrc-ide/excalibur) with:
 
 ``` r
 devtools::install_github("mrc-ide/excalibur")
 ```
+
+This package requires Odin and Deriv.
 
 ## SIRD Model
 
