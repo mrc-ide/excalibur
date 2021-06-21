@@ -128,9 +128,9 @@ setMethod("estimateInfectiousNode", signature("seirdModel"),
               for(i in 1:200){
                 yValues[i] <- optimFunc(xValues[i])
               }
-              plot(xValues, yValues, type="l", xlab="I", ylab = paste0("~", nderiv, "-th derivative of D, squared"))
-              abline(v=resultPar)
-              abline(v=startingValues, lty = 2)
+              graphics::plot(xValues, yValues, type="l", xlab="I", ylab = paste0("~", nderiv, "-th derivative of D, squared"))
+              graphics::abline(v=resultPar)
+              graphics::abline(v=startingValues, lty = 2)
             }
             if(all(is.na(resultPar))){
               stop(paste0("Optim failed to converge, consider reducing nderiv ", paste(resultMessage, collapse = " ")))
