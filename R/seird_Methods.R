@@ -105,11 +105,26 @@ setMethod("estimateInfectiousNode", signature("seirdModel"),
               value <- (nthDf(time)/scalingFactor)^2
             }
             #optimise
-            result <- stats::optim((N-S-D-R)/2, optimFunc, method = "L-BFGS-B", lower = 0, upper = N-S-D-R)
-            if(result$convergence != 0){
-              stop(result$message)
+            resultMessage <- rep(NA, 3)
+            resultPar <- rep(NA, 3)
+            resultValue <- rep(NA, 3)
+            startingValues <- c(0, (N-S-D-R)/2, N-S-D-R)
+            for(i in 1:3){
+              result <- stats::optim(startingValues[i], optimFunc, method = "L-BFGS-B", lower = 0, upper = N-S-D-R)
+              resultMessage[i] <- result$message
+              if(result$convergence == 0 & (result$par != startingValues[i])){
+                resultPar[i] <- result$par
+                resultValue[i] <- result$value
+              }
             }
-            I <- result$par
+            if(all(is.na(resultPar))){
+              stop(paste0("Optim failed to converge, consider reducing nderiv ", paste(resultMessage, collapse = " ")))
+            }
+            #remove NAs
+            resultPar <- resultPar[!is.na(resultPar)]
+            resultValue <- resultValue[!is.na(resultValue)]
+            #take the result with the lowest value
+            I <- resultPar[which.min(resultValue)]
             #assign
             epiModel@currentState$I <- I
             epiModel@currentState$E <- N - S - D - R - I
