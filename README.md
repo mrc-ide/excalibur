@@ -103,7 +103,7 @@ Then expanded to the time-varying *β* scenario,
 where *t*<sub>*c*, *i*</sub> ≤ *t* &lt; *t*<sub>*c*, *i* + 1</sub> means
 that *β*(*t*) = *β*<sub>*i*</sub> and *t*<sub>*c*, 0</sub> = 0.
 
-## SIRD Model
+## SEIRD Model
 
 ### Examples
 

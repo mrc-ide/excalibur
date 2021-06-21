@@ -114,7 +114,7 @@ $S(t)=S(0)\times\exp((\mathrm{sum}^n_{i=0}(\mathrm{\textit{DR}}(t_{c,i})-\mathrm
 
 where $t_{c,i} \leq t < t_{c,i+1}$ means that $\beta(t) = \beta_i$ and $t_{c,0} = 0$.
 
-## SIRD Model
+## SEIRD Model
 
 ### Examples
 
