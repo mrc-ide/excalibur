@@ -7,6 +7,8 @@
 #' @param deaths The total death count for this model, up to each of the
 #' changeTimes so far.
 #' @param nderiv Which derivative of D to assume is 0.
+#' @param plotDeriv True/False that tells the function to plot the dervivative
+#' of D determined by nderiv.
 #' @return An seirdModel of object.
 #' @examples
 #' #set up model
@@ -20,9 +22,9 @@
 #' currentState(model)
 #' @export
 setMethod("calculateCurrentState", signature("seirdModel"),
-          function(epiModel, deaths, nderiv=6){
+          function(epiModel, deaths, nderiv=6, plotDeriv = FALSE){
             epiModel <- calculateDownstreamExponentialNodes(epiModel, deaths)
-            epiModel <- estimateInfectiousNode(epiModel, deaths, nderiv)
+            epiModel <- estimateInfectiousNode(epiModel, deaths, nderiv, plotDeriv)
             return(epiModel)
           }
 )#' An S4 method to estimate current state of S, E and I for an SEIRD when provided
@@ -42,6 +44,8 @@ setMethod("calculateCurrentState", signature("seirdModel"),
 #' @param deaths The total death count for this model, up to each of the
 #' changeTimes so far.
 #' @param nderiv Which derivative to assume is 0.
+#' @param plotDeriv True/False that tells the function to plot the dervivative
+#' of D determined by nderiv.
 #' @return An object of class seirdModel with the values for S, E and I updated
 #' for the current state.
 #' @examples
@@ -60,7 +64,7 @@ setMethod("calculateCurrentState", signature("seirdModel"),
 #'
 #' @export
 setMethod("estimateInfectiousNode", signature("seirdModel"),
-          function(epiModel, deaths, nderiv){
+          function(epiModel, deaths, nderiv, plotDeriv){
             #call the SIRD method
             epiModel <- methods::selectMethod(estimateInfectiousNode, "sirdModel")(
               epiModel,
@@ -116,6 +120,17 @@ setMethod("estimateInfectiousNode", signature("seirdModel"),
                 resultPar[i] <- result$par
                 resultValue[i] <- result$value
               }
+            }
+            #plotting
+            if(plotDeriv){
+              xValues <- seq(0, N-S-D-R, length.out = 200)
+              yValues <- rep(NA, 200)
+              for(i in 1:200){
+                yValues[i] <- optimFunc(xValues[i])
+              }
+              plot(xValues, yValues, type="l", xlab="I", ylab = paste0("~", nderiv, "-th derivative of D, squared"))
+              abline(v=resultPar)
+              abline(v=startingValues, lty = 2)
             }
             if(all(is.na(resultPar))){
               stop(paste0("Optim failed to converge, consider reducing nderiv ", paste(resultMessage, collapse = " ")))

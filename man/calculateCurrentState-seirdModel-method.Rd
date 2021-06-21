@@ -4,7 +4,7 @@
 \alias{calculateCurrentState,seirdModel-method}
 \title{An S4 method to calculate current state of an object of the seirdModel class}
 \usage{
-\S4method{calculateCurrentState}{seirdModel}(epiModel, deaths, nderiv = 6)
+\S4method{calculateCurrentState}{seirdModel}(epiModel, deaths, nderiv = 6, plotDeriv = FALSE)
 }
 \arguments{
 \item{epiModel}{An SEIRD model, whose current state is to be calculated.}
@@ -13,6 +13,9 @@
 changeTimes so far.}
 
 \item{nderiv}{Which derivative of D to assume is 0.}
+
+\item{plotDeriv}{True/False that tells the function to plot the dervivative
+of D determined by nderiv.}
 }
 \value{
 An seirdModel of object.

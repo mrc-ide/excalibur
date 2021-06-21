@@ -5,7 +5,7 @@
 \title{An S4 method to estimate current state of S, E and I for an SEIRD when provided
 with a total count of deaths so far}
 \usage{
-\S4method{estimateInfectiousNode}{seirdModel}(epiModel, deaths, nderiv)
+\S4method{estimateInfectiousNode}{seirdModel}(epiModel, deaths, nderiv, plotDeriv)
 }
 \arguments{
 \item{epiModel}{The epidemic model of class SEIRD to have the current state of
@@ -15,6 +15,9 @@ S and I estimated.}
 changeTimes so far.}
 
 \item{nderiv}{Which derivative to assume is 0.}
+
+\item{plotDeriv}{True/False that tells the function to plot the dervivative
+of D determined by nderiv.}
 }
 \value{
 An object of class seirdModel with the values for S, E and I updated
