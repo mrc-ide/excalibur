@@ -47,18 +47,19 @@ epidemic models that are intended to predict future epidemic trajectories.
 ## Installation
 
 You can install the released version of excalibur from [its Github repository](https://github.com/mrc-ide/excalibur) with:
+This package require Odin and Deriv.
 
 ``` r
 devtools::install_github("mrc-ide/excalibur")
 ```
 
-## Examples
+###SIRD Model
 
-* :warning: This package is WIP so this will change
+## Examples
 
 Estimating the current state for a simple SIRD model:
 
-```{r example1}
+```{r SIRD example1}
 library(excalibur)
 ##Simulate some deaths to demonstrate calculating the current state of the model
 #Set up an SIRD model
@@ -79,7 +80,7 @@ print(simulate(model, t=time))
 
 Estimating the current state for a simple SIRD model, with time-varying Beta:
 
-```{r example2}
+```{r SIRD example2}
 library(excalibur)
 #Set up an SIRD model, with constant values of Beta that change at the times given
 model <- setSIRD(N = 100, Beta = c(5,0.1,2), Gamma = 1/3, ProbOfDeath = 0.1, 
@@ -112,3 +113,36 @@ Then expanded to the time-varying $\beta$ scenario,
 $S(t)=S(0)\times\exp((\mathrm{sum}^n_{i=0}(\mathrm{\textit{DR}}(t_{c,i})-\mathrm{\textit{DR}}(t_{c,i+1}))\times\beta_i)/(N\times(\alpha + \gamma)))$
 
 where $t_{c,i} \leq t < t_{c,i+1}$ means that $\beta(t) = \beta_i$ and $t_{c,0} = 0$.
+
+###SIRD Model
+
+## Examples
+
+Estimating the current state for a simple SEIRD model, with time-varying Beta:
+
+```{r SEIRD example}
+library(excalibur)
+#Set up an SIRD model, with constant values of Beta that change at the times given
+model <- setSEIRD(N = 100, Beta = c(5,0.1,2), Gamma = 1/3, Lambda = 1/2, ProbOfDeath = 0.1, 
+                I0 = 1, changeTimes = c(4,6))
+#Generate some results, since this is time-varying we need these at the end of
+#each of the changeTimes as well as at the current time
+time <- 10
+deaths <- simulate(model, t = c(4,6,time))$D
+##Calculate the current state of the model
+model <- calculateCurrentState(model, time, deaths, nderiv = 7)
+#print the current state
+print(currentState(model))
+#for comparison
+print(simulate(model, t=time))
+
+#if we want to check the optimization we can also plot the derivative
+model <- calculateCurrentState(model, time, deaths, nderiv = 7, plotDeriv = TRUE)
+```
+
+##Method
+This method assumes that the n-th derivative of D is 0 and solves the resulting 
+equation for I. n is determined by the argument nderiv and the derivative is 
+calculated symbolically with the package Deriv. The higher n is the closer this
+approximation gets to the real solution, however for certain set of parameters,
+increase n also flattens the derivative, making it harder to optimise for I.
