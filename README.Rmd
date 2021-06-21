@@ -53,9 +53,9 @@ This package require Odin and Deriv.
 devtools::install_github("mrc-ide/excalibur")
 ```
 
-###SIRD Model
+## SIRD Model
 
-## Examples
+### Examples
 
 Estimating the current state for a simple SIRD model:
 
@@ -97,7 +97,7 @@ print(currentState(model))
 print(simulate(model, t=time))
 ```
 
-## Method
+### Method
 Consider the SIRD model with a known number of deaths $D(t)$ a particular time $t$, where $\beta$ is the transmission parameter, $\gamma$ the rate of recovery, and $\alpha$ the rate of death (calculated from the probability of death).
 Then the number of people in the recovered population at time $t$ is, 
 
@@ -114,9 +114,9 @@ $S(t)=S(0)\times\exp((\mathrm{sum}^n_{i=0}(\mathrm{\textit{DR}}(t_{c,i})-\mathrm
 
 where $t_{c,i} \leq t < t_{c,i+1}$ means that $\beta(t) = \beta_i$ and $t_{c,0} = 0$.
 
-###SIRD Model
+## SIRD Model
 
-## Examples
+### Examples
 
 Estimating the current state for a simple SEIRD model, with time-varying Beta:
 
@@ -140,7 +140,7 @@ print(simulate(model, t=time))
 model <- calculateCurrentState(model, time, deaths, nderiv = 7, plotDeriv = TRUE)
 ```
 
-##Method
+### Method
 This method assumes that the n-th derivative of D is 0 and solves the resulting 
 equation for I. n is determined by the argument nderiv and the derivative is 
 calculated symbolically with the package Deriv. The higher n is the closer this

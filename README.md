@@ -27,9 +27,9 @@ require Odin and Deriv.
 devtools::install_github("mrc-ide/excalibur")
 ```
 
-\#\#\#SIRD Model
+## SIRD Model
 
-## Examples
+### Examples
 
 Estimating the current state for a simple SIRD model:
 
@@ -80,7 +80,7 @@ print(simulate(model, t=time))
 #> 2 10 0.01594839 1.977264 74.46863 23.53816    2
 ```
 
-## Method
+### Method
 
 Consider the SIRD model with a known number of deaths *D*(*t*) a
 particular time *t*, where *β* is the transmission parameter, *γ* the
@@ -103,9 +103,9 @@ Then expanded to the time-varying *β* scenario,
 where *t*<sub>*c*, *i*</sub> ≤ *t* &lt; *t*<sub>*c*, *i* + 1</sub> means
 that *β*(*t*) = *β*<sub>*i*</sub> and *t*<sub>*c*, 0</sub> = 0.
 
-\#\#\#SIRD Model
+## SIRD Model
 
-## Examples
+### Examples
 
 Estimating the current state for a simple SEIRD model, with time-varying
 Beta:
@@ -136,12 +136,14 @@ model <- calculateCurrentState(model, time, deaths, nderiv = 7, plotDeriv = TRUE
 
 <img src="man/figures/README-SEIRD example-1.png" width="100%" />
 
-\#\#Method This method assumes that the n-th derivative of D is 0 and
-solves the resulting equation for I. n is determined by the argument
-nderiv and the derivative is calculated symbolically with the package
-Deriv. The higher n is the closer this approximation gets to the real
-solution, however for certain set of parameters, increase n also
-flattens the derivative, making it harder to optimise for I.
+### Method
+
+This method assumes that the n-th derivative of D is 0 and solves the
+resulting equation for I. n is determined by the argument nderiv and the
+derivative is calculated symbolically with the package Deriv. The higher
+n is the closer this approximation gets to the real solution, however
+for certain set of parameters, increase n also flattens the derivative,
+making it harder to optimise for I.
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
