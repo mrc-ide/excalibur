@@ -44,3 +44,28 @@ test_that("calculateDownstreamNodes - Compare to known results", {
   )
   expect_equal(model@currentState$R, 10 * 1/2 / (-log(1-0.1)))
 })
+
+test_that("estimate - Compare to known results", {
+  model <- setSEIRD(N = 1000, Beta = c(1,5,6), Gamma = 1/5, Lambda = 1/3,
+                    ProbOfDeath = 0.1,
+                   I0 = 1, changeTimes = c(2,7))
+
+  #simulate a result
+  time <- 10
+  results <- simulate(model, t = time)
+  infected <- results$I
+  exposed <- results$E
+  susceptible <- results$S
+  deaths <- simulate(model, t = c(2,7,time))$D
+  #estimate
+  model <- calculateCurrentState(model, t=time, deaths=deaths, nderiv = 7)
+  estExposed <- currentState(model)$E
+  estInfected <- currentState(model)$I
+  estSusceptible <- currentState(model)$S
+  #compare
+  accuracy <- 0.01 #allow leway due to round etc.
+  expect_true(abs(estInfected - infected)/infected < accuracy*10)
+  expect_true(abs(estExposed - exposed)/exposed < accuracy*10)
+  expect_true(abs(estSusceptible - susceptible)/susceptible < accuracy)
+})
+

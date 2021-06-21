@@ -1,3 +1,30 @@
+#' An S4 method to calculate current state of an object of the sirdModel class
+#'
+#' Calls two generic functions to calculate the downstream nodes and estimate
+#' the infectious population in turn.
+#'
+#' @param epiModel An sird model, whose current state is to be calculated.
+#' @param deaths The total death count for this model, up to each of the
+#' changeTimes so far.
+#' @return An sirdModel object.
+#' @examples
+#' #set up model
+#' model <- setSIRD(N = 100, Beta = 1, Gamma = 1/5, ProbOfDeath = 0.5, I0 = 1)
+#' #Set the deaths
+#' deaths <- 20
+#' time <- 10
+#' #calculate current state
+#' model <- calculateCurrentState(model, time, deaths)
+#' #return the current state
+#' currentState(model)
+#' @export
+setMethod("calculateCurrentState", signature("sirdModel"),
+          function(epiModel, deaths){
+            epiModel <- calculateDownstreamExponentialNodes(epiModel, deaths)
+            epiModel <- estimateInfectiousNode(epiModel, deaths)
+            return(epiModel)
+          }
+)
 #' An S4 method to calculate current state of R and D for an SIRD/SEIRD when
 #' provided with a count of the total number of deaths.
 #'

@@ -10,3 +10,9 @@ riskToRate <- function(risk){
   rate <- -log(1-risk)
   return(rate)
 }
+#' Internal function to return the index of a position
+#' @noRd
+whichIndex <- function(time, changeTimes){
+  index <- max(which(time >= changeTimes))
+  return(index)
+}

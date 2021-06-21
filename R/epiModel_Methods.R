@@ -97,6 +97,12 @@ setMethod("calculateCurrentState", signature("epiModel"),
 #' @export
 setMethod("currentState", signature("epiModel"),
           function(epiModel){
-            return(as.data.frame(epiModel@currentState))
+            listState  <- epiModel@currentState
+            for(i in 1:length(listState)){
+              if(is.null(listState[[i]])){
+                listState[[i]] <- NA
+              }
+            }
+            return(as.data.frame(listState))
           }
 )
