@@ -20,8 +20,12 @@ test_that("Check print current state", {
   expect_true(is.data.frame(currentState(model)))
   expect_equal(length(currentState(model)), 0)
   #assign a list to slot
+  model@currentState$t <- 1
   model@currentState$S <- 100
-  expect_equal(currentState(model), data.frame(S=100))
+  model@currentState$I <- 100
+  model@currentState$R <- 100
+  model@currentState$D <- 100
+  expect_equal(currentState(model), data.frame(t=1, S=100, I = 100, R = 100, D=100))
 })
 
 test_that("Simulate from current time",{
