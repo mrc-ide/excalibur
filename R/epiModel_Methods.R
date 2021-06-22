@@ -37,6 +37,8 @@ setMethod("simulate", "epiModel",
             else{
               #merge parameters and initial state into one list
               userValues <- append(object@parameters, object@initialState)
+              #remove N
+              userValues$N <- NULL
               #set our start time
               startTime <- 0
             }

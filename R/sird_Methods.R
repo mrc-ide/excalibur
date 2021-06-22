@@ -126,7 +126,7 @@ setMethod("estimateInfectiousNode", signature("sirdModel"),
             I0 <- epiModel@initialState$I0
             R0 <- epiModel@initialState$R0
             D0 <- epiModel@initialState$D0
-            N <- Reduce('+', epiModel@initialState)
+            N <- epiModel@initialState$N
             #more errors checks
             if(length(deaths) != length(Beta) | length(deaths) != length(changeTimes)){
               stop("'deaths' should be a cumulative time series counting the

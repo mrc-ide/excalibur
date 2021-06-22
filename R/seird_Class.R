@@ -92,7 +92,8 @@ setSEIRD <- function(N, Beta, Lambda, Gamma, ProbOfDeath, I0, changeTimes = NULL
     E0 = 0,
     I0 = I0,
     R0 = 0,
-    D0 = 0
+    D0 = 0,
+    N = N
   )
   #setup currentState slot
   modelObject@currentState <-list(

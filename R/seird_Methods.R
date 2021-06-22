@@ -81,7 +81,7 @@ setMethod("estimateInfectiousNode", signature("seirdModel"),
             S <- epiModel@currentState$S
             D <- epiModel@currentState$D
             R <- epiModel@currentState$R
-            N <- Reduce("+", epiModel@initialState)
+            N <- epiModel@initialState$N
             #set up functions
             Sf <- function(t){S}
             Df <- function(t){D}
@@ -176,6 +176,7 @@ setMethod("calculateNthDeriv", signature("seirdModel"),
             code <- stringr::str_replace_all(code, "If\\(t\\)", "I")
             code <- stringr::str_replace_all(code, "Ef\\(t\\)", "(N - epiModel@currentState$S - epiModel@currentState$D - epiModel@currentState$R - I)")
             code <- stringr::str_replace_all(code, "Sf\\(t\\)", "epiModel@currentState$S")
+            code <- stringr::str_replace_all(code, "N", "epiModel@initialState$N")
             #replace all parameters etc with calls to the relevant slot
             for(parameter in c("Lambda","Alpha","Gamma")){
               code <- stringr::str_replace_all(code, parameter,
@@ -184,14 +185,12 @@ setMethod("calculateNthDeriv", signature("seirdModel"),
             #add a line of code to calculate N and Beta
             if(length(code) == 1){
               code <- c("{",
-                        "N <- Reduce('+', epiModel@initialState)",
                         "Beta <- epiModel@parameters$Betas[whichIndex(epiModel@currentState$t, epiModel@parameters$changeTimes)]",
                         code,
                         "}")
             }
             else{
               code <- c(code[1],
-                        "N <- Reduce('+', epiModel@initialState)",
                         "Beta <- epiModel@parameters$Betas[whichIndex(epiModel@currentState$t, epiModel@parameters$changeTimes)]",
                         code[2:length(code)])
             }
