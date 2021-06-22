@@ -69,3 +69,55 @@ test_that("estimate - Compare to known results", {
   expect_true(abs(estSusceptible - susceptible)/susceptible < accuracy)
 })
 
+test_that("calculateNthDeriv - Compare to known results", {
+  N <- 1000
+  Beta <- 1
+  Gamma <- 1/5
+  Lambda <- 1/3
+  Alpha <- 1/10
+  ProbOfDeath <- 1-exp(-Alpha)
+  model <- setSEIRD(N = N, Beta = Beta, Gamma = Gamma, Lambda = Lambda,
+                    ProbOfDeath = ProbOfDeath,
+                    I0 = 1)
+  model@currentState$t <- 5
+  #calculate the 2nd derivative
+  secondD <- excalibur::calculateNthDeriv(model, nderiv=2)
+  #set S, D and R so that E + I = 15
+  E <- 10
+  I <- 5
+  model@currentState$S <- N - E - I - 300
+  model@currentState$D <- 50
+  model@currentState$R <- 250
+  expect_equal(secondD(model, I), Lambda*Alpha*E - Alpha*(Alpha+Gamma)*I)
+  #set S, D and R so that E + I = 50
+  E <- 20
+  I <- 30
+  model@currentState$S <- N - E - I - 300
+  model@currentState$D <- 50
+  model@currentState$R <- 250
+  expect_equal(secondD(model, I), Lambda*Alpha*E - Alpha*(Alpha+Gamma)*I)
+
+  #now third deriv
+  thirdD <- excalibur::calculateNthDeriv(model, nderiv=3)
+  #set S, D and R and E + I
+  E <- 10
+  I <- 5
+  model@currentState$S <- N - E - I - 300
+  model@currentState$D <- 50
+  model@currentState$R <- 250
+  expect_equal(thirdD(model, I), Lambda*Alpha*Beta*model@currentState$S*I/N -
+                 Alpha*Lambda^2*E -
+                 Alpha*Lambda*(Alpha+Gamma)*E +
+                 Alpha*(Alpha + Gamma)^2*I)
+  #set S, D and R so that E + I = 50
+  E <- 20
+  I <- 30
+  model@currentState$S <- N - E - I - 300
+  model@currentState$D <- 50
+  model@currentState$R <- 250
+  expect_equal(thirdD(model, I), Lambda*Alpha*Beta*model@currentState$S*I/N -
+                 Alpha*Lambda^2*E -
+                 Alpha*Lambda*(Alpha+Gamma)*E +
+                 Alpha*(Alpha + Gamma)^2*I)
+
+})

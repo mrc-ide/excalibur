@@ -27,7 +27,8 @@ setMethod("calculateCurrentState", signature("seirdModel"),
             epiModel <- estimateInfectiousNode(epiModel, deaths, nderiv, plotDeriv)
             return(epiModel)
           }
-)#' An S4 method to estimate current state of S, E and I for an SEIRD when provided
+)
+#' An S4 method to estimate current state of S, E and I for an SEIRD when provided
 #' with a total count of deaths so far
 #'
 #' Please note that this method does not guarantee that this state would be
@@ -144,5 +145,58 @@ setMethod("estimateInfectiousNode", signature("seirdModel"),
             epiModel@currentState$I <- I
             epiModel@currentState$E <- N - S - D - R - I
             return(epiModel)
+          }
+)
+
+#' An s4 method for deriving the n-th derivative of D(t) for the SEIRD model.
+#' @noRd
+setMethod("calculateNthDeriv", signature("seirdModel"),
+          function(epiModel, nderiv){
+            Sf <- function(t){S}
+            Df <- function(t){D}
+            Rf <- function(t){R}
+            If <- function(t){I}
+            Ef <- function(t){E}
+            #value is a placeholder to be filled with the value of I
+            #setup derivatives
+            drule <- Deriv::drule #a copy of the derivative rules from Deriv
+            drule[["Sf"]] <-alist(t=-Beta*If(t)*Sf(t)/N)
+            drule[["Ef"]] <-alist(t=Beta*If(t)*Sf(t)/N - Lambda*Ef(t))
+            drule[["If"]] <-alist(t=Lambda*Ef(t) - (Alpha + Gamma)*If(t))
+            drule[["Df"]] <-alist(t=Alpha*If(t))
+            drule[["Rf"]] <-alist(t=Gamma*If(t))
+            #use Deriv to calculate nth derivative
+            nthDf <- Deriv::Deriv(Df, "t", nderiv = nderiv, drule=drule)
+            #must perform "function surgery" to make this usable
+            #set arguments
+            formals(nthDf) <- alist(epiModel = , I = )
+            #extract function code
+            code <- deparse(body(nthDf))
+            #replacing functions with values
+            code <- stringr::str_replace_all(code, "If\\(t\\)", "I")
+            code <- stringr::str_replace_all(code, "Ef\\(t\\)", "(N - epiModel@currentState$S - epiModel@currentState$D - epiModel@currentState$R - I)")
+            code <- stringr::str_replace_all(code, "Sf\\(t\\)", "epiModel@currentState$S")
+            #replace all parameters etc with calls to the relevant slot
+            for(parameter in c("Lambda","Alpha","Gamma")){
+              code <- stringr::str_replace_all(code, parameter,
+                                      paste0("epiModel@parameters$",parameter))
+            }
+            #add a line of code to calculate N and Beta
+            if(length(code) == 1){
+              code <- c("{",
+                        "N <- Reduce('+', epiModel@initialState)",
+                        "Beta <- epiModel@parameters$Betas[whichIndex(epiModel@currentState$t, epiModel@parameters$changeTimes)]",
+                        code,
+                        "}")
+            }
+            else{
+              code <- c(code[1],
+                        "N <- Reduce('+', epiModel@initialState)",
+                        "Beta <- epiModel@parameters$Betas[whichIndex(epiModel@currentState$t, epiModel@parameters$changeTimes)]",
+                        code[2:length(code)])
+            }
+            #add code back to body
+            body(nthDf) <- parse(text=code)
+            return(nthDf)
           }
 )
