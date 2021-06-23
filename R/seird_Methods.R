@@ -72,48 +72,34 @@ setMethod("estimateInfectiousNode", signature("seirdModel"),
               deaths
             )
             #get parameters/current state
-            changeTimes <- epiModel@parameters$changeTimes
-            time <- epiModel@currentState$t
-            Beta <- epiModel@parameters$Betas[whichIndex(time, changeTimes)]
-            Gamma <- epiModel@parameters$Gamma
-            Alpha <- epiModel@parameters$Alpha
-            Lambda <- epiModel@parameters$Lambda
             S <- epiModel@currentState$S
             D <- epiModel@currentState$D
             R <- epiModel@currentState$R
             N <- epiModel@initialState$N
-            #set up functions
-            Sf <- function(t){S}
-            Df <- function(t){D}
-            Rf <- function(t){R}
-            If <- function(t, value){value}
-            Ef <- function(t, value){N - S - D - R - value}
-            #value is a placeholder to be filled with the value of I
-            #setup derivatives
-            drule <- Deriv::drule #a copy of the derivative rules from Deriv
-            drule[["Sf"]] <-alist(t=-Beta*If(t,value)*Sf(t)/N)
-            drule[["Ef"]] <-alist(t=Beta*If(t,value)*Sf(t)/N - Lambda*Ef(t,value))
-            drule[["If"]] <-alist(t=Lambda*Ef(t,value) - (Alpha + Gamma)*If(t,value))
-            drule[["Df"]] <-alist(t=Alpha*If(t,value))
-            drule[["Rf"]] <-alist(t=Gamma*If(t,value))
-            #use Deriv to calculate nth derivative
-            nthDf <- Deriv::Deriv(Df, "t", nderiv = nderiv, drule=drule)
+            #get the desired derivative
+            deriv <- getNthDeriv(epiModel, nderiv)
+            #if its not there
+            if(identical(deriv,NA)){
+              #calculate the desired derivative
+              message(paste0("The ", nderiv, "-th Derivative has not been
+                             included and will now be calculated."))
+              deriv <- calculateNthDeriv(epiModel, nderiv)
+            }
             #calculate the scaling factor
-            value <- N - S - D - R
-            scalingFactor <- abs(nthDf(time))
-            value <- 0
-            scalingFactor <- (scalingFactor + abs(nthDf(time)))/2
+            I <- N - S - D - R
+            scalingFactor <- abs(deriv(epiModel, I))
+            I <- 0
+            scalingFactor <- (scalingFactor + abs(deriv(epiModel, I)))/2
 
             #set up optimization function
             optimFunc <- function(I){
-              assign("value", I, pos = environment(nthDf))
-              value <- (nthDf(time)/scalingFactor)^2
+              return((deriv(epiModel, I)/scalingFactor)^2)
             }
             #optimise
             resultMessage <- rep(NA, 3)
             resultPar <- rep(NA, 3)
             resultValue <- rep(NA, 3)
-            startingValues <- c(0, (N-S-D-R)/2, N-S-D-R)
+            startingValues <- seq(0, N-S-D-R, length.out=3)
             for(i in 1:3){
               result <- stats::optim(startingValues[i], optimFunc, method = "L-BFGS-B", lower = 0, upper = N-S-D-R)
               resultMessage[i] <- result$message
