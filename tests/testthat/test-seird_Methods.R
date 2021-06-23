@@ -133,17 +133,22 @@ test_that("getNthDeriv - Compare to known calculate", {
                     ProbOfDeath = ProbOfDeath,
                     I0 = 1)
   model@currentState$t <- 5
+  E <- 10
+  I <- 5
+  model@currentState$S <- N - E - I - 300
+  model@currentState$D <- 50
+  model@currentState$R <- 250
   #calculate the 3rd derivative
   thirdD <- excalibur:::calculateNthDeriv(model, nderiv=3)
   #get 3rd derivative
   thirdDstored <- excalibur:::getNthDeriv(model, nderiv=3)
-  expect_equal(body(thirdD), body(thirdDstored))
+  expect_equal(thirdD(model, I), thirdDstored(model, I))
 
   #calculate the 6th derivative
   sixD <- excalibur:::calculateNthDeriv(model, nderiv=6)
   #get 6th derivative
   sixDstored <- excalibur:::getNthDeriv(model, nderiv=6)
-  expect_equal(body(sixD), body(sixDstored))
+  expect_equal(sixD(model, I), sixDstored(model, I))
 
   #check that trying to get a non-existent nderiv returns NA
   expect_true(is.na(excalibur:::getNthDeriv(model, nderiv=20)))
