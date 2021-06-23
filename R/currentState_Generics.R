@@ -59,3 +59,8 @@ setGeneric("calculateNthDeriv", function(epiModel, nderiv){
   }
   standardGeneric("calculateNthDeriv")
 })
+#' A function to call a pre-made function that calculates n-th derivative of D for the epiModel
+#' @noRd
+setGeneric("getNthDeriv", function(epiModel, nderiv){
+  standardGeneric("getNthDeriv")
+})
