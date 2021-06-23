@@ -76,6 +76,555 @@ Beta <- epiModel@parameters$Betas[whichIndex(epiModel@currentState$t, epiModel@p
         .e6 * .e34)))
 }
 }
+else if(nderiv==7){
+deriv <- function (epiModel, I) 
+{
+Beta <- epiModel@parameters$Betas[whichIndex(epiModel@currentState$t, epiModel@parameters$changeTimes)]
+    .e1 <- I
+    .e3 <- epiModel@parameters$Lambda * (epiModel@initialState$N - epiModel@currentState$S - epiModel@currentState$D - epiModel@currentState$R - I)
+    .e4 <- Beta * .e1
+    .e5 <- epiModel@currentState$S
+    .e6 <- epiModel@parameters$Alpha + epiModel@parameters$Gamma
+    .e7 <- .e4/epiModel@initialState$N
+    .e12 <- epiModel@parameters$Lambda * (.e4 * .e5/epiModel@initialState$N - .e3)
+    .e13 <- .e3 - .e6 * .e1
+    .e14 <- (epiModel@parameters$Alpha + .e7 + epiModel@parameters$Gamma) * .e1
+    .e15 <- .e3 - .e14
+    .e18 <- 2 * .e7 + epiModel@parameters$Alpha + epiModel@parameters$Gamma
+    .e23 <- epiModel@parameters$Lambda * (Beta * .e15 * .e5/epiModel@initialState$N - .e12)
+    .e24 <- .e18 * .e13
+    .e27 <- .e4 * .e15/epiModel@initialState$N
+    .e28 <- .e12 - .e6 * .e13
+    .e29 <- .e18 * .e28
+    .e35 <- epiModel@parameters$Lambda * (Beta * (.e12 - (.e24 + .e27)) * .e5/epiModel@initialState$N - 
+        .e23)
+    .e36 <- 2 * .e13
+    .e40 <- 3 * .e24 + .e27
+    .e41 <- 3 * .e12
+    .e46 <- epiModel@parameters$Lambda * (Beta * (.e23 - (.e29 + Beta * ((2 * .e12 - 
+        (2 * .e24 + .e27)) * .e1 + (.e36 + .e3 - .e14) * .e13)/epiModel@initialState$N)) * 
+        .e5/epiModel@initialState$N - .e35)
+    .e47 <- .e23 - .e6 * .e28
+    epiModel@parameters$Alpha * (epiModel@parameters$Lambda * (Beta * (.e35 - (.e18 * .e47 + Beta * ((2 * 
+        .e28 + .e41 - .e40) * .e13 + (3 * .e23 - (.e29 + 2 * 
+        (.e29 + 2 * (Beta * .e13^2/epiModel@initialState$N)) + Beta * ((.e36 + 2 * 
+        .e3 - 2 * .e14) * .e13 + (.e41 - .e40) * .e1)/epiModel@initialState$N)) * .e1 + 
+        (4 * .e13 + .e3 - .e14) * .e28)/epiModel@initialState$N)) * .e5/epiModel@initialState$N - .e46) - 
+        .e6 * (.e46 - .e6 * (.e35 - .e6 * .e47)))
+}
+}
+else if(nderiv==8){
+deriv <- function (epiModel, I) 
+{
+Beta <- epiModel@parameters$Betas[whichIndex(epiModel@currentState$t, epiModel@parameters$changeTimes)]
+    .e1 <- I
+    .e3 <- epiModel@parameters$Lambda * (epiModel@initialState$N - epiModel@currentState$S - epiModel@currentState$D - epiModel@currentState$R - I)
+    .e4 <- Beta * .e1
+    .e5 <- epiModel@parameters$Alpha + epiModel@parameters$Gamma
+    .e6 <- epiModel@currentState$S
+    .e7 <- .e4/epiModel@initialState$N
+    .e9 <- .e3 - .e5 * .e1
+    .e13 <- epiModel@parameters$Lambda * (.e4 * .e6/epiModel@initialState$N - .e3)
+    .e14 <- (epiModel@parameters$Alpha + .e7 + epiModel@parameters$Gamma) * .e1
+    .e15 <- .e3 - .e14
+    .e18 <- 2 * .e7 + epiModel@parameters$Alpha + epiModel@parameters$Gamma
+    .e20 <- .e13 - .e5 * .e9
+    .e25 <- epiModel@parameters$Lambda * (Beta * .e15 * .e6/epiModel@initialState$N - .e13)
+    .e26 <- .e18 * .e9
+    .e28 <- .e4 * .e15/epiModel@initialState$N
+    .e29 <- .e18 * .e20
+    .e35 <- epiModel@parameters$Lambda * (Beta * (.e13 - (.e26 + .e28)) * .e6/epiModel@initialState$N - 
+        .e25)
+    .e37 <- 2 * .e9
+    .e38 <- .e25 - .e5 * .e20
+    .e39 <- .e18 * .e38
+    .e40 <- .e29 + 2 * (Beta * .e9^2/epiModel@initialState$N)
+    .e49 <- epiModel@parameters$Lambda * (Beta * (.e25 - (.e29 + Beta * ((2 * .e13 - 
+        (2 * .e26 + .e28)) * .e1 + (.e37 + .e3 - .e14) * .e9)/epiModel@initialState$N)) * 
+        .e6/epiModel@initialState$N - .e35)
+    .e50 <- 3 * .e14
+    .e51 <- 3 * .e3
+    .e53 <- 4 * .e26 + .e28
+    .e54 <- 4 * .e13
+    .e57 <- .e29 + 5 * .e40 + Beta * ((.e37 + .e51 - .e50) * 
+        .e9 + (.e54 - .e53) * .e1)/epiModel@initialState$N
+    .e59 <- 6 * .e25
+    .e64 <- epiModel@parameters$Lambda * (Beta * (.e35 - (.e39 + Beta * ((2 * .e20 + 
+        3 * .e13 - (3 * .e26 + .e28)) * .e9 + (3 * .e25 - (.e29 + 
+        2 * .e40 + Beta * ((.e37 + 2 * .e3 - 2 * .e14) * .e9 + 
+        (3 * .e13 - (3 * .e26 + .e28)) * .e1)/epiModel@initialState$N)) * .e1 + (4 * 
+        .e9 + .e3 - .e14) * .e20)/epiModel@initialState$N)) * .e6/epiModel@initialState$N - .e49)
+    .e65 <- .e35 - .e5 * .e38
+    epiModel@parameters$Alpha * (epiModel@parameters$Lambda * (Beta * (.e49 - (.e18 * .e65 + Beta * ((2 * 
+        .e38 + .e59 - .e57) * .e9 + (4 * .e35 - (2 * (.e39 + 
+        6 * (Beta * .e20 * .e9/epiModel@initialState$N)) + 2 * .e39 + Beta * ((.e51 + 
+        8 * .e9 - .e50) * .e20 + (4 * .e20 + 8 * .e13 - (2 * 
+        .e28 + 8 * .e26)) * .e9 + (.e59 - .e57) * .e1)/epiModel@initialState$N)) * 
+        .e1 + (.e54 + 6 * .e20 - .e53) * .e20 + (6 * .e9 + .e3 - 
+        .e14) * .e38)/epiModel@initialState$N)) * .e6/epiModel@initialState$N - .e64) - .e5 * (.e64 - .e5 * 
+        (.e49 - .e5 * .e65)))
+}
+}
+else if(nderiv==9){
+deriv <- function (epiModel, I) 
+{
+Beta <- epiModel@parameters$Betas[whichIndex(epiModel@currentState$t, epiModel@parameters$changeTimes)]
+    .e1 <- I
+    .e3 <- epiModel@parameters$Lambda * (epiModel@initialState$N - epiModel@currentState$S - epiModel@currentState$D - epiModel@currentState$R - I)
+    .e4 <- Beta * .e1
+    .e5 <- epiModel@parameters$Alpha + epiModel@parameters$Gamma
+    .e6 <- epiModel@currentState$S
+    .e7 <- .e4/epiModel@initialState$N
+    .e9 <- .e3 - .e5 * .e1
+    .e13 <- epiModel@parameters$Lambda * (.e4 * .e6/epiModel@initialState$N - .e3)
+    .e14 <- (epiModel@parameters$Alpha + .e7 + epiModel@parameters$Gamma) * .e1
+    .e15 <- .e3 - .e14
+    .e18 <- 2 * .e7 + epiModel@parameters$Alpha + epiModel@parameters$Gamma
+    .e20 <- .e13 - .e5 * .e9
+    .e25 <- epiModel@parameters$Lambda * (Beta * .e15 * .e6/epiModel@initialState$N - .e13)
+    .e26 <- .e18 * .e9
+    .e28 <- .e4 * .e15/epiModel@initialState$N
+    .e29 <- .e18 * .e20
+    .e31 <- .e25 - .e5 * .e20
+    .e37 <- epiModel@parameters$Lambda * (Beta * (.e13 - (.e26 + .e28)) * .e6/epiModel@initialState$N - 
+        .e25)
+    .e38 <- 2 * .e9
+    .e39 <- .e18 * .e31
+    .e40 <- .e29 + 2 * (Beta * .e9^2/epiModel@initialState$N)
+    .e47 <- epiModel@parameters$Lambda * (Beta * (.e25 - (.e29 + Beta * ((2 * .e13 - 
+        (2 * .e26 + .e28)) * .e1 + (.e38 + .e3 - .e14) * .e9)/epiModel@initialState$N)) * 
+        .e6/epiModel@initialState$N - .e37)
+    .e48 <- .e37 - .e5 * .e31
+    .e52 <- 3 * .e14
+    .e53 <- 3 * .e3
+    .e55 <- 4 * .e26 + .e28
+    .e56 <- 4 * .e13
+    .e57 <- .e18 * .e48
+    .e58 <- (.e38 + .e53 - .e52) * .e9
+    .e59 <- (.e56 - .e55) * .e1
+    .e60 <- .e39 + 6 * (Beta * .e20 * .e9/epiModel@initialState$N)
+    .e64 <- 4 * .e14
+    .e65 <- 4 * .e3
+    .e67 <- 5 * .e26 + .e28
+    .e68 <- 5 * .e13
+    .e70 <- 6 * .e20
+    .e75 <- epiModel@parameters$Lambda * (Beta * (.e37 - (.e39 + Beta * ((2 * .e20 + 
+        3 * .e13 - (3 * .e26 + .e28)) * .e9 + (3 * .e25 - (.e29 + 
+        2 * .e40 + Beta * ((.e38 + 2 * .e3 - 2 * .e14) * .e9 + 
+        (3 * .e13 - (3 * .e26 + .e28)) * .e1)/epiModel@initialState$N)) * .e1 + (4 * 
+        .e9 + .e3 - .e14) * .e20)/epiModel@initialState$N)) * .e6/epiModel@initialState$N - .e47)
+    .e77 <- .e29 + 9 * .e40 + Beta * ((.e38 + .e65 - .e64) * 
+        .e9 + (.e68 - .e67) * .e1)/epiModel@initialState$N
+    .e78 <- 10 * .e25
+    .e80 <- 15 * .e26 + 3 * .e28
+    .e81 <- 15 * .e13
+    .e82 <- 8 * .e9
+    .e88 <- .e31 * .e9
+    .e89 <- 10 * .e37
+    .e92 <- 3 * .e39 + 7 * .e60 + Beta * ((.e78 - .e77) * .e1 + 
+        (12 * .e9 + 6 * .e3 - 6 * .e14) * .e20 + (.e81 + .e70 - 
+        .e80) * .e9)/epiModel@initialState$N
+    .e97 <- epiModel@parameters$Lambda * (Beta * (.e47 - (.e57 + Beta * ((2 * .e31 + 
+        6 * .e25 - (.e29 + 5 * .e40 + Beta * (.e58 + .e59)/epiModel@initialState$N)) * 
+        .e9 + (4 * .e37 - (2 * .e60 + 2 * .e39 + Beta * ((.e53 + 
+        .e82 - .e52) * .e20 + (4 * .e20 + 8 * .e13 - (2 * .e28 + 
+        8 * .e26)) * .e9 + (6 * .e25 - (.e29 + 5 * .e40 + Beta * 
+        (.e58 + .e59)/epiModel@initialState$N)) * .e1)/epiModel@initialState$N)) * .e1 + (.e56 + .e70 - .e55) * 
+        .e20 + (6 * .e9 + .e3 - .e14) * .e31)/epiModel@initialState$N)) * .e6/epiModel@initialState$N - .e75)
+    .e98 <- .e47 - .e5 * .e48
+    epiModel@parameters$Alpha * (epiModel@parameters$Lambda * (Beta * (.e75 - (.e18 * .e98 + Beta * ((.e89 + 
+        2 * .e48 - .e92) * .e9 + (.e78 + 8 * .e31 - .e77) * .e20 + 
+        (12 * .e20 + .e68 - .e67) * .e31 + (5 * .e47 - (.e57 + 
+        2 * (.e57 + 2 * (Beta * .e31 * .e9/epiModel@initialState$N)) + 2 * (.e57 + 
+        Beta * (2 * .e88 + 6 * (.e88 + .e20^2))/epiModel@initialState$N) + Beta * ((.e89 - 
+        .e92) * .e1 + (14 * .e9 + .e65 - .e64) * .e31 + (.e81 + 
+        18 * .e20 - .e80) * .e20 + (20 * .e25 + 6 * .e31 - (18 * 
+        .e40 + 2 * .e29 + Beta * (2 * .e58 + 2 * .e59 + 2 * (.e15 * 
+        .e9 + .e1 * (.e13 - .e26)))/epiModel@initialState$N)) * .e9)/epiModel@initialState$N)) * .e1 + (.e82 + 
+        .e3 - .e14) * .e48)/epiModel@initialState$N)) * .e6/epiModel@initialState$N - .e97) - .e5 * (.e97 - 
+        .e5 * (.e75 - .e5 * .e98)))
+}
+}
+else if(nderiv==10){
+deriv <- function (epiModel, I) 
+{
+Beta <- epiModel@parameters$Betas[whichIndex(epiModel@currentState$t, epiModel@parameters$changeTimes)]
+    .e1 <- I
+    .e3 <- epiModel@parameters$Lambda * (epiModel@initialState$N - epiModel@currentState$S - epiModel@currentState$D - epiModel@currentState$R - I)
+    .e4 <- Beta * .e1
+    .e5 <- epiModel@parameters$Alpha + epiModel@parameters$Gamma
+    .e6 <- epiModel@currentState$S
+    .e7 <- .e4/epiModel@initialState$N
+    .e9 <- .e3 - .e5 * .e1
+    .e13 <- epiModel@parameters$Lambda * (.e4 * .e6/epiModel@initialState$N - .e3)
+    .e14 <- (epiModel@parameters$Alpha + .e7 + epiModel@parameters$Gamma) * .e1
+    .e15 <- .e3 - .e14
+    .e18 <- 2 * .e7 + epiModel@parameters$Alpha + epiModel@parameters$Gamma
+    .e20 <- .e13 - .e5 * .e9
+    .e25 <- epiModel@parameters$Lambda * (Beta * .e15 * .e6/epiModel@initialState$N - .e13)
+    .e26 <- .e18 * .e9
+    .e28 <- .e4 * .e15/epiModel@initialState$N
+    .e30 <- .e25 - .e5 * .e20
+    .e31 <- .e18 * .e20
+    .e37 <- epiModel@parameters$Lambda * (Beta * (.e13 - (.e26 + .e28)) * .e6/epiModel@initialState$N - 
+        .e25)
+    .e38 <- 2 * .e9
+    .e40 <- .e37 - .e5 * .e30
+    .e41 <- .e31 + 2 * (Beta * .e9^2/epiModel@initialState$N)
+    .e42 <- .e18 * .e30
+    .e48 <- epiModel@parameters$Lambda * (Beta * (.e25 - (.e31 + Beta * ((2 * .e13 - 
+        (2 * .e26 + .e28)) * .e1 + (.e38 + .e3 - .e14) * .e9)/epiModel@initialState$N)) * 
+        .e6/epiModel@initialState$N - .e37)
+    .e49 <- 3 * .e26
+    .e50 <- 3 * .e13
+    .e52 <- 3 * .e14
+    .e53 <- 3 * .e3
+    .e55 <- 4 * .e26 + .e28
+    .e56 <- 4 * .e13
+    .e57 <- .e18 * .e40
+    .e59 <- .e38 + .e53 - .e52
+    .e60 <- .e56 - .e55
+    .e63 <- Beta * .e20 * .e9/epiModel@initialState$N
+    .e64 <- .e42 + 6 * .e63
+    .e65 <- 4 * .e14
+    .e66 <- 4 * .e3
+    .e68 <- 5 * .e26 + .e28
+    .e69 <- 5 * .e13
+    .e70 <- .e59 * .e9
+    .e71 <- .e60 * .e1
+    .e73 <- 2 * .e20 + .e50
+    .e76 <- 6 * .e20
+    .e81 <- epiModel@parameters$Lambda * (Beta * (.e37 - (.e42 + Beta * ((.e73 - 
+        (.e49 + .e28)) * .e9 + (3 * .e25 - (.e31 + 2 * .e41 + 
+        Beta * ((.e38 + 2 * .e3 - 2 * .e14) * .e9 + (.e50 - (.e49 + 
+            .e28)) * .e1)/epiModel@initialState$N)) * .e1 + (4 * .e9 + .e3 - .e14) * 
+        .e20)/epiModel@initialState$N)) * .e6/epiModel@initialState$N - .e48)
+    .e82 <- .e48 - .e5 * .e40
+    .e88 <- .e31 + 9 * .e41 + Beta * ((.e38 + .e66 - .e65) * 
+        .e9 + (.e69 - .e68) * .e1)/epiModel@initialState$N
+    .e89 <- 10 * .e25
+    .e91 <- 15 * .e26 + 3 * .e28
+    .e92 <- 15 * .e13
+    .e93 <- .e13 - .e26
+    .e95 <- .e15 * .e9 + .e1 * .e93
+    .e96 <- 8 * .e9
+    .e97 <- (.e89 - .e88) * .e1
+    .e98 <- (12 * .e9 + 6 * .e3 - 6 * .e14) * .e20
+    .e99 <- (.e92 + .e76 - .e91) * .e9
+    .e100 <- .e18 * .e82
+    .e101 <- .e40 * .e9
+    .e102 <- 10 * .e14
+    .e103 <- 10 * .e3
+    .e104 <- 5 * .e14
+    .e105 <- 5 * .e3
+    .e107 <- 6 * .e26 + .e28
+    .e108 <- 6 * .e13
+    .e111 <- .e57 + 2 * (Beta * .e30 * .e9/epiModel@initialState$N)
+    .e113 <- .e57 + Beta * (2 * (.e30 * .e9) + 6 * (.e30 * .e9 + 
+        .e20^2))/epiModel@initialState$N
+    .e115 <- .e31 + 14 * .e41 + Beta * ((.e38 + .e105 - .e104) * 
+        .e9 + (.e108 - .e107) * .e1)/epiModel@initialState$N
+    .e116 <- 10 * .e37
+    .e117 <- 15 * .e25
+    .e119 <- 24 * .e26 + 4 * .e28
+    .e120 <- 24 * .e13
+    .e123 <- 3 * .e42 + 7 * .e64 + Beta * (.e97 + .e98 + .e99)/epiModel@initialState$N
+    .e128 <- epiModel@parameters$Lambda * (Beta * (.e48 - (.e57 + Beta * ((2 * .e30 + 
+        6 * .e25 - (.e31 + 5 * .e41 + Beta * (.e70 + .e71)/epiModel@initialState$N)) * 
+        .e9 + (4 * .e37 - (2 * .e64 + 2 * .e42 + Beta * ((.e53 + 
+        .e96 - .e52) * .e20 + (4 * .e20 + 8 * .e13 - (2 * .e28 + 
+        8 * .e26)) * .e9 + (6 * .e25 - (.e31 + 5 * .e41 + Beta * 
+        (.e70 + .e71)/epiModel@initialState$N)) * .e1)/epiModel@initialState$N)) * .e1 + (.e56 + .e76 - .e55) * 
+        .e20 + (6 * .e9 + .e3 - .e14) * .e30)/epiModel@initialState$N)) * .e6/epiModel@initialState$N - .e81)
+    .e135 <- .e30 * .e20
+    .e138 <- 16 * .e64 + 4 * .e42 + Beta * ((.e103 + 16 * .e9 - 
+        .e102) * .e20 + (.e117 - .e115) * .e1 + (.e120 + 8 * 
+        .e20 - .e119) * .e9)/epiModel@initialState$N
+    .e139 <- 20 * .e37
+    .e142 <- 3 * .e31 + 42 * .e41 + Beta * ((2 * .e59 + .e38 + 
+        .e66 - .e65) * .e9 + (2 * .e60 + .e69 - .e68) * .e1 + 
+        5 * .e95)/epiModel@initialState$N
+    .e143 <- 45 * .e25
+    .e160 <- .e57 + 5 * .e111 + 9 * .e113 + Beta * ((.e103 + 
+        26 * .e9 - .e102) * .e30 + (12 * .e30 + .e143 - .e142) * 
+        .e9 + (.e139 - .e138) * .e1 + (36 * .e20 + 36 * .e13 - 
+        (36 * .e26 + 6 * .e28)) * .e20)/epiModel@initialState$N
+    .e163 <- 15 * .e48
+    .e165 <- 2 * (.e101 + .e135) + 2 * .e101
+    .e170 <- epiModel@parameters$Lambda * (Beta * (.e81 - (.e100 + Beta * ((.e116 + 
+        2 * .e40 - .e123) * .e9 + (.e89 + 8 * .e30 - .e88) * 
+        .e20 + (12 * .e20 + .e69 - .e68) * .e30 + (5 * .e48 - 
+        (.e57 + 2 * .e111 + 2 * .e113 + Beta * ((.e116 - .e123) * 
+            .e1 + (14 * .e9 + .e66 - .e65) * .e30 + (.e92 + 18 * 
+            .e20 - .e91) * .e20 + (20 * .e25 + 6 * .e30 - (18 * 
+            .e41 + 2 * .e31 + Beta * (2 * .e70 + 2 * .e71 + 2 * 
+            .e95)/epiModel@initialState$N)) * .e9)/epiModel@initialState$N)) * .e1 + (.e96 + .e3 - .e14) * 
+        .e40)/epiModel@initialState$N)) * .e6/epiModel@initialState$N - .e128)
+    .e171 <- .e81 - .e5 * .e82
+    epiModel@parameters$Alpha * (epiModel@parameters$Lambda * (Beta * (.e128 - (.e18 * .e171 + Beta * 
+        ((10 * .e40 + .e139 - .e138) * .e20 + (10 * .e9 + .e3 - 
+            .e14) * .e82 + (.e163 + 2 * .e82 - .e160) * .e9 + 
+            (.e117 + 20 * .e30 - .e115) * .e30 + (20 * .e20 + 
+            .e108 - .e107) * .e40 + (6 * .e81 - (2 * (.e100 + 
+            Beta * (.e165 + 6 * (.e101 + 3 * .e135))/epiModel@initialState$N) + 2 * 
+            (.e100 + Beta * .e165/epiModel@initialState$N) + 2 * .e100 + Beta * ((.e163 - 
+            .e160) * .e1 + (.e120 + 44 * .e20 - .e119) * .e30 + 
+            (24 * .e9 + .e105 - .e104) * .e40 + (32 * .e30 + 
+            .e143 - .e142) * .e20 + (40 * .e37 + 8 * .e40 - (2 * 
+            (.e42 + 2 * .e63) + 32 * .e64 + 6 * .e42 + Beta * 
+            (2 * .e97 + 2 * .e98 + 2 * .e99 + 2 * ((.e73 - .e49) * 
+                .e9 + .e59 * .e20) + 2 * ((4 * .e25 - (4 * .e41 + 
+                Beta * .e95/epiModel@initialState$N)) * .e1 + .e60 * .e9) + 2 * (.e20 * 
+                .e15 + 2 * (.e93 * .e9) + .e1 * (.e25 - .e41)))/epiModel@initialState$N)) * 
+            .e9)/epiModel@initialState$N)) * .e1)/epiModel@initialState$N)) * .e6/epiModel@initialState$N - .e170) - .e5 * (.e170 - 
+        .e5 * (.e128 - .e5 * .e171)))
+}
+}
+else if(nderiv==11){
+deriv <- function (epiModel, I) 
+{
+Beta <- epiModel@parameters$Betas[whichIndex(epiModel@currentState$t, epiModel@parameters$changeTimes)]
+    .e1 <- I
+    .e3 <- epiModel@parameters$Lambda * (epiModel@initialState$N - epiModel@currentState$S - epiModel@currentState$D - epiModel@currentState$R - I)
+    .e4 <- Beta * .e1
+    .e5 <- epiModel@parameters$Alpha + epiModel@parameters$Gamma
+    .e6 <- epiModel@currentState$S
+    .e7 <- .e4/epiModel@initialState$N
+    .e12 <- epiModel@parameters$Lambda * (.e4 * .e6/epiModel@initialState$N - .e3)
+    .e13 <- .e3 - .e5 * .e1
+    .e14 <- (epiModel@parameters$Alpha + .e7 + epiModel@parameters$Gamma) * .e1
+    .e15 <- .e3 - .e14
+    .e18 <- 2 * .e7 + epiModel@parameters$Alpha + epiModel@parameters$Gamma
+    .e20 <- .e12 - .e5 * .e13
+    .e25 <- epiModel@parameters$Lambda * (Beta * .e15 * .e6/epiModel@initialState$N - .e12)
+    .e26 <- .e18 * .e13
+    .e28 <- .e4 * .e15/epiModel@initialState$N
+    .e30 <- .e25 - .e5 * .e20
+    .e31 <- .e18 * .e20
+    .e37 <- epiModel@parameters$Lambda * (Beta * (.e12 - (.e26 + .e28)) * .e6/epiModel@initialState$N - 
+        .e25)
+    .e38 <- 2 * .e13
+    .e40 <- .e37 - .e5 * .e30
+    .e41 <- .e31 + 2 * (Beta * .e13^2/epiModel@initialState$N)
+    .e42 <- .e18 * .e30
+    .e48 <- epiModel@parameters$Lambda * (Beta * (.e25 - (.e31 + Beta * ((2 * .e12 - 
+        (2 * .e26 + .e28)) * .e1 + (.e38 + .e3 - .e14) * .e13)/epiModel@initialState$N)) * 
+        .e6/epiModel@initialState$N - .e37)
+    .e49 <- 3 * .e26
+    .e50 <- 3 * .e12
+    .e52 <- 3 * .e14
+    .e53 <- 3 * .e3
+    .e55 <- 4 * .e26 + .e28
+    .e56 <- 4 * .e12
+    .e57 <- .e18 * .e40
+    .e59 <- .e38 + .e53 - .e52
+    .e60 <- .e56 - .e55
+    .e62 <- .e48 - .e5 * .e40
+    .e65 <- Beta * .e20 * .e13/epiModel@initialState$N
+    .e66 <- 2 * .e20
+    .e67 <- .e42 + 6 * .e65
+    .e68 <- .e66 + .e50
+    .e69 <- .e12 - .e26
+    .e70 <- 4 * .e14
+    .e71 <- 4 * .e13
+    .e72 <- 4 * .e3
+    .e74 <- 5 * .e26 + .e28
+    .e75 <- 5 * .e12
+    .e77 <- .e15 * .e13 + .e1 * .e69
+    .e78 <- 3 * .e25
+    .e84 <- epiModel@parameters$Lambda * (Beta * (.e37 - (.e42 + Beta * ((.e68 - 
+        (.e49 + .e28)) * .e13 + (.e78 - (.e31 + 2 * .e41 + Beta * 
+        ((.e38 + 2 * .e3 - 2 * .e14) * .e13 + (.e50 - (.e49 + 
+            .e28)) * .e1)/epiModel@initialState$N)) * .e1 + (.e71 + .e3 - .e14) * .e20)/epiModel@initialState$N)) * 
+        .e6/epiModel@initialState$N - .e48)
+    .e85 <- .e30 * .e13
+    .e86 <- 6 * .e14
+    .e87 <- 6 * .e20
+    .e88 <- 6 * .e3
+    .e89 <- .e59 * .e13
+    .e90 <- .e60 * .e1
+    .e91 <- .e40 * .e13
+    .e92 <- 5 * .e41
+    .e96 <- .e31 + 9 * .e41 + Beta * ((.e38 + .e72 - .e70) * 
+        .e13 + (.e75 - .e74) * .e1)/epiModel@initialState$N
+    .e97 <- 10 * .e25
+    .e99 <- 15 * .e26 + 3 * .e28
+    .e100 <- 15 * .e12
+    .e102 <- .e18 * .e62
+    .e103 <- 2 * .e59
+    .e104 <- 2 * .e60
+    .e105 <- 12 * .e13
+    .e106 <- .e97 - .e96
+    .e108 <- .e105 + .e88 - .e86
+    .e110 <- .e100 + .e87 - .e99
+    .e111 <- .e85 + .e20^2
+    .e112 <- 2 * .e85
+    .e113 <- 2 * .e28
+    .e114 <- 8 * .e13
+    .e115 <- .e57 + 2 * (Beta * .e30 * .e13/epiModel@initialState$N)
+    .e116 <- .e57 + Beta * (.e112 + 6 * .e111)/epiModel@initialState$N
+    .e117 <- .e30 * .e20
+    .e118 <- 10 * .e14
+    .e119 <- 10 * .e3
+    .e120 <- 6 * .e26
+    .e121 <- 6 * .e12
+    .e122 <- 5 * .e14
+    .e123 <- 5 * .e3
+    .e124 <- .e120 + .e28
+    .e126 <- Beta * .e77/epiModel@initialState$N
+    .e127 <- .e106 * .e1
+    .e128 <- .e108 * .e20
+    .e129 <- .e110 * .e13
+    .e131 <- 15 * .e25
+    .e132 <- 2 * .e30
+    .e133 <- 4 * .e37
+    .e134 <- .e84 - .e5 * .e62
+    .e135 <- (.e103 + .e38 + .e72 - .e70) * .e13
+    .e136 <- (.e104 + .e75 - .e74) * .e1
+    .e139 <- .e31 + 14 * .e41 + Beta * ((.e38 + .e123 - .e122) * 
+        .e13 + (.e121 - .e124) * .e1)/epiModel@initialState$N
+    .e140 <- 10 * .e37
+    .e141 <- .e68 - .e49
+    .e143 <- 24 * .e26 + 4 * .e28
+    .e144 <- 24 * .e12
+    .e148 <- 4 * .e25 - (4 * .e41 + .e126)
+    .e150 <- 7 * .e26 + .e28
+    .e151 <- 7 * .e12
+    .e156 <- epiModel@parameters$Lambda * (Beta * (.e48 - (.e57 + Beta * ((.e132 + 
+        6 * .e25 - (.e31 + .e92 + Beta * (.e89 + .e90)/epiModel@initialState$N)) * 
+        .e13 + (.e133 - (2 * .e67 + 2 * .e42 + Beta * ((.e53 + 
+        .e114 - .e52) * .e20 + (4 * .e20 + 8 * .e12 - (.e113 + 
+        8 * .e26)) * .e13 + (6 * .e25 - (.e31 + .e92 + Beta * 
+        (.e89 + .e90)/epiModel@initialState$N)) * .e1)/epiModel@initialState$N)) * .e1 + (.e56 + .e87 - .e55) * 
+        .e20 + (6 * .e13 + .e3 - .e14) * .e30)/epiModel@initialState$N)) * .e6/epiModel@initialState$N - 
+        .e84)
+    .e163 <- 2 * (.e91 + .e117) + 2 * .e91
+    .e166 <- 3 * .e42 + 7 * .e67 + Beta * (.e127 + .e128 + .e129)/epiModel@initialState$N
+    .e167 <- 5 * .e28
+    .e169 <- Beta * ((.e38 + .e88 - .e86) * .e13 + (.e151 - .e150) * 
+        .e1)/epiModel@initialState$N
+    .e170 <- .e25 - .e41
+    .e176 <- .e62 * .e13
+    .e177 <- 10 * .e20
+    .e180 <- 16 * .e67 + 4 * .e42 + Beta * ((.e119 + 16 * .e13 - 
+        .e118) * .e20 + (.e131 - .e139) * .e1 + (.e144 + 8 * 
+        .e20 - .e143) * .e13)/epiModel@initialState$N
+    .e181 <- 20 * .e37
+    .e182 <- 20 * .e25
+    .e185 <- 3 * .e31 + 42 * .e41 + Beta * (.e135 + .e136 + 5 * 
+        .e77)/epiModel@initialState$N
+    .e186 <- 45 * .e25
+    .e187 <- .e18 * .e134
+    .e188 <- .e40 * .e20
+    .e192 <- .e20 * .e15 + 2 * (.e69 * .e13) + .e1 * .e170
+    .e193 <- 15 * .e14
+    .e194 <- 15 * .e3
+    .e195 <- (.e119 + 26 * .e13 - .e118) * .e30
+    .e196 <- (12 * .e30 + .e186 - .e185) * .e13
+    .e197 <- .e42 + 2 * .e65
+    .e199 <- .e31 + 20 * .e41 + .e169
+    .e202 <- (.e181 - .e180) * .e1
+    .e203 <- (36 * .e20 + 36 * .e12 - (36 * .e26 + 6 * .e28)) * 
+        .e20
+    .e207 <- 10 * .e28 + 70 * .e26
+    .e208 <- 12 * .e20
+    .e209 <- 2 * (.e141 * .e13 + .e59 * .e20)
+    .e210 <- 2 * (.e148 * .e1 + .e60 * .e13)
+    .e211 <- 20 * .e30
+    .e212 <- 21 * .e25
+    .e214 <- 35 * .e26 + .e167
+    .e215 <- 35 * .e12
+    .e216 <- 6 * .e30
+    .e217 <- 70 * .e12
+    .e237 <- .e102 + Beta * (.e163 + 6 * (.e91 + 3 * .e117))/epiModel@initialState$N
+    .e238 <- .e102 + Beta * .e163/epiModel@initialState$N
+    .e241 <- .e57 + 5 * .e115 + 9 * .e116 + Beta * (.e195 + .e196 + 
+        .e202 + .e203)/epiModel@initialState$N
+    .e242 <- 15 * .e48
+    .e245 <- 30 * .e67 + 5 * .e42 + Beta * ((.e177 + .e215 - 
+        .e214) * .e13 + (.e194 + 20 * .e13 - .e193) * .e20 + 
+        (.e212 - .e199) * .e1)/epiModel@initialState$N
+    .e246 <- 35 * .e37
+    .e249 <- 4 * .e31 + 80 * .e41 + Beta * ((11 * .e12 + .e104 - 
+        (11 * .e26 + .e113)) * .e1 + (.e103 + .e71 + 9 * .e3 - 
+        9 * .e14) * .e13 + 9 * .e77)/epiModel@initialState$N
+    .e250 <- 84 * .e25
+    .e255 <- epiModel@parameters$Lambda * (Beta * (.e84 - (.e102 + Beta * ((.e140 + 
+        2 * .e40 - .e166) * .e13 + (.e97 + 8 * .e30 - .e96) * 
+        .e20 + (.e208 + .e75 - .e74) * .e30 + (5 * .e48 - (.e57 + 
+        2 * .e115 + 2 * .e116 + Beta * ((.e140 - .e166) * .e1 + 
+        (14 * .e13 + .e72 - .e70) * .e30 + (.e100 + 18 * .e20 - 
+        .e99) * .e20 + (.e182 + .e216 - (18 * .e41 + 2 * .e31 + 
+        Beta * (2 * .e89 + 2 * .e90 + 2 * .e77)/epiModel@initialState$N)) * .e13)/epiModel@initialState$N)) * 
+        .e1 + (.e114 + .e3 - .e14) * .e40)/epiModel@initialState$N)) * .e6/epiModel@initialState$N - .e156)
+    .e264 <- .e57 + 25 * .e116 + 9 * .e115 + Beta * ((.e211 + 
+        .e250 - .e249) * .e13 + (20 * .e3 + 42 * .e13 - 20 * 
+        .e14) * .e30 + (.e246 - .e245) * .e1 + (60 * .e20 + .e217 - 
+        .e207) * .e20)/epiModel@initialState$N
+    .e265 <- .e176 + .e188
+    .e266 <- .e30^2
+    .e270 <- 10 * .e42 + 5 * .e197 + 90 * .e67 + Beta * ((.e177 + 
+        2 * .e110 + 2 * .e141 + .e104 + 33 * .e12 - (33 * .e26 + 
+        .e167)) * .e13 + (14 * .e3 + 18 * .e13 + 2 * .e108 + 
+        .e103 - 14 * .e14) * .e20 + (2 * .e106 + 2 * .e148 + 
+        .e182 - (.e31 + 19 * .e41 + .e169)) * .e1 + .e209 + .e210 + 
+        7 * .e192)/epiModel@initialState$N
+    .e271 <- 105 * .e37
+    .e272 <- 35 * .e48
+    .e288 <- .e170 * .e13
+    .e289 <- .e69 * .e20
+    .e293 <- 11 * .e237 + 3 * .e102 + 7 * .e238 + Beta * ((.e271 + 
+        20 * .e40 - .e270) * .e13 + (106 * .e20 + .e217 - .e207) * 
+        .e30 + (126 * .e25 + 80 * .e30 - (120 * .e41 + 6 * .e31 + 
+        Beta * (16 * .e77 + 2 * .e135 + 2 * .e136)/epiModel@initialState$N)) * .e20 + 
+        (.e194 + 52 * .e13 - .e193) * .e40 + (.e272 - .e264) * 
+        .e1)/epiModel@initialState$N
+    .e296 <- 2 * .e265 + 2 * (.e176 + .e266 + 2 * .e188) + 2 * 
+        .e176
+    .e297 <- 21 * .e84
+    .e302 <- epiModel@parameters$Lambda * (Beta * (.e156 - (.e187 + Beta * ((10 * 
+        .e40 + .e181 - .e180) * .e20 + (10 * .e13 + .e3 - .e14) * 
+        .e62 + (.e242 + 2 * .e62 - .e241) * .e13 + (.e131 + .e211 - 
+        .e139) * .e30 + (20 * .e20 + .e121 - .e124) * .e40 + 
+        (6 * .e84 - (2 * .e237 + 2 * .e238 + 2 * .e102 + Beta * 
+            ((.e242 - .e241) * .e1 + (.e144 + 44 * .e20 - .e143) * 
+                .e30 + (24 * .e13 + .e123 - .e122) * .e40 + (32 * 
+                .e30 + .e186 - .e185) * .e20 + (40 * .e37 + 8 * 
+                .e40 - (2 * .e197 + 32 * .e67 + 6 * .e42 + Beta * 
+                (2 * .e127 + 2 * .e128 + 2 * .e129 + .e209 + 
+                  .e210 + 2 * .e192)/epiModel@initialState$N)) * .e13)/epiModel@initialState$N)) * .e1)/epiModel@initialState$N)) * 
+        .e6/epiModel@initialState$N - .e255)
+    .e303 <- .e156 - .e5 * .e134
+    epiModel@parameters$Alpha * (epiModel@parameters$Lambda * (Beta * (.e255 - (.e18 * .e303 + Beta * 
+        ((12 * .e62 + .e272 - .e264) * .e20 + (.e105 + .e3 - 
+            .e14) * .e134 + (2 * .e134 + .e297 - .e293) * .e13 + 
+            (.e212 + 40 * .e30 - .e199) * .e40 + (30 * .e40 + 
+            .e246 - .e245) * .e30 + (30 * .e20 + .e151 - .e150) * 
+            .e62 + (7 * .e156 - (.e187 + 2 * (.e187 + 2 * (Beta * 
+            .e62 * .e13/epiModel@initialState$N)) + 2 * (.e187 + Beta * (.e296 + 6 * 
+            (.e265 + 3 * (.e188 + .e266)))/epiModel@initialState$N) + 2 * (.e187 + 
+            Beta * .e296/epiModel@initialState$N) + Beta * ((10 * .e62 + 70 * .e48 - 
+            (16 * .e115 + 2 * (.e57 + Beta * (2 * .e111 + .e112)/epiModel@initialState$N) + 
+                2 * .e57 + 50 * .e116 + Beta * (2 * ((.e140 - 
+                (.e42 + 9 * .e67 + Beta * ((.e66 + 9 * .e12 - 
+                  (9 * .e26 + .e28)) * .e13 + (.e71 + .e72 - 
+                  .e70) * .e20 + (5 * .e25 - (.e92 + .e126)) * 
+                  .e1)/epiModel@initialState$N)) * .e1 + .e106 * .e13) + 2 * .e195 + 
+                2 * .e196 + 2 * ((.e208 + .e121 - .e120) * .e20 + 
+                .e108 * .e30) + 2 * ((.e131 + .e216 - (15 * .e41 + 
+                3 * .e126)) * .e13 + .e110 * .e20) + 2 * ((.e132 + 
+                .e78 - 3 * .e41) * .e13 + .e59 * .e30 + 2 * (.e141 * 
+                .e20)) + 2 * .e202 + 2 * .e203 + 2 * ((.e133 - 
+                (4 * .e67 + Beta * .e192/epiModel@initialState$N)) * .e1 + .e60 * .e20 + 
+                2 * (.e148 * .e13)) + 2 * (.e288 + .e30 * .e15 + 
+                .e289 + 2 * (.e288 + .e289) + .e1 * (.e37 - .e67)))/epiModel@initialState$N)) * 
+            .e13 + (.e271 + 50 * .e40 - .e270) * .e20 + (.e297 - 
+            .e293) * .e1 + (34 * .e13 + .e88 - .e86) * .e62 + 
+            (.e215 + 88 * .e20 - .e214) * .e40 + (.e250 + 96 * 
+            .e30 - .e249) * .e30)/epiModel@initialState$N)) * .e1)/epiModel@initialState$N)) * .e6/epiModel@initialState$N - .e302) - 
+        .e5 * (.e302 - .e5 * (.e255 - .e5 * .e303)))
+}
+}
 else{deriv <- NA}
 return(deriv)
 })

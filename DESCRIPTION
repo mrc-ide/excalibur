@@ -34,5 +34,6 @@ Collate:
     'sird_Class.R'
     'seird_Class.R'
     'seird_Methods.R'
+    'seird_Methods_NthDeriv.R'
     'sird_Methods.R'
     'utilities.R'

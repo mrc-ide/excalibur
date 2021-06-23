@@ -121,3 +121,30 @@ test_that("calculateNthDeriv - Compare to known results", {
                  Alpha*(Alpha + Gamma)^2*I)
 
 })
+
+test_that("getNthDeriv - Compare to known calculate", {
+  N <- 1000
+  Beta <- 1
+  Gamma <- 1/5
+  Lambda <- 1/3
+  Alpha <- 1/10
+  ProbOfDeath <- 1-exp(-Alpha)
+  model <- setSEIRD(N = N, Beta = Beta, Gamma = Gamma, Lambda = Lambda,
+                    ProbOfDeath = ProbOfDeath,
+                    I0 = 1)
+  model@currentState$t <- 5
+  #calculate the 3rd derivative
+  thirdD <- excalibur::calculateNthDeriv(model, nderiv=3)
+  #get 3rd dervivative
+  thirdDstored <- excalibur::getNthDeriv(model, nderiv=3)
+  expect_equal(body(thirdD), body(thirdDstored))
+
+  #calculate the 6th derivative
+  sixD <- excalibur::calculateNthDeriv(model, nderiv=6)
+  #get 6th dervivative
+  sixDstored <- excalibur::getNthDeriv(model, nderiv=6)
+  expect_equal(body(sixD), body(sixDstored))
+
+  #check that trying to get a non-existant nderiv returns NA
+  expect_true(is.na(excalibur::getNthDeriv(model, nderiv=20)))
+})
