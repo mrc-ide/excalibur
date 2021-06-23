@@ -135,12 +135,18 @@ setMethod("estimateInfectiousNode", signature("seirdModel"),
 #' @noRd
 setMethod("calculateNthDeriv", signature("seirdModel"),
           function(epiModel, nderiv){
-            Sf <- function(t){S}
-            Df <- function(t){D}
-            Rf <- function(t){R}
-            If <- function(t){I}
-            Ef <- function(t){E}
-            #value is a placeholder to be filled with the value of I
+            Sf <- function(t){}
+            Df <- function(t){}
+            Rf <- function(t){}
+            If <- function(t){}
+            Ef <- function(t){}
+            #Place holder values to prevent a note in RMD_Check, these are
+            #undefined variables are replace in the function surgery later
+            Alpha <- NA
+            Beta <- NA
+            Gamma <- NA
+            Lambda <- NA
+            N <- NA
             #setup derivatives
             drule <- Deriv::drule #a copy of the derivative rules from Deriv
             drule[["Sf"]] <-alist(t=-Beta*If(t)*Sf(t)/N)

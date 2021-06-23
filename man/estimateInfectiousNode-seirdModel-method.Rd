@@ -16,7 +16,7 @@ changeTimes so far.}
 
 \item{nderiv}{Which derivative to assume is 0.}
 
-\item{plotDeriv}{True/False that tells the function to plot the dervivative
+\item{plotDeriv}{True/False that tells the function to plot the derivative
 of D determined by nderiv.}
 }
 \value{

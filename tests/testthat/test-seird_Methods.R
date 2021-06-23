@@ -81,7 +81,7 @@ test_that("calculateNthDeriv - Compare to known results", {
                     I0 = 1)
   model@currentState$t <- 5
   #calculate the 2nd derivative
-  secondD <- excalibur::calculateNthDeriv(model, nderiv=2)
+  secondD <- excalibur:::calculateNthDeriv(model, nderiv=2)
   #set S, D and R so that E + I = 15
   E <- 10
   I <- 5
@@ -98,7 +98,7 @@ test_that("calculateNthDeriv - Compare to known results", {
   expect_equal(secondD(model, I), Lambda*Alpha*E - Alpha*(Alpha+Gamma)*I)
 
   #now third deriv
-  thirdD <- excalibur::calculateNthDeriv(model, nderiv=3)
+  thirdD <- excalibur:::calculateNthDeriv(model, nderiv=3)
   #set S, D and R and E + I
   E <- 10
   I <- 5
@@ -134,17 +134,17 @@ test_that("getNthDeriv - Compare to known calculate", {
                     I0 = 1)
   model@currentState$t <- 5
   #calculate the 3rd derivative
-  thirdD <- excalibur::calculateNthDeriv(model, nderiv=3)
-  #get 3rd dervivative
-  thirdDstored <- excalibur::getNthDeriv(model, nderiv=3)
+  thirdD <- excalibur:::calculateNthDeriv(model, nderiv=3)
+  #get 3rd derivative
+  thirdDstored <- excalibur:::getNthDeriv(model, nderiv=3)
   expect_equal(body(thirdD), body(thirdDstored))
 
   #calculate the 6th derivative
-  sixD <- excalibur::calculateNthDeriv(model, nderiv=6)
-  #get 6th dervivative
-  sixDstored <- excalibur::getNthDeriv(model, nderiv=6)
+  sixD <- excalibur:::calculateNthDeriv(model, nderiv=6)
+  #get 6th derivative
+  sixDstored <- excalibur:::getNthDeriv(model, nderiv=6)
   expect_equal(body(sixD), body(sixDstored))
 
-  #check that trying to get a non-existant nderiv returns NA
-  expect_true(is.na(excalibur::getNthDeriv(model, nderiv=20)))
+  #check that trying to get a non-existent nderiv returns NA
+  expect_true(is.na(excalibur:::getNthDeriv(model, nderiv=20)))
 })

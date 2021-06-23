@@ -137,7 +137,7 @@ print(simulate(model, t=time))
 model <- calculateCurrentState(model, time, deaths, nderiv = 7, plotDeriv = TRUE)
 ```
 
-<img src="man/figures/README-SEIRD example-1.png" width="100%" />
+<img src="man/figures/README-SEIRD_example-1.png" width="100%" />
 
 ### Method
 
