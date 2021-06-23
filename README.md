@@ -19,14 +19,16 @@ trajectories.
 
 ## Installation
 
-You can install the released version of excalibur from [its Github
+You can install the released version of *excalibur* from [its Github
 repository](https://github.com/mrc-ide/excalibur) with:
 
 ``` r
 devtools::install_github("mrc-ide/excalibur")
 ```
 
-This package requires Odin and Deriv.
+This package requires *Odin*. *Deriv* and *stringr* need to be installed
+if you wish to calculate your own derivatives if using the derivative
+approximation method.
 
 ## SIRD Model
 
@@ -141,10 +143,10 @@ model <- calculateCurrentState(model, time, deaths, nderiv = 7, plotDeriv = TRUE
 
 This method assumes that the n-th derivative of D is 0 and solves the
 resulting equation for I. n is determined by the argument nderiv and the
-derivative is calculated symbolically with the package Deriv. The higher
-n is the closer this approximation gets to the real solution, however
-for certain set of parameters, increase n also flattens the derivative,
-making it harder to optimise for I.
+derivative has been calculated symbolically with the package *Deriv*.
+The higher n is the closer this approximation gets to the real solution,
+however for certain set of parameters, increase n also flattens the
+derivative, making it harder to optimise for I.
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 

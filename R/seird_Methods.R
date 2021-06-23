@@ -45,7 +45,7 @@ setMethod("calculateCurrentState", signature("seirdModel"),
 #' @param deaths The total death count for this model, up to each of the
 #' changeTimes so far.
 #' @param nderiv Which derivative to assume is 0.
-#' @param plotDeriv True/False that tells the function to plot the dervivative
+#' @param plotDeriv True/False that tells the function to plot the derivative
 #' of D determined by nderiv.
 #' @return An object of class seirdModel with the values for S, E and I updated
 #' for the current state.

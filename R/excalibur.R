@@ -16,4 +16,6 @@ NULL
 #' @useDynLib excalibur
 #' @useDynLib excalibur, .registration = TRUE
 #' @importFrom odin odin
+#' @importFrom stringr str_replace_all
+#' @importFrom Deriv Deriv
 NULL
