@@ -111,10 +111,7 @@ setMethod("estimateInfectiousNode", signature("seirdModel"),
             #plotting
             if(plotDeriv){
               xValues <- seq(0, N-S-D-R, length.out = 200)
-              yValues <- rep(NA, 200)
-              for(i in 1:200){
-                yValues[i] <- optimFunc(xValues[i])
-              }
+              yValues <- optimFunc(xValues)
               graphics::plot(xValues, yValues, type="l", xlab="I", ylab = paste0("~", nderiv, "-th derivative of D, squared"))
               graphics::abline(v=resultPar)
               graphics::abline(v=startingValues, lty = 2)
