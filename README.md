@@ -19,16 +19,20 @@ trajectories.
 
 ## Installation
 
-You can install the released version of excalibur from [its Github
+You can install the released version of *excalibur* from [its Github
 repository](https://github.com/mrc-ide/excalibur) with:
 
 ``` r
 devtools::install_github("mrc-ide/excalibur")
 ```
 
-## Examples
+This package requires *Odin*. *Deriv* and *stringr* need to be installed
+if you wish to calculate your own derivatives if using the derivative
+approximation method.
 
--   :warning: This package is WIP so this will change
+## SIRD Model
+
+### Examples
 
 Estimating the current state for a simple SIRD model:
 
@@ -44,20 +48,8 @@ deaths <- simulate(model, t = time)$D
 model <- calculateCurrentState(model, time, deaths)
 #print the current state
 print(currentState(model))
-#> $t
-#> [1] 10
-#> 
-#> $D
-#> [1] 11.83369
-#> 
-#> $R
-#> [1] 37.43873
-#> 
-#> $I
-#> [1] 18.52785
-#> 
-#> $S
-#> [1] 32.19973
+#>    t        S        I        R        D
+#> 1 10 32.19973 18.52785 37.43873 11.83369
 
 ##Limitations
 #Currently I is calculated by subtracting from N, hence will not be exact due to
@@ -83,27 +75,15 @@ deaths <- simulate(model, t = c(4,6,time))$D
 model <- calculateCurrentState(model, time, deaths)
 #print the current state
 print(currentState(model))
-#> $t
-#> [1] 10
-#> 
-#> $D
-#> [1] 23.53816
-#> 
-#> $R
-#> [1] 74.46863
-#> 
-#> $I
-#> [1] 1.977261
-#> 
-#> $S
-#> [1] 0.01595129
+#>    t          S        I        R        D
+#> 1 10 0.01595129 1.977261 74.46863 23.53816
 #for comparison
 print(simulate(model, t=time))
 #>    t          S        I        R        D Beta
 #> 2 10 0.01594839 1.977264 74.46863 23.53816    2
 ```
 
-## Method
+### Method
 
 Consider the SIRD model with a known number of deaths *D*(*t*) a
 particular time *t*, where *β* is the transmission parameter, *γ* the
@@ -125,6 +105,48 @@ Then expanded to the time-varying *β* scenario,
 
 where *t*<sub>*c*, *i*</sub> ≤ *t* &lt; *t*<sub>*c*, *i* + 1</sub> means
 that *β*(*t*) = *β*<sub>*i*</sub> and *t*<sub>*c*, 0</sub> = 0.
+
+## SEIRD Model
+
+### Examples
+
+Estimating the current state for a simple SEIRD model, with time-varying
+Beta:
+
+``` r
+library(excalibur)
+#Set up an SIRD model, with constant values of Beta that change at the times given
+model <- setSEIRD(N = 100, Beta = c(5,0.1,2), Gamma = 1/3, Lambda = 1/2, ProbOfDeath = 0.1, 
+                I0 = 1, changeTimes = c(4,6))
+#Generate some results, since this is time-varying we need these at the end of
+#each of the changeTimes as well as at the current time
+time <- 10
+deaths <- simulate(model, t = c(4,6,time))$D
+##Calculate the current state of the model
+model <- calculateCurrentState(model, time, deaths, nderiv = 7)
+#print the current state
+print(currentState(model))
+#>    t        S        E        I        R     D
+#> 1 10 4.568455 8.644442 15.67042 54.03668 17.08
+#for comparison
+print(simulate(model, t=time))
+#>    t        S        E        I        R        D Beta
+#> 2 10 4.568464 8.270472 16.04444 54.03664 17.07998    2
+
+#if we want to check the optimization we can also plot the derivative
+model <- calculateCurrentState(model, time, deaths, nderiv = 7, plotDeriv = TRUE)
+```
+
+<img src="man/figures/README-SEIRD_example-1.png" width="100%" />
+
+### Method
+
+This method assumes that the n-th derivative of D is 0 and solves the
+resulting equation for I. n is determined by the argument nderiv and the
+derivative has been calculated symbolically with the package *Deriv*.
+The higher n is the closer this approximation gets to the real solution,
+however for certain set of parameters, increase n also flattens the
+derivative, making it harder to optimise for I.
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 

@@ -71,6 +71,26 @@ void cinterpolate_free(void *obj);
 #endif
 
 #endif
+typedef struct seirdGenerator_internal {
+  double Alpha;
+  double *Betas;
+  double *changeTimes;
+  double D0;
+  int dim_Betas;
+  int dim_changeTimes;
+  double E0;
+  double Gamma;
+  double I0;
+  double initial_D;
+  double initial_E;
+  double initial_I;
+  double initial_R;
+  double initial_S;
+  void *interpolate_Beta;
+  double Lambda;
+  double R0;
+  double S0;
+} seirdGenerator_internal;
 typedef struct sirdGenerator_internal {
   double Alpha;
   double *Betas;
@@ -88,6 +108,19 @@ typedef struct sirdGenerator_internal {
   double R0;
   double S0;
 } sirdGenerator_internal;
+seirdGenerator_internal* seirdGenerator_get_internal(SEXP internal_p, int closed_error);
+static void seirdGenerator_finalise(SEXP internal_p);
+SEXP seirdGenerator_create(SEXP user);
+void seirdGenerator_initmod_desolve(void(* odeparms) (int *, double *));
+SEXP seirdGenerator_contents(SEXP internal_p);
+SEXP seirdGenerator_set_user(SEXP internal_p, SEXP user);
+SEXP seirdGenerator_metadata(SEXP internal_p);
+SEXP seirdGenerator_initial_conditions(SEXP internal_p, SEXP t_ptr);
+void seirdGenerator_rhs(seirdGenerator_internal* internal, double t, double * state, double * dstatedt, double * output);
+void seirdGenerator_rhs_dde(size_t neq, double t, double * state, double * dstatedt, void * internal);
+void seirdGenerator_rhs_desolve(int * neq, double * t, double * state, double * dstatedt, double * output, int * np);
+void seirdGenerator_output_dde(size_t n_eq, double t, double * state, size_t n_output, double * output, void * internal_p);
+SEXP seirdGenerator_rhs_r(SEXP internal_p, SEXP t, SEXP state);
 sirdGenerator_internal* sirdGenerator_get_internal(SEXP internal_p, int closed_error);
 static void sirdGenerator_finalise(SEXP internal_p);
 SEXP sirdGenerator_create(SEXP user);
@@ -123,6 +156,223 @@ SEXP user_get_array_check(SEXP el, bool is_integer, const char *name,
 SEXP user_get_array_check_rank(SEXP user, const char *name, int rank,
                                bool required);
 void interpolate_check_y(size_t nx, size_t ny, size_t i, const char *name_arg, const char *name_target);
+seirdGenerator_internal* seirdGenerator_get_internal(SEXP internal_p, int closed_error) {
+  seirdGenerator_internal *internal = NULL;
+  if (TYPEOF(internal_p) != EXTPTRSXP) {
+    Rf_error("Expected an external pointer");
+  }
+  internal = (seirdGenerator_internal*) R_ExternalPtrAddr(internal_p);
+  if (!internal && closed_error) {
+    Rf_error("Pointer has been invalidated");
+  }
+  return internal;
+}
+void seirdGenerator_finalise(SEXP internal_p) {
+  seirdGenerator_internal *internal = seirdGenerator_get_internal(internal_p, 0);
+  if (internal_p) {
+    cinterpolate_free(internal->interpolate_Beta);
+    internal->interpolate_Beta = NULL;
+    Free(internal->Betas);
+    Free(internal->changeTimes);
+    Free(internal);
+    R_ClearExternalPtr(internal_p);
+  }
+}
+SEXP seirdGenerator_create(SEXP user) {
+  seirdGenerator_internal *internal = (seirdGenerator_internal*) Calloc(1, seirdGenerator_internal);
+  internal->Betas = NULL;
+  internal->changeTimes = NULL;
+  internal->Alpha = NA_REAL;
+  internal->Betas = NULL;
+  internal->changeTimes = NULL;
+  internal->Gamma = NA_REAL;
+  internal->I0 = NA_REAL;
+  internal->Lambda = NA_REAL;
+  internal->S0 = NA_REAL;
+  internal->D0 = 0;
+  internal->E0 = 0;
+  internal->R0 = 0;
+  SEXP ptr = PROTECT(R_MakeExternalPtr(internal, R_NilValue, R_NilValue));
+  R_RegisterCFinalizer(ptr, seirdGenerator_finalise);
+  UNPROTECT(1);
+  return ptr;
+}
+static seirdGenerator_internal *seirdGenerator_internal_ds;
+void seirdGenerator_initmod_desolve(void(* odeparms) (int *, double *)) {
+  static DL_FUNC get_desolve_gparms = NULL;
+  if (get_desolve_gparms == NULL) {
+    get_desolve_gparms =
+      R_GetCCallable("deSolve", "get_deSolve_gparms");
+  }
+  seirdGenerator_internal_ds = seirdGenerator_get_internal(get_desolve_gparms(), 1);
+}
+SEXP seirdGenerator_contents(SEXP internal_p) {
+  seirdGenerator_internal *internal = seirdGenerator_get_internal(internal_p, 1);
+  SEXP contents = PROTECT(allocVector(VECSXP, 18));
+  SET_VECTOR_ELT(contents, 0, ScalarReal(internal->Alpha));
+  SEXP Betas = PROTECT(allocVector(REALSXP, internal->dim_Betas));
+  memcpy(REAL(Betas), internal->Betas, internal->dim_Betas * sizeof(double));
+  SET_VECTOR_ELT(contents, 1, Betas);
+  SEXP changeTimes = PROTECT(allocVector(REALSXP, internal->dim_changeTimes));
+  memcpy(REAL(changeTimes), internal->changeTimes, internal->dim_changeTimes * sizeof(double));
+  SET_VECTOR_ELT(contents, 2, changeTimes);
+  SET_VECTOR_ELT(contents, 3, ScalarReal(internal->D0));
+  SET_VECTOR_ELT(contents, 4, ScalarInteger(internal->dim_Betas));
+  SET_VECTOR_ELT(contents, 5, ScalarInteger(internal->dim_changeTimes));
+  SET_VECTOR_ELT(contents, 6, ScalarReal(internal->E0));
+  SET_VECTOR_ELT(contents, 7, ScalarReal(internal->Gamma));
+  SET_VECTOR_ELT(contents, 8, ScalarReal(internal->I0));
+  SET_VECTOR_ELT(contents, 9, ScalarReal(internal->initial_D));
+  SET_VECTOR_ELT(contents, 10, ScalarReal(internal->initial_E));
+  SET_VECTOR_ELT(contents, 11, ScalarReal(internal->initial_I));
+  SET_VECTOR_ELT(contents, 12, ScalarReal(internal->initial_R));
+  SET_VECTOR_ELT(contents, 13, ScalarReal(internal->initial_S));
+  SET_VECTOR_ELT(contents, 15, ScalarReal(internal->Lambda));
+  SET_VECTOR_ELT(contents, 16, ScalarReal(internal->R0));
+  SET_VECTOR_ELT(contents, 17, ScalarReal(internal->S0));
+  SEXP nms = PROTECT(allocVector(STRSXP, 18));
+  SET_STRING_ELT(nms, 0, mkChar("Alpha"));
+  SET_STRING_ELT(nms, 1, mkChar("Betas"));
+  SET_STRING_ELT(nms, 2, mkChar("changeTimes"));
+  SET_STRING_ELT(nms, 3, mkChar("D0"));
+  SET_STRING_ELT(nms, 4, mkChar("dim_Betas"));
+  SET_STRING_ELT(nms, 5, mkChar("dim_changeTimes"));
+  SET_STRING_ELT(nms, 6, mkChar("E0"));
+  SET_STRING_ELT(nms, 7, mkChar("Gamma"));
+  SET_STRING_ELT(nms, 8, mkChar("I0"));
+  SET_STRING_ELT(nms, 9, mkChar("initial_D"));
+  SET_STRING_ELT(nms, 10, mkChar("initial_E"));
+  SET_STRING_ELT(nms, 11, mkChar("initial_I"));
+  SET_STRING_ELT(nms, 12, mkChar("initial_R"));
+  SET_STRING_ELT(nms, 13, mkChar("initial_S"));
+  SET_STRING_ELT(nms, 14, mkChar("interpolate_Beta"));
+  SET_STRING_ELT(nms, 15, mkChar("Lambda"));
+  SET_STRING_ELT(nms, 16, mkChar("R0"));
+  SET_STRING_ELT(nms, 17, mkChar("S0"));
+  setAttrib(contents, R_NamesSymbol, nms);
+  UNPROTECT(4);
+  return contents;
+}
+SEXP seirdGenerator_set_user(SEXP internal_p, SEXP user) {
+  seirdGenerator_internal *internal = seirdGenerator_get_internal(internal_p, 1);
+  internal->Alpha = user_get_scalar_double(user, "Alpha", internal->Alpha, NA_REAL, NA_REAL);
+  internal->Betas = (double*) user_get_array_dim(user, false, internal->Betas, "Betas", 1, NA_REAL, NA_REAL, &internal->dim_Betas);
+  internal->D0 = user_get_scalar_double(user, "D0", internal->D0, NA_REAL, NA_REAL);
+  internal->E0 = user_get_scalar_double(user, "E0", internal->E0, NA_REAL, NA_REAL);
+  internal->Gamma = user_get_scalar_double(user, "Gamma", internal->Gamma, NA_REAL, NA_REAL);
+  internal->I0 = user_get_scalar_double(user, "I0", internal->I0, NA_REAL, NA_REAL);
+  internal->Lambda = user_get_scalar_double(user, "Lambda", internal->Lambda, NA_REAL, NA_REAL);
+  internal->R0 = user_get_scalar_double(user, "R0", internal->R0, NA_REAL, NA_REAL);
+  internal->S0 = user_get_scalar_double(user, "S0", internal->S0, NA_REAL, NA_REAL);
+  internal->initial_D = internal->D0;
+  internal->initial_E = internal->E0;
+  internal->initial_I = internal->I0;
+  internal->initial_R = internal->R0;
+  internal->initial_S = internal->S0;
+  internal->dim_changeTimes = internal->dim_Betas;
+  internal->changeTimes = (double*) user_get_array(user, false, internal->changeTimes, "changeTimes", NA_REAL, NA_REAL, 1, internal->dim_changeTimes);
+  interpolate_check_y(internal->dim_changeTimes, internal->dim_Betas, 0, "Betas", "Beta");
+  cinterpolate_free(internal->interpolate_Beta);
+  internal->interpolate_Beta = cinterpolate_alloc("constant", internal->dim_changeTimes, 1, internal->changeTimes, internal->Betas, true, false);
+  return R_NilValue;
+}
+SEXP seirdGenerator_metadata(SEXP internal_p) {
+  seirdGenerator_internal *internal = seirdGenerator_get_internal(internal_p, 1);
+  SEXP ret = PROTECT(allocVector(VECSXP, 4));
+  SEXP nms = PROTECT(allocVector(STRSXP, 4));
+  SET_STRING_ELT(nms, 0, mkChar("variable_order"));
+  SET_STRING_ELT(nms, 1, mkChar("output_order"));
+  SET_STRING_ELT(nms, 2, mkChar("n_out"));
+  SET_STRING_ELT(nms, 3, mkChar("interpolate_t"));
+  setAttrib(ret, R_NamesSymbol, nms);
+  SEXP variable_length = PROTECT(allocVector(VECSXP, 5));
+  SEXP variable_names = PROTECT(allocVector(STRSXP, 5));
+  setAttrib(variable_length, R_NamesSymbol, variable_names);
+  SET_VECTOR_ELT(variable_length, 0, R_NilValue);
+  SET_VECTOR_ELT(variable_length, 1, R_NilValue);
+  SET_VECTOR_ELT(variable_length, 2, R_NilValue);
+  SET_VECTOR_ELT(variable_length, 3, R_NilValue);
+  SET_VECTOR_ELT(variable_length, 4, R_NilValue);
+  SET_STRING_ELT(variable_names, 0, mkChar("S"));
+  SET_STRING_ELT(variable_names, 1, mkChar("E"));
+  SET_STRING_ELT(variable_names, 2, mkChar("I"));
+  SET_STRING_ELT(variable_names, 3, mkChar("R"));
+  SET_STRING_ELT(variable_names, 4, mkChar("D"));
+  SET_VECTOR_ELT(ret, 0, variable_length);
+  UNPROTECT(2);
+  SEXP output_length = PROTECT(allocVector(VECSXP, 1));
+  SEXP output_names = PROTECT(allocVector(STRSXP, 1));
+  setAttrib(output_length, R_NamesSymbol, output_names);
+  SET_VECTOR_ELT(output_length, 0, R_NilValue);
+  SET_STRING_ELT(output_names, 0, mkChar("Beta"));
+  SET_VECTOR_ELT(ret, 1, output_length);
+  UNPROTECT(2);
+  SET_VECTOR_ELT(ret, 2, ScalarInteger(1));
+  SEXP interpolate_t = PROTECT(allocVector(VECSXP, 3));
+  SEXP interpolate_t_nms = PROTECT(allocVector(STRSXP, 3));
+  setAttrib(interpolate_t, R_NamesSymbol, interpolate_t_nms);
+  SET_VECTOR_ELT(interpolate_t, 0, ScalarReal(internal->changeTimes[0]));
+  SET_VECTOR_ELT(interpolate_t, 1, ScalarReal(R_PosInf));
+  SET_STRING_ELT(interpolate_t_nms, 0, mkChar("min"));
+  SET_STRING_ELT(interpolate_t_nms, 1, mkChar("max"));
+  SET_VECTOR_ELT(ret, 3, interpolate_t);
+  UNPROTECT(2);
+  UNPROTECT(2);
+  return ret;
+}
+SEXP seirdGenerator_initial_conditions(SEXP internal_p, SEXP t_ptr) {
+  seirdGenerator_internal *internal = seirdGenerator_get_internal(internal_p, 1);
+  SEXP r_state = PROTECT(allocVector(REALSXP, 5));
+  double * state = REAL(r_state);
+  state[0] = internal->initial_S;
+  state[1] = internal->initial_E;
+  state[2] = internal->initial_I;
+  state[3] = internal->initial_R;
+  state[4] = internal->initial_D;
+  UNPROTECT(1);
+  return r_state;
+}
+void seirdGenerator_rhs(seirdGenerator_internal* internal, double t, double * state, double * dstatedt, double * output) {
+  double S = state[0];
+  double E = state[1];
+  double I = state[2];
+  double R = state[3];
+  double D = state[4];
+  dstatedt[4] = I * internal->Alpha;
+  dstatedt[2] = E * internal->Lambda - I * internal->Gamma - I * internal->Alpha;
+  dstatedt[3] = I * internal->Gamma;
+  double N = S + E + I + R + D;
+  double Beta = 0.0;
+  cinterpolate_eval(t, internal->interpolate_Beta, &Beta);
+  dstatedt[1] = Beta * S * I / (double) N - E * internal->Lambda;
+  dstatedt[0] = -(Beta) * S * I / (double) N;
+  if (output) {
+    output[0] = Beta;
+  }
+}
+void seirdGenerator_rhs_dde(size_t neq, double t, double * state, double * dstatedt, void * internal) {
+  seirdGenerator_rhs((seirdGenerator_internal*)internal, t, state, dstatedt, NULL);
+}
+void seirdGenerator_rhs_desolve(int * neq, double * t, double * state, double * dstatedt, double * output, int * np) {
+  seirdGenerator_rhs(seirdGenerator_internal_ds, *t, state, dstatedt, output);
+}
+void seirdGenerator_output_dde(size_t n_eq, double t, double * state, size_t n_output, double * output, void * internal_p) {
+  seirdGenerator_internal *internal = (seirdGenerator_internal*) internal_p;
+  double Beta = 0.0;
+  cinterpolate_eval(t, internal->interpolate_Beta, &Beta);
+  output[0] = Beta;
+}
+SEXP seirdGenerator_rhs_r(SEXP internal_p, SEXP t, SEXP state) {
+  SEXP dstatedt = PROTECT(allocVector(REALSXP, LENGTH(state)));
+  seirdGenerator_internal *internal = seirdGenerator_get_internal(internal_p, 1);
+  SEXP output_ptr = PROTECT(allocVector(REALSXP, 1));
+  setAttrib(dstatedt, install("output"), output_ptr);
+  UNPROTECT(1);
+  double *output = REAL(output_ptr);
+  seirdGenerator_rhs(internal, REAL(t)[0], REAL(state), REAL(dstatedt), output);
+  UNPROTECT(1);
+  return dstatedt;
+}
 sirdGenerator_internal* sirdGenerator_get_internal(SEXP internal_p, int closed_error) {
   sirdGenerator_internal *internal = NULL;
   if (TYPEOF(internal_p) != EXTPTRSXP) {

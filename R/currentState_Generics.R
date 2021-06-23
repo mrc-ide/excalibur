@@ -44,4 +44,23 @@ setGeneric("estimateInfectiousNode", function(epiModel, ...){
 setGeneric("currentState", function(epiModel, ...){
   standardGeneric("currentState")
 })
-
+#' A function to create a function that calculates n-th derivative of D for the epiModel
+#' @noRd
+setGeneric("calculateNthDeriv", function(epiModel, nderiv){
+  if (!requireNamespace("Deriv", quietly = TRUE)) {
+    stop("Package Deriv needed for calculating new derivatives. Please install
+         it, or use a derivative included in the package.",
+         call. = FALSE)
+  }
+  else if (!requireNamespace("stringr", quietly = TRUE)) {
+    stop("Package stringr needed for calculating new derivatives. Please install
+         it, or use a derivative included in the package.",
+         call. = FALSE)
+  }
+  standardGeneric("calculateNthDeriv")
+})
+#' A function to call a pre-made function that calculates n-th derivative of D for the epiModel
+#' @noRd
+setGeneric("getNthDeriv", function(epiModel, nderiv){
+  standardGeneric("getNthDeriv")
+})

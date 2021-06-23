@@ -2,20 +2,20 @@
 % Please edit documentation in R/sird_Methods.R
 \name{calculateDownstreamExponentialNodes,sirdModel-method}
 \alias{calculateDownstreamExponentialNodes,sirdModel-method}
-\title{An S4 method to calculate current state of R and D for an SIRD when provided
-with a count of the total number of deaths.}
+\title{An S4 method to calculate current state of R and D for an SIRD/SEIRD when
+provided with a count of the total number of deaths.}
 \usage{
 \S4method{calculateDownstreamExponentialNodes}{sirdModel}(epiModel, deaths)
 }
 \arguments{
-\item{epiModel}{The epidemic model of class SIRD to have the current state of
-R and D calculated.}
+\item{epiModel}{The epidemic model of class SIRD to have the current
+state of R and D calculated.}
 
 \item{deaths}{The total death count for this model, so far.}
 }
 \value{
-An object of class sirdModel with the values for D and R updated
-for the current state.
+An object of class sirdModel with the values for D and
+R updated for the current state.
 }
 \description{
 Please note that this method does not guarantee that this state would be
