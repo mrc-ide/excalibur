@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/mrc-ide/excalibur/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main)](https://github.com/mrc-ide/excalibur/actions/workflows/R-CMD-check.yaml)
-[![test-coverage](https://github.com/mrc-ide/excalibur/actions/workflows/test-coverage.yaml/badge.svg?branch=main)](https://github.com/mrc-ide/excalibur/actions/workflows/test-coverage.yaml)
+[![codecov.io](https://codecov.io/github/mrc-ide/excalibur/coverage.svg?branch=main)](https://codecov.io/github/mrc-ide/excalibur?branch=main)
 <!-- badges: end -->
 
 **Ex**pediating **Calib**rations in yo**ur** epidemic models
