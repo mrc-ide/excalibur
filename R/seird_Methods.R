@@ -114,7 +114,7 @@ setMethod("estimateInfectiousNode", signature("seirdModel"),
               yValues <- optimFunc(xValues)
               oldValue <- graphics::par()$mar
               graphics::par(mar = c(oldValue[1], 6, oldValue[3], oldValue[4]))
-              graphics::plot(xValues, yValues, type="l", xlab="I", ylab = bquote(f(I) %prop% frac(d^.(nderiv)*D*(t), d*t^.(nderiv))))
+              graphics::plot(xValues, yValues, type="l", xlab="I", ylab = bquote(f(I) %prop% (frac(d^.(nderiv)*D*(t), d*t^.(nderiv)))^2))
               graphics::abline(v=resultPar)
               graphics::abline(v=startingValues, lty = 2)
               graphics::par(mar=oldValue)
