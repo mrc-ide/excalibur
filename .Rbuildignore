@@ -3,5 +3,4 @@
 ^README\.Rmd$
 ^LICENSE\.md$
 ^\.github$
-^Make_seird_Methods_NthDeriv.R$
-^Make_seird_Methods_NthDeriv$
+^\R_raw$

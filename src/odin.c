@@ -71,6 +71,38 @@ void cinterpolate_free(void *obj);
 #endif
 
 #endif
+typedef struct agesirdGenerator_internal {
+  double Alpha;
+  double *Betas;
+  double *D0;
+  int dim_Betas;
+  int dim_Betas_1;
+  int dim_Betas_2;
+  int dim_D;
+  int dim_D0;
+  int dim_I;
+  int dim_I0;
+  int dim_infectiousWeight;
+  int dim_infectiousWeight_1;
+  int dim_infectiousWeight_2;
+  int dim_N;
+  int dim_R;
+  int dim_R0;
+  int dim_S;
+  int dim_S0;
+  double Gamma;
+  double *I0;
+  double *infectiousWeight;
+  double *initial_D;
+  double *initial_I;
+  double *initial_R;
+  double *initial_S;
+  double *N;
+  int offset_variable_D;
+  int offset_variable_R;
+  double *R0;
+  double *S0;
+} agesirdGenerator_internal;
 typedef struct seirdGenerator_internal {
   double Alpha;
   double *Betas;
@@ -108,6 +140,19 @@ typedef struct sirdGenerator_internal {
   double R0;
   double S0;
 } sirdGenerator_internal;
+agesirdGenerator_internal* agesirdGenerator_get_internal(SEXP internal_p, int closed_error);
+static void agesirdGenerator_finalise(SEXP internal_p);
+SEXP agesirdGenerator_create(SEXP user);
+void agesirdGenerator_initmod_desolve(void(* odeparms) (int *, double *));
+SEXP agesirdGenerator_contents(SEXP internal_p);
+SEXP agesirdGenerator_set_user(SEXP internal_p, SEXP user);
+SEXP agesirdGenerator_metadata(SEXP internal_p);
+SEXP agesirdGenerator_initial_conditions(SEXP internal_p, SEXP t_ptr);
+void agesirdGenerator_rhs(agesirdGenerator_internal* internal, double t, double * state, double * dstatedt, double * output);
+void agesirdGenerator_rhs_dde(size_t neq, double t, double * state, double * dstatedt, void * internal);
+void agesirdGenerator_rhs_desolve(int * neq, double * t, double * state, double * dstatedt, double * output, int * np);
+void agesirdGenerator_output_dde(size_t n_eq, double t, double * state, size_t n_output, double * output, void * internal_p);
+SEXP agesirdGenerator_rhs_r(SEXP internal_p, SEXP t, SEXP state);
 seirdGenerator_internal* seirdGenerator_get_internal(SEXP internal_p, int closed_error);
 static void seirdGenerator_finalise(SEXP internal_p);
 SEXP seirdGenerator_create(SEXP user);
@@ -145,6 +190,7 @@ void user_check_values_int(int * value, size_t len,
 void user_check_values(SEXP value, double min, double max,
                            const char *name);
 SEXP user_list_element(SEXP list, const char *name);
+void odin_set_dim(SEXP target, int rank, ...);
 void* user_get_array_dim(SEXP user, bool is_integer, void * previous,
                          const char *name, int rank,
                          double min, double max, int *dest_dim);
@@ -155,7 +201,325 @@ SEXP user_get_array_check(SEXP el, bool is_integer, const char *name,
                           double min, double max);
 SEXP user_get_array_check_rank(SEXP user, const char *name, int rank,
                                bool required);
+double odin_sum1(double *x, size_t from, size_t to);
+double odin_sum2(double* x, int from_i, int to_i, int from_j, int to_j, int dim_x_1);
 void interpolate_check_y(size_t nx, size_t ny, size_t i, const char *name_arg, const char *name_target);
+agesirdGenerator_internal* agesirdGenerator_get_internal(SEXP internal_p, int closed_error) {
+  agesirdGenerator_internal *internal = NULL;
+  if (TYPEOF(internal_p) != EXTPTRSXP) {
+    Rf_error("Expected an external pointer");
+  }
+  internal = (agesirdGenerator_internal*) R_ExternalPtrAddr(internal_p);
+  if (!internal && closed_error) {
+    Rf_error("Pointer has been invalidated");
+  }
+  return internal;
+}
+void agesirdGenerator_finalise(SEXP internal_p) {
+  agesirdGenerator_internal *internal = agesirdGenerator_get_internal(internal_p, 0);
+  if (internal_p) {
+    Free(internal->Betas);
+    Free(internal->D0);
+    Free(internal->I0);
+    Free(internal->infectiousWeight);
+    Free(internal->initial_D);
+    Free(internal->initial_I);
+    Free(internal->initial_R);
+    Free(internal->initial_S);
+    Free(internal->N);
+    Free(internal->R0);
+    Free(internal->S0);
+    Free(internal);
+    R_ClearExternalPtr(internal_p);
+  }
+}
+SEXP agesirdGenerator_create(SEXP user) {
+  agesirdGenerator_internal *internal = (agesirdGenerator_internal*) Calloc(1, agesirdGenerator_internal);
+  internal->Betas = NULL;
+  internal->D0 = NULL;
+  internal->I0 = NULL;
+  internal->infectiousWeight = NULL;
+  internal->initial_D = NULL;
+  internal->initial_I = NULL;
+  internal->initial_R = NULL;
+  internal->initial_S = NULL;
+  internal->N = NULL;
+  internal->R0 = NULL;
+  internal->S0 = NULL;
+  internal->Alpha = NA_REAL;
+  internal->Betas = NULL;
+  internal->D0 = NULL;
+  internal->Gamma = NA_REAL;
+  internal->I0 = NULL;
+  internal->R0 = NULL;
+  internal->S0 = NULL;
+  SEXP ptr = PROTECT(R_MakeExternalPtr(internal, R_NilValue, R_NilValue));
+  R_RegisterCFinalizer(ptr, agesirdGenerator_finalise);
+  UNPROTECT(1);
+  return ptr;
+}
+static agesirdGenerator_internal *agesirdGenerator_internal_ds;
+void agesirdGenerator_initmod_desolve(void(* odeparms) (int *, double *)) {
+  static DL_FUNC get_desolve_gparms = NULL;
+  if (get_desolve_gparms == NULL) {
+    get_desolve_gparms =
+      R_GetCCallable("deSolve", "get_deSolve_gparms");
+  }
+  agesirdGenerator_internal_ds = agesirdGenerator_get_internal(get_desolve_gparms(), 1);
+}
+SEXP agesirdGenerator_contents(SEXP internal_p) {
+  agesirdGenerator_internal *internal = agesirdGenerator_get_internal(internal_p, 1);
+  SEXP contents = PROTECT(allocVector(VECSXP, 30));
+  SET_VECTOR_ELT(contents, 0, ScalarReal(internal->Alpha));
+  SEXP Betas = PROTECT(allocVector(REALSXP, internal->dim_Betas));
+  memcpy(REAL(Betas), internal->Betas, internal->dim_Betas * sizeof(double));
+  odin_set_dim(Betas, 2, internal->dim_Betas_1, internal->dim_Betas_2);
+  SET_VECTOR_ELT(contents, 1, Betas);
+  SEXP D0 = PROTECT(allocVector(REALSXP, internal->dim_D0));
+  memcpy(REAL(D0), internal->D0, internal->dim_D0 * sizeof(double));
+  SET_VECTOR_ELT(contents, 2, D0);
+  SET_VECTOR_ELT(contents, 3, ScalarInteger(internal->dim_Betas));
+  SET_VECTOR_ELT(contents, 4, ScalarInteger(internal->dim_Betas_1));
+  SET_VECTOR_ELT(contents, 5, ScalarInteger(internal->dim_Betas_2));
+  SET_VECTOR_ELT(contents, 6, ScalarInteger(internal->dim_D));
+  SET_VECTOR_ELT(contents, 7, ScalarInteger(internal->dim_D0));
+  SET_VECTOR_ELT(contents, 8, ScalarInteger(internal->dim_I));
+  SET_VECTOR_ELT(contents, 9, ScalarInteger(internal->dim_I0));
+  SET_VECTOR_ELT(contents, 10, ScalarInteger(internal->dim_infectiousWeight));
+  SET_VECTOR_ELT(contents, 11, ScalarInteger(internal->dim_infectiousWeight_1));
+  SET_VECTOR_ELT(contents, 12, ScalarInteger(internal->dim_infectiousWeight_2));
+  SET_VECTOR_ELT(contents, 13, ScalarInteger(internal->dim_N));
+  SET_VECTOR_ELT(contents, 14, ScalarInteger(internal->dim_R));
+  SET_VECTOR_ELT(contents, 15, ScalarInteger(internal->dim_R0));
+  SET_VECTOR_ELT(contents, 16, ScalarInteger(internal->dim_S));
+  SET_VECTOR_ELT(contents, 17, ScalarInteger(internal->dim_S0));
+  SET_VECTOR_ELT(contents, 18, ScalarReal(internal->Gamma));
+  SEXP I0 = PROTECT(allocVector(REALSXP, internal->dim_I0));
+  memcpy(REAL(I0), internal->I0, internal->dim_I0 * sizeof(double));
+  SET_VECTOR_ELT(contents, 19, I0);
+  SEXP infectiousWeight = PROTECT(allocVector(REALSXP, internal->dim_infectiousWeight));
+  memcpy(REAL(infectiousWeight), internal->infectiousWeight, internal->dim_infectiousWeight * sizeof(double));
+  odin_set_dim(infectiousWeight, 2, internal->dim_infectiousWeight_1, internal->dim_infectiousWeight_2);
+  SET_VECTOR_ELT(contents, 20, infectiousWeight);
+  SEXP initial_D = PROTECT(allocVector(REALSXP, internal->dim_D));
+  memcpy(REAL(initial_D), internal->initial_D, internal->dim_D * sizeof(double));
+  SET_VECTOR_ELT(contents, 21, initial_D);
+  SEXP initial_I = PROTECT(allocVector(REALSXP, internal->dim_I));
+  memcpy(REAL(initial_I), internal->initial_I, internal->dim_I * sizeof(double));
+  SET_VECTOR_ELT(contents, 22, initial_I);
+  SEXP initial_R = PROTECT(allocVector(REALSXP, internal->dim_R));
+  memcpy(REAL(initial_R), internal->initial_R, internal->dim_R * sizeof(double));
+  SET_VECTOR_ELT(contents, 23, initial_R);
+  SEXP initial_S = PROTECT(allocVector(REALSXP, internal->dim_S));
+  memcpy(REAL(initial_S), internal->initial_S, internal->dim_S * sizeof(double));
+  SET_VECTOR_ELT(contents, 24, initial_S);
+  SEXP N = PROTECT(allocVector(REALSXP, internal->dim_N));
+  memcpy(REAL(N), internal->N, internal->dim_N * sizeof(double));
+  SET_VECTOR_ELT(contents, 25, N);
+  SET_VECTOR_ELT(contents, 26, ScalarInteger(internal->offset_variable_D));
+  SET_VECTOR_ELT(contents, 27, ScalarInteger(internal->offset_variable_R));
+  SEXP R0 = PROTECT(allocVector(REALSXP, internal->dim_R0));
+  memcpy(REAL(R0), internal->R0, internal->dim_R0 * sizeof(double));
+  SET_VECTOR_ELT(contents, 28, R0);
+  SEXP S0 = PROTECT(allocVector(REALSXP, internal->dim_S0));
+  memcpy(REAL(S0), internal->S0, internal->dim_S0 * sizeof(double));
+  SET_VECTOR_ELT(contents, 29, S0);
+  SEXP nms = PROTECT(allocVector(STRSXP, 30));
+  SET_STRING_ELT(nms, 0, mkChar("Alpha"));
+  SET_STRING_ELT(nms, 1, mkChar("Betas"));
+  SET_STRING_ELT(nms, 2, mkChar("D0"));
+  SET_STRING_ELT(nms, 3, mkChar("dim_Betas"));
+  SET_STRING_ELT(nms, 4, mkChar("dim_Betas_1"));
+  SET_STRING_ELT(nms, 5, mkChar("dim_Betas_2"));
+  SET_STRING_ELT(nms, 6, mkChar("dim_D"));
+  SET_STRING_ELT(nms, 7, mkChar("dim_D0"));
+  SET_STRING_ELT(nms, 8, mkChar("dim_I"));
+  SET_STRING_ELT(nms, 9, mkChar("dim_I0"));
+  SET_STRING_ELT(nms, 10, mkChar("dim_infectiousWeight"));
+  SET_STRING_ELT(nms, 11, mkChar("dim_infectiousWeight_1"));
+  SET_STRING_ELT(nms, 12, mkChar("dim_infectiousWeight_2"));
+  SET_STRING_ELT(nms, 13, mkChar("dim_N"));
+  SET_STRING_ELT(nms, 14, mkChar("dim_R"));
+  SET_STRING_ELT(nms, 15, mkChar("dim_R0"));
+  SET_STRING_ELT(nms, 16, mkChar("dim_S"));
+  SET_STRING_ELT(nms, 17, mkChar("dim_S0"));
+  SET_STRING_ELT(nms, 18, mkChar("Gamma"));
+  SET_STRING_ELT(nms, 19, mkChar("I0"));
+  SET_STRING_ELT(nms, 20, mkChar("infectiousWeight"));
+  SET_STRING_ELT(nms, 21, mkChar("initial_D"));
+  SET_STRING_ELT(nms, 22, mkChar("initial_I"));
+  SET_STRING_ELT(nms, 23, mkChar("initial_R"));
+  SET_STRING_ELT(nms, 24, mkChar("initial_S"));
+  SET_STRING_ELT(nms, 25, mkChar("N"));
+  SET_STRING_ELT(nms, 26, mkChar("offset_variable_D"));
+  SET_STRING_ELT(nms, 27, mkChar("offset_variable_R"));
+  SET_STRING_ELT(nms, 28, mkChar("R0"));
+  SET_STRING_ELT(nms, 29, mkChar("S0"));
+  setAttrib(contents, R_NamesSymbol, nms);
+  UNPROTECT(13);
+  return contents;
+}
+SEXP agesirdGenerator_set_user(SEXP internal_p, SEXP user) {
+  agesirdGenerator_internal *internal = agesirdGenerator_get_internal(internal_p, 1);
+  internal->Alpha = user_get_scalar_double(user, "Alpha", internal->Alpha, NA_REAL, NA_REAL);
+  int dim_Betas[3];
+  internal->Betas = (double*) user_get_array_dim(user, false, internal->Betas, "Betas", 2, NA_REAL, NA_REAL, dim_Betas);
+  internal->dim_Betas = dim_Betas[0];
+  internal->dim_Betas_1 = dim_Betas[1];
+  internal->dim_Betas_2 = dim_Betas[2];
+  internal->Gamma = user_get_scalar_double(user, "Gamma", internal->Gamma, NA_REAL, NA_REAL);
+  internal->S0 = (double*) user_get_array_dim(user, false, internal->S0, "S0", 1, NA_REAL, NA_REAL, &internal->dim_S0);
+  internal->dim_D = internal->dim_S0;
+  internal->dim_D0 = internal->dim_S0;
+  internal->dim_I = internal->dim_S0;
+  internal->dim_I0 = internal->dim_S0;
+  internal->dim_infectiousWeight_1 = internal->dim_S0;
+  internal->dim_infectiousWeight_2 = internal->dim_S0;
+  internal->dim_N = internal->dim_S0;
+  internal->dim_R = internal->dim_S0;
+  internal->dim_R0 = internal->dim_S0;
+  internal->dim_S = internal->dim_S0;
+  Free(internal->initial_D);
+  internal->initial_D = (double*) Calloc(internal->dim_D, double);
+  Free(internal->initial_I);
+  internal->initial_I = (double*) Calloc(internal->dim_I, double);
+  Free(internal->initial_R);
+  internal->initial_R = (double*) Calloc(internal->dim_R, double);
+  Free(internal->initial_S);
+  internal->initial_S = (double*) Calloc(internal->dim_S, double);
+  Free(internal->N);
+  internal->N = (double*) Calloc(internal->dim_N, double);
+  internal->D0 = (double*) user_get_array(user, false, internal->D0, "D0", NA_REAL, NA_REAL, 1, internal->dim_D0);
+  internal->dim_infectiousWeight = internal->dim_infectiousWeight_1 * internal->dim_infectiousWeight_2;
+  internal->I0 = (double*) user_get_array(user, false, internal->I0, "I0", NA_REAL, NA_REAL, 1, internal->dim_I0);
+  for (int i = 1; i <= internal->dim_S; ++i) {
+    internal->initial_S[i - 1] = internal->S0[i - 1];
+  }
+  internal->offset_variable_D = internal->dim_S + internal->dim_I + internal->dim_R;
+  internal->offset_variable_R = internal->dim_S + internal->dim_I;
+  internal->R0 = (double*) user_get_array(user, false, internal->R0, "R0", NA_REAL, NA_REAL, 1, internal->dim_R0);
+  Free(internal->infectiousWeight);
+  internal->infectiousWeight = (double*) Calloc(internal->dim_infectiousWeight, double);
+  for (int i = 1; i <= internal->dim_D; ++i) {
+    internal->initial_D[i - 1] = internal->D0[i - 1];
+  }
+  for (int i = 1; i <= internal->dim_I; ++i) {
+    internal->initial_I[i - 1] = internal->I0[i - 1];
+  }
+  for (int i = 1; i <= internal->dim_R; ++i) {
+    internal->initial_R[i - 1] = internal->R0[i - 1];
+  }
+  return R_NilValue;
+}
+SEXP agesirdGenerator_metadata(SEXP internal_p) {
+  agesirdGenerator_internal *internal = agesirdGenerator_get_internal(internal_p, 1);
+  SEXP ret = PROTECT(allocVector(VECSXP, 4));
+  SEXP nms = PROTECT(allocVector(STRSXP, 4));
+  SET_STRING_ELT(nms, 0, mkChar("variable_order"));
+  SET_STRING_ELT(nms, 1, mkChar("output_order"));
+  SET_STRING_ELT(nms, 2, mkChar("n_out"));
+  SET_STRING_ELT(nms, 3, mkChar("interpolate_t"));
+  setAttrib(ret, R_NamesSymbol, nms);
+  SEXP variable_length = PROTECT(allocVector(VECSXP, 4));
+  SEXP variable_names = PROTECT(allocVector(STRSXP, 4));
+  setAttrib(variable_length, R_NamesSymbol, variable_names);
+  SET_VECTOR_ELT(variable_length, 0, ScalarInteger(internal->dim_S));
+  SET_VECTOR_ELT(variable_length, 1, ScalarInteger(internal->dim_I));
+  SET_VECTOR_ELT(variable_length, 2, ScalarInteger(internal->dim_R));
+  SET_VECTOR_ELT(variable_length, 3, ScalarInteger(internal->dim_D));
+  SET_STRING_ELT(variable_names, 0, mkChar("S"));
+  SET_STRING_ELT(variable_names, 1, mkChar("I"));
+  SET_STRING_ELT(variable_names, 2, mkChar("R"));
+  SET_STRING_ELT(variable_names, 3, mkChar("D"));
+  SET_VECTOR_ELT(ret, 0, variable_length);
+  UNPROTECT(2);
+  SEXP output_length = PROTECT(allocVector(VECSXP, 1));
+  SEXP output_names = PROTECT(allocVector(STRSXP, 1));
+  setAttrib(output_length, R_NamesSymbol, output_names);
+  SET_VECTOR_ELT(output_length, 0, allocVector(INTSXP, 2));
+  int * dim_infectiousWeight = INTEGER(VECTOR_ELT(output_length, 0));
+  dim_infectiousWeight[0] = internal->dim_infectiousWeight_1;
+  dim_infectiousWeight[1] = internal->dim_infectiousWeight_2;
+  SET_STRING_ELT(output_names, 0, mkChar("infectiousWeight"));
+  SET_VECTOR_ELT(ret, 1, output_length);
+  UNPROTECT(2);
+  SET_VECTOR_ELT(ret, 2, ScalarInteger(internal->dim_infectiousWeight));
+  UNPROTECT(2);
+  return ret;
+}
+SEXP agesirdGenerator_initial_conditions(SEXP internal_p, SEXP t_ptr) {
+  agesirdGenerator_internal *internal = agesirdGenerator_get_internal(internal_p, 1);
+  SEXP r_state = PROTECT(allocVector(REALSXP, internal->dim_S + internal->dim_I + internal->dim_R + internal->dim_D));
+  double * state = REAL(r_state);
+  memcpy(state + 0, internal->initial_S, internal->dim_S * sizeof(double));
+  memcpy(state + internal->dim_S, internal->initial_I, internal->dim_I * sizeof(double));
+  memcpy(state + internal->offset_variable_R, internal->initial_R, internal->dim_R * sizeof(double));
+  memcpy(state + internal->offset_variable_D, internal->initial_D, internal->dim_D * sizeof(double));
+  UNPROTECT(1);
+  return r_state;
+}
+void agesirdGenerator_rhs(agesirdGenerator_internal* internal, double t, double * state, double * dstatedt, double * output) {
+  double * S = state + 0;
+  double * I = state + internal->dim_S;
+  double * R = state + internal->offset_variable_R;
+  double * D = state + internal->offset_variable_D;
+  for (int i = 1; i <= internal->dim_D; ++i) {
+    dstatedt[internal->offset_variable_D + i - 1] = I[i - 1] * internal->Alpha;
+  }
+  for (int i = 1; i <= internal->dim_R; ++i) {
+    dstatedt[internal->offset_variable_R + i - 1] = I[i - 1] * internal->Gamma;
+  }
+  for (int i = 1; i <= internal->dim_N; ++i) {
+    internal->N[i - 1] = S[i - 1] + I[i - 1] + R[i - 1] + D[i - 1];
+  }
+  for (int i = 1; i <= internal->dim_infectiousWeight_1; ++i) {
+    for (int j = 1; j <= internal->dim_infectiousWeight_2; ++j) {
+      internal->infectiousWeight[i - 1 + internal->dim_infectiousWeight_1 * (j - 1)] = internal->Betas[internal->dim_Betas_1 * (j - 1) + i - 1] * I[j - 1] / (double) internal->N[j - 1];
+    }
+  }
+  for (int i = 1; i <= internal->dim_I; ++i) {
+    dstatedt[internal->dim_S + i - 1] = S[i - 1] * odin_sum2(internal->infectiousWeight, i - 1, i, 0, internal->dim_infectiousWeight_2, internal->dim_infectiousWeight_1) - I[i - 1] * internal->Gamma - I[i - 1] * internal->Alpha;
+  }
+  for (int i = 1; i <= internal->dim_S; ++i) {
+    dstatedt[0 + i - 1] = -(S[i - 1]) * odin_sum2(internal->infectiousWeight, i - 1, i, 0, internal->dim_infectiousWeight_2, internal->dim_infectiousWeight_1);
+  }
+  if (output) {
+    memcpy(output + 0, internal->infectiousWeight, internal->dim_infectiousWeight * sizeof(double));
+  }
+}
+void agesirdGenerator_rhs_dde(size_t neq, double t, double * state, double * dstatedt, void * internal) {
+  agesirdGenerator_rhs((agesirdGenerator_internal*)internal, t, state, dstatedt, NULL);
+}
+void agesirdGenerator_rhs_desolve(int * neq, double * t, double * state, double * dstatedt, double * output, int * np) {
+  agesirdGenerator_rhs(agesirdGenerator_internal_ds, *t, state, dstatedt, output);
+}
+void agesirdGenerator_output_dde(size_t n_eq, double t, double * state, size_t n_output, double * output, void * internal_p) {
+  agesirdGenerator_internal *internal = (agesirdGenerator_internal*) internal_p;
+  double * S = state + 0;
+  double * I = state + internal->dim_S;
+  double * R = state + internal->offset_variable_R;
+  double * D = state + internal->offset_variable_D;
+  for (int i = 1; i <= internal->dim_N; ++i) {
+    internal->N[i - 1] = S[i - 1] + I[i - 1] + R[i - 1] + D[i - 1];
+  }
+  for (int i = 1; i <= internal->dim_infectiousWeight_1; ++i) {
+    for (int j = 1; j <= internal->dim_infectiousWeight_2; ++j) {
+      internal->infectiousWeight[i - 1 + internal->dim_infectiousWeight_1 * (j - 1)] = internal->Betas[internal->dim_Betas_1 * (j - 1) + i - 1] * I[j - 1] / (double) internal->N[j - 1];
+    }
+  }
+  memcpy(output + 0, internal->infectiousWeight, internal->dim_infectiousWeight * sizeof(double));
+}
+SEXP agesirdGenerator_rhs_r(SEXP internal_p, SEXP t, SEXP state) {
+  SEXP dstatedt = PROTECT(allocVector(REALSXP, LENGTH(state)));
+  agesirdGenerator_internal *internal = agesirdGenerator_get_internal(internal_p, 1);
+  SEXP output_ptr = PROTECT(allocVector(REALSXP, internal->dim_infectiousWeight));
+  setAttrib(dstatedt, install("output"), output_ptr);
+  UNPROTECT(1);
+  double *output = REAL(output_ptr);
+  agesirdGenerator_rhs(internal, REAL(t)[0], REAL(state), REAL(dstatedt), output);
+  UNPROTECT(1);
+  return dstatedt;
+}
 seirdGenerator_internal* seirdGenerator_get_internal(SEXP internal_p, int closed_error) {
   seirdGenerator_internal *internal = NULL;
   if (TYPEOF(internal_p) != EXTPTRSXP) {
@@ -681,6 +1045,20 @@ SEXP user_list_element(SEXP list, const char *name) {
   }
   return ret;
 }
+void odin_set_dim(SEXP target, int rank, ...) {
+  SEXP r_dim = PROTECT(allocVector(INTSXP, rank));
+  int *dim = INTEGER(r_dim);
+
+  va_list ap;
+  va_start(ap, rank);
+  for (size_t i = 0; i < (size_t)rank; ++i) {
+    dim[i] = va_arg(ap, int);
+  }
+  va_end(ap);
+
+  setAttrib(target, R_DimSymbol, r_dim);
+  UNPROTECT(1);
+}
 void* user_get_array_dim(SEXP user, bool is_integer, void * previous,
                          const char *name, int rank,
                          double min, double max, int *dest_dim) {
@@ -820,6 +1198,23 @@ SEXP user_get_array_check_rank(SEXP user, const char *name, int rank,
     }
   }
   return el;
+}
+double odin_sum1(double *x, size_t from, size_t to) {
+  double tot = 0.0;
+  for (size_t i = from; i < to; ++i) {
+    tot += x[i];
+  }
+  return tot;
+}
+double odin_sum2(double* x, int from_i, int to_i, int from_j, int to_j, int dim_x_1) {
+  double tot = 0.0;
+  for (int j = from_j; j < to_j; ++j) {
+    int jj = j * dim_x_1;
+    for (int i = from_i; i < to_i; ++i) {
+      tot += x[i + jj];
+    }
+  }
+  return tot;
 }
 void interpolate_check_y(size_t nx, size_t ny, size_t i, const char *name_arg, const char *name_target) {
   if (nx != ny) {
