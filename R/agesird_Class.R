@@ -31,16 +31,16 @@ methods::setClass(
 #' and filled slots for parameters and the initial state.
 #' @examples
 #' #Two population model
-#' model <- setAgeSIRD(N = c(100,100), Betas = matrix(c(1,0.5,0.2,1), nrow=2, byrow=FALSE),
+#' model <- setAgeSIRD(N = c(100,100), Betas = matrix(c(1,0.5,0.2,1), nrow=2, byrow=TRUE),
 #' Gamma = 1/5, ProbOfDeath = 1/20, I0 = c(1,1))
 #'
 #' #time-varying
 #' Betas <- array(NA, dim=c(2,2,2)) #set up array, the first dimension will be time
 #' Betas[1,,] <- matrix(c(1,0.5,
-#'                        0.2,1), nrow=2, byrow = FALSE)
+#'                        0.2,1), nrow=2, byrow = TRUE)
 #' Betas[2,,] <- matrix(c(1,0.1,
-#'                        0,5), nrow=2, byrow = FALSE)
-#' model <- setAgeSIRD(N = c(100,100), Beta = array(c(1,0.5,0.2,1,1/2,0.5,0.2,1/2), dim = rep(1,2,3)), nrow=2),
+#'                        0,5), nrow=2, byrow = TRUE)
+#' model <- setAgeSIRD(N = c(100,100), Beta = Betas, dim = rep(1,2,3)), nrow=2),
 #' Gamma = 1/5, ProbOfDeath = 1/20, I0 = c(1,1), changeTimes = 5)
 #' @export
 setAgeSIRD <- function(N, Betas, Gamma, ProbOfDeath, I0, changeTimes = NULL){
