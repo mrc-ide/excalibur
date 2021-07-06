@@ -6,7 +6,10 @@ deriv(R[]) <- I[i]*Gamma
 deriv(D[]) <- I[i]*Alpha
 #values used in relations
 N[] <- S[i] + I[i] + R[i] + D[i]
-infectiousWeight[,] <- Betas[i,j]*I[j]/N[j] #frequency dependent transmission
+infectiousWeight[,] <- Beta[i,j]*I[j]/N[j] #frequency dependent transmission
+#interpolate the betas
+Beta[,] <- interpolate(changeTimes, Betas, "constant")
+output(Beta) <- Beta
 #initial conditions
 initial(S[]) <- S0[i]
 initial(I[]) <- I0[i]
@@ -17,12 +20,14 @@ S0[] <- user()
 I0[] <- user()
 R0[] <- user()
 D0[] <- user()
-Betas[,] <- user()
+changeTimes[] <- user()
+Betas[,,] <- user()
 Gamma <- user()
 Alpha <- user()
 #dimensions
 dim(Betas) <- user()
 dim(S0) <- user()
+dim(changeTimes) <- user()
 dim(I0) <- length(S0)
 dim(R0) <- length(S0)
 dim(D0) <- length(S0)
@@ -32,3 +37,4 @@ dim(R) <- length(S0)
 dim(D) <- length(S0)
 dim(N) <- length(S0)
 dim(infectiousWeight) <- c(length(S0),length(S0))
+dim(Beta) <- c(length(S0),length(S0))

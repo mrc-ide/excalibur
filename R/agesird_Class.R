@@ -71,12 +71,17 @@ setAgeSIRD <- function(N, Betas, Gamma, ProbOfDeath, I0, changeTimes = NULL){
   }
   #append 0 to change times so that it works with interpolate
   changeTimes <- c(0,changeTimes)
+  #if Betas is a matrix we need to convert it into an array with the first dimension
+  #of length 1
+  if(length(dim(Betas)) == 2){
+    Betas <- array(Betas, dim = c(1, nrow(Betas), ncol(Betas)))
+  }
   #calculate death rate
   Alpha <- riskToRate(ProbOfDeath)
   #setup odin model
   modelObject@odinModel <- agesirdGenerator$new(
     Betas = Betas,
-    #changeTimes = changeTimes,
+    changeTimes = changeTimes,
     Gamma = Gamma,
     Alpha = Alpha,
     I0 = I0,

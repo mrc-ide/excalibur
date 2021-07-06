@@ -9,6 +9,7 @@
 
 /* .C calls */
 extern void agesirdGenerator_initmod_desolve(void *);
+extern void agesirdGenerator_output_dde(void *);
 extern void agesirdGenerator_rhs_dde(void *);
 extern void agesirdGenerator_rhs_desolve(void *);
 extern void seirdGenerator_initmod_desolve(void *);
@@ -45,6 +46,7 @@ extern SEXP sirdGenerator_set_user(SEXP, SEXP);
 
 static const R_CMethodDef CEntries[] = {
     {"agesirdGenerator_initmod_desolve", (DL_FUNC) &agesirdGenerator_initmod_desolve, 1},
+    {"agesirdGenerator_output_dde",      (DL_FUNC) &agesirdGenerator_output_dde,      1},
     {"agesirdGenerator_rhs_dde",         (DL_FUNC) &agesirdGenerator_rhs_dde,         1},
     {"agesirdGenerator_rhs_desolve",     (DL_FUNC) &agesirdGenerator_rhs_desolve,     1},
     {"seirdGenerator_initmod_desolve",   (DL_FUNC) &seirdGenerator_initmod_desolve,   1},

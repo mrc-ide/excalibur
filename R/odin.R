@@ -16,9 +16,10 @@ agesirdGenerator_ <- R6::R6Class(
     cfuns = list(
       rhs_dde = "agesirdGenerator_rhs_dde",
       rhs_desolve = "agesirdGenerator_rhs_desolve",
-      initmod_desolve = "agesirdGenerator_initmod_desolve"),
+      initmod_desolve = "agesirdGenerator_initmod_desolve",
+      output_dde = "agesirdGenerator_output_dde"),
     dll = "excalibur",
-    user = c("Alpha", "Betas", "D0", "Gamma", "I0", "R0", "S0"),
+    user = c("Alpha", "Betas", "changeTimes", "D0", "Gamma", "I0", "R0", "S0"),
 
     ## This is never called, but is used to ensure that R finds our
     ## symbols that we will use from the package; without this they
@@ -29,6 +30,7 @@ agesirdGenerator_ <- R6::R6Class(
         .C("agesirdGenerator_rhs_dde", package = "excalibur")
         .C("agesirdGenerator_rhs_desolve", package = "excalibur")
         .C("agesirdGenerator_initmod_desolve", package = "excalibur")
+        .C("agesirdGenerator_output_dde", package = "excalibur")
       }
     },
 
