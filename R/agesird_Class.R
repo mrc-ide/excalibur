@@ -46,7 +46,7 @@ setAgeSIRD <- function(N, Betas, Gamma, ProbOfDeath, I0, changeTimes = NULL){
     stop("Probability of death must be between 0 and 1, to convert a rate to a
          probability use 1-exp(-rate)")
   }
-  else if(any(c(Beta, Gamma, N, I0, changeTimes) < 0)){
+  else if(any(c(Betas, Gamma, N, I0, changeTimes) < 0)){
     stop("Inputs must be positive")
   }
   else if(any(c(N, I0)%%1 != 0)){
