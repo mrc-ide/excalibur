@@ -50,27 +50,35 @@ test_that("parameters Assignment", {
                                                   byrow = TRUE),
                           Gamma=3, ProbOfDeath=0.5, I0=c(1,0))
 
-  expect_equal(testModel@parameters$Betas, matrix(c(1,1/2,
+  expect_equal(testModel@parameters$Betas, array(matrix(c(1,1/2,
                                                     1/2,1),
                                                   nrow = 2,
-                                                  byrow = TRUE))
-  #expect_equal(testModel@parameters$changeTimes, 0)
+                                                  byrow = TRUE),
+                                                 dim = c(1,2,2)))
+  expect_equal(testModel@parameters$changeTimes, 0)
   expect_equal(testModel@parameters$Gamma, 3)
   expect_equal(testModel@parameters$Alpha, excalibur:::riskToRate(0.5))
 })
 
 test_that("Input restrictions", {
 
-  expect_error(setAgeSIRD(N = c("100","10"), Betas = diag(c(1,1)), Gamma = 1, ProbOfDeath = 0.1, I0 = 1, changeTimes=NULL))
-  expect_error(setAgeSIRD(N = c(100, 10), Betas = diag(c(1,1)), Gamma = 1, ProbOfDeath = 1.5, I0 = 1, changeTimes=NULL))
-  expect_error(setAgeSIRD(N = c(100, 10), Betas = diag(c(-1,1)), Gamma = 1, ProbOfDeath = 0.1, I0 = 1, changeTimes=NULL))
-  expect_error(setAgeSIRD(N = c(100.5, 10), Betas = diag(c(1,1)), Gamma = 1, ProbOfDeath = 0.1, I0 = 1, changeTimes=NULL))
-  expect_error(setAgeSIRD(N = c(100, 10), Betas = diag(c(1,1)), Gamma = c(1,2), ProbOfDeath = 0.1, I0 = 1, changeTimes=NULL))
-  expect_error(setAgeSIRD(N = c(100, 10), Betas = diag(c(1,1,1)), Gamma = 1, ProbOfDeath = 0.1, I0 = 1, changeTimes=NULL))
-  expect_error(setAgeSIRD(N = c(100, 10, 100), Betas = diag(c(1,1)), Gamma = 1, ProbOfDeath = 0.1, I0 = 1, changeTimes=NULL))
-  #expect_error(setAgeSIRD(N = c(100, 10), Betas = c(1,2,3), Gamma = 1, ProbOfDeath = 0.1, I0 = 1, changeTimes=c(4,5,6)))
-  #expect_error(setAgeSIRD(N = c(100, 10), Betas = c(1,2,3), Gamma = 1, ProbOfDeath = 0.1, I0 = 1, changeTimes=c(5,4)))
-
+  expect_error(setAgeSIRD(N = c("100","10"), Betas = diag(c(1,1)), Gamma = 1, ProbOfDeath = 0.1, I0 = c(1,0), changeTimes=NULL))
+  expect_error(setAgeSIRD(N = c(100, 10), Betas = diag(c(1,1)), Gamma = 1, ProbOfDeath = 1.5, I0 = c(1,0), changeTimes=NULL))
+  expect_error(setAgeSIRD(N = c(100, 10), Betas = diag(c(-1,1)), Gamma = 1, ProbOfDeath = 0.1, I0 = c(1,0), changeTimes=NULL))
+  expect_error(setAgeSIRD(N = c(100.5, 10), Betas = diag(c(1,1)), Gamma = 1, ProbOfDeath = 0.1, I0 = c(1,0), changeTimes=NULL))
+  expect_error(setAgeSIRD(N = c(100, 10), Betas = diag(c(1,1)), Gamma = c(1,2), ProbOfDeath = 0.1, I0 = c(1,0), changeTimes=NULL))
+  expect_error(setAgeSIRD(N = c(100, 10), Betas = diag(c(1,1,1)), Gamma = 1, ProbOfDeath = 0.1, I0 = c(1,0), changeTimes=NULL))
+  expect_error(setAgeSIRD(N = c(100, 10, 100), Betas = diag(c(1,1)), Gamma = 1, ProbOfDeath = 0.1, I0 = c(1,0), changeTimes=NULL))
+  #set up betas array
+  Betas <- array(NA, dim=c(2,2,2))
+  Betas[1,,] <- diag(c(1,1))
+  Betas[2,,] <- diag(c(0,1))
+  expect_error(setAgeSIRD(N = c(100, 10), Betas = Betas, Gamma = 1, ProbOfDeath = 0.1, I0 = c(1,0), changeTimes=c(4,5,6)))
+  Betas <- array(NA, dim=c(3,2,2))
+  Betas[1,,] <- diag(c(1,1))
+  Betas[2,,] <- diag(c(0,1))
+  Betas[3,,] <- diag(c(10,100))
+  expect_error(setAgeSIRD(N = c(100, 10), Betas = Betas, Gamma = 1, ProbOfDeath = 0.1, I0 = c(1,0), changeTimes=c(5,4)))
 })
 
 test_that("Odin Model Functionality under different inputs",{
@@ -116,15 +124,24 @@ test_that("Odin Model functionality in extreme scenarios",{
                                      I0 = c(1,0), changeTimes=NULL)@odinModel$run(c(1,100))[2,"S[2]"]), 100)
 })
 
-#test_that("Odin Model time varying beta functionality",{
-#
-#  #base
-#  expect_equal(setSIRD(N = 100, Beta = 1, Gamma = 1, ProbOfDeath = 0, I0 = 1, changeTimes=NULL)@odinModel$run(c(1,100))[,"Beta"], rep(1,2))
-#  #Two Betas
-#  expect_equal(setSIRD(N = 100, Beta = c(1,0.5), Gamma = 1, ProbOfDeath = 0, I0 = 1, changeTimes=c(50))@odinModel$run(c(1,100))[,"Beta"], c(1,0.5))
-#  #Two Betas, evaluated at change time
-#  expect_equal(setSIRD(N = 100, Beta = c(1,0.5), Gamma = 1, ProbOfDeath = 0, I0 = 1, changeTimes=c(50))@odinModel$run(c(1,50))[,"Beta"], c(1,0.5))
-#  #three Betas
-#  expect_equal(setSIRD(N = 100, Beta = c(1,0.5,7), Gamma = 1, ProbOfDeath = 0, I0 = 1, changeTimes=c(25,75))@odinModel$run(c(1,50,100))[,"Beta"], c(1,0.5,7))
-#})
+test_that("Odin Model time varying beta functionality",{
+  #base
+  baselines_Betas <- matrix(c(1,1/2,
+                              1/2,1),
+                            nrow = 2,
+                            byrow = TRUE)
+  baseline <- setAgeSIRD(N=c(10,10), Betas=baselines_Betas,
+                         Gamma=1, ProbOfDeath=0.1, I0=c(1,0))@odinModel$run(c(1,10))[2,"R[1]"]
+  #now with a lesser beta that starts at t = 5 we would expect less recoveries
+  Betas <-array(NA, dim=c(2,2,2))
+  Betas[1,,] <- baselines_Betas
+  Betas[2,,] <- baselines_Betas/10
+  changeTimes <- 5
+  expect_lt(setAgeSIRD(N=c(10,10), Betas=Betas, Gamma=1, ProbOfDeath=0.1,
+                          I0=c(1,0), changeTimes = changeTimes)@odinModel$run(c(1,10))[2,"R[1]"], baseline)
+  #now if we have an increased beta
+  Betas[2,,] <- baselines_Betas*10
+  expect_gt(setAgeSIRD(N=c(10,10), Betas=Betas,Gamma=1, ProbOfDeath=0.1,
+                              I0=c(1,0), changeTimes = changeTimes)@odinModel$run(c(1,10))[2,"R[1]"], baseline)
+})
 
