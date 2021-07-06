@@ -19,8 +19,7 @@ test_that("Class definitions", {
 test_that("odinModel Assignment", {
   testModel <- setSEIRD(N=10, Beta=5, Lambda = 1, Gamma=3, ProbOfDeath=0.5, I0=1)
 
-  expect_true(is.double(testModel@odinModel$initial()))
-  expect_true(is.character(testModel@odinModel$ir))
+  expect_true(is.double(testModel@odinModel$initial(t=0)))
 })
 
 test_that("initialState Assignment", {
