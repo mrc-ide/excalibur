@@ -136,15 +136,13 @@ setMethod("estimateInfectiousNode", signature("sirdModel"),
             else if(any(deaths < D0)){
               stop("'deaths' is lower than the initial number of deaths D0")
             }
-            #derive number changes to R via rates
-            recoveries <- deaths*Gamma/Alpha + R0
             #add initial states and changes over each beta value
-            newDandR <- diff(c(R0 + D0, recoveries + deaths))
+            newD <- diff(c(D0, deaths))
             #Calculate S
             S <- S0 * exp(
-              sum(-newDandR * Beta) #Beta times the reduction in S+I whilst it is
+              sum(-newD * Beta) #Beta times the reduction in S+I whilst it is
               #in use
-              /(N*(Alpha + Gamma)) #divide through
+              /(N*Alpha) #divide through
             )
             #Calculate I
             I <- N - S - epiModel@currentState$R - epiModel@currentState$D
