@@ -92,7 +92,7 @@ setAgeSIRD <- function(N, Betas, Gamma, ProbOfDeath, I0, changeTimes = NULL){
   #put parameters into parameter slot
   modelObject@parameters <- list(
     Betas = Betas,
-    #changeTimes = changeTimes,
+    changeTimes = changeTimes,
     Gamma = Gamma,
     Alpha = Alpha
   )
