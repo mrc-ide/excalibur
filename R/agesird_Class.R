@@ -52,14 +52,20 @@ setAgeSIRD <- function(N, Betas, Gamma, ProbOfDeath, I0, changeTimes = NULL){
   else if(any(c(N, I0)%%1 != 0)){
     stop("N and I0 must be whole numbers")
   }
-  else if(length(N) != dim(Betas)[1] | length(N) != dim(Betas)[2] | length(N) != length(I0)){
+  else if(length(dim(Betas)) == 2 & (length(N) != dim(Betas)[1] | length(N) != dim(Betas)[2] | length(N) != length(I0))){
+    stop("Inconsistent number of dimensions for Betas, N and I0")
+  }
+  else if(length(dim(Betas)) == 3 & (length(N) != dim(Betas)[2] | length(N) != dim(Betas)[3] | length(N) != length(I0))){
     stop("Inconsistent number of dimensions for Betas, N and I0")
   }
   else if(!is.null(changeTimes)){
+    if(length(dim(Betas)) != 3){
+      stop("Betas should be an array of 3 dimensions")
+    }
     if(!identical(sort(changeTimes),changeTimes)){
       stop("Betas and changeTimes must be in increasing time order")
     }
-    else if(dim(Betas)[3] != length(changeTimes) + 1){
+    else if(dim(Betas)[1] != length(changeTimes) + 1){
       stop("Inconsistent dimensions for Betas and changeTimes")
     }
   }
@@ -68,7 +74,7 @@ setAgeSIRD <- function(N, Betas, Gamma, ProbOfDeath, I0, changeTimes = NULL){
   #calculate death rate
   Alpha <- riskToRate(ProbOfDeath)
   #setup odin model
-  modelObject@odinModel <- agesirdGenerator(
+  modelObject@odinModel <- agesirdGenerator$new(
     Betas = Betas,
     #changeTimes = changeTimes,
     Gamma = Gamma,

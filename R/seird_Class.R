@@ -66,7 +66,7 @@ setSEIRD <- function(N, Beta, Lambda, Gamma, ProbOfDeath, I0, changeTimes = NULL
   #calculate death rate
   Alpha <- riskToRate(ProbOfDeath)
   #setup odin model
-  modelObject@odinModel <- seirdGenerator(
+  modelObject@odinModel <- seirdGenerator$new(
     Betas = Beta,
     changeTimes = changeTimes,
     Lambda = Lambda,
