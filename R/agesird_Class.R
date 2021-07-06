@@ -40,7 +40,7 @@ methods::setClass(
 #'                        0.2,1), nrow=2, byrow = TRUE)
 #' Betas[2,,] <- matrix(c(1,0.1,
 #'                        0,5), nrow=2, byrow = TRUE)
-#' model <- setAgeSIRD(N = c(100,100), Beta = Betas, dim = rep(1,2,3)), nrow=2),
+#' model <- setAgeSIRD(N = c(100,100), Beta = Betas,
 #' Gamma = 1/5, ProbOfDeath = 1/20, I0 = c(1,1), changeTimes = 5)
 #' @export
 setAgeSIRD <- function(N, Betas, Gamma, ProbOfDeath, I0, changeTimes = NULL){
