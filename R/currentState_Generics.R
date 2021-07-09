@@ -52,11 +52,6 @@ setGeneric("calculateNthDeriv", function(epiModel, nderiv){
          it, or use a derivative included in the package.",
          call. = FALSE)
   }
-  else if (!requireNamespace("stringr", quietly = TRUE)) {
-    stop("Package stringr needed for calculating new derivatives. Please install
-         it, or use a derivative included in the package.",
-         call. = FALSE)
-  }
   standardGeneric("calculateNthDeriv")
 })
 #' A function to call a pre-made function that calculates n-th derivative of D for the epiModel

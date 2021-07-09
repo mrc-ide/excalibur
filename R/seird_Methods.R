@@ -165,14 +165,13 @@ setMethod("calculateNthDeriv", signature("seirdModel"),
             #extract function code
             code <- deparse(body(nthDf))
             #replacing functions with values
-            code <- stringr::str_replace_all(code, "If\\(t\\)", "I")
-            code <- stringr::str_replace_all(code, "Ef\\(t\\)", "(N - epiModel@currentState$S - epiModel@currentState$D - epiModel@currentState$R - I)")
-            code <- stringr::str_replace_all(code, "Sf\\(t\\)", "epiModel@currentState$S")
-            code <- stringr::str_replace_all(code, "N", "epiModel@initialState$N")
+            code <- gsub("If\\(t\\)", "I", code)
+            code <- gsub("Ef\\(t\\)", "(N - epiModel@currentState$S - epiModel@currentState$D - epiModel@currentState$R - I)", code)
+            code <- gsub("Sf\\(t\\)", "epiModel@currentState$S", code)
+            code <- gsub("N", "epiModel@initialState$N", code)
             #replace all parameters etc with calls to the relevant slot
             for(parameter in c("Lambda","Alpha","Gamma")){
-              code <- stringr::str_replace_all(code, parameter,
-                                      paste0("epiModel@parameters$",parameter))
+              code <- gsub(parameter, paste0("epiModel@parameters$",parameter), code)
             }
             #add a line of code to calculate N and Beta
             if(length(code) == 1){
@@ -180,8 +179,7 @@ setMethod("calculateNthDeriv", signature("seirdModel"),
                         "Beta <- epiModel@parameters$Betas[whichIndex(epiModel@currentState$t, epiModel@parameters$changeTimes)]",
                         code,
                         "}")
-            }
-            else{
+            } else{
               code <- c(code[1],
                         "Beta <- epiModel@parameters$Betas[whichIndex(epiModel@currentState$t, epiModel@parameters$changeTimes)]",
                         code[2:length(code)])
