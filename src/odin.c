@@ -544,14 +544,14 @@ void agesirdGenerator_rhs(agesirdGenerator_internal* internal, double t, double 
   cinterpolate_eval(t, internal->interpolate_Beta, internal->Beta);
   for (int i = 1; i <= internal->dim_infectiousWeight_1; ++i) {
     for (int j = 1; j <= internal->dim_infectiousWeight_2; ++j) {
-      internal->infectiousWeight[i - 1 + internal->dim_infectiousWeight_1 * (j - 1)] = internal->Beta[internal->dim_Beta_1 * (j - 1) + i - 1] * I[j - 1] / (double) internal->N[j - 1];
+      internal->infectiousWeight[i - 1 + internal->dim_infectiousWeight_1 * (j - 1)] = internal->Beta[internal->dim_Beta_1 * (j - 1) + i - 1] * I[i - 1] / (double) internal->N[i - 1];
     }
   }
   for (int i = 1; i <= internal->dim_I; ++i) {
-    dstatedt[internal->dim_S + i - 1] = S[i - 1] * odin_sum2(internal->infectiousWeight, i - 1, i, 0, internal->dim_infectiousWeight_2, internal->dim_infectiousWeight_1) - I[i - 1] * internal->Gamma - I[i - 1] * internal->Alpha;
+    dstatedt[internal->dim_S + i - 1] = S[i - 1] * odin_sum2(internal->infectiousWeight, 0, internal->dim_infectiousWeight_1, i - 1, i, internal->dim_infectiousWeight_1) - I[i - 1] * internal->Gamma - I[i - 1] * internal->Alpha;
   }
   for (int i = 1; i <= internal->dim_S; ++i) {
-    dstatedt[0 + i - 1] = -(S[i - 1]) * odin_sum2(internal->infectiousWeight, i - 1, i, 0, internal->dim_infectiousWeight_2, internal->dim_infectiousWeight_1);
+    dstatedt[0 + i - 1] = -(S[i - 1]) * odin_sum2(internal->infectiousWeight, 0, internal->dim_infectiousWeight_1, i - 1, i, internal->dim_infectiousWeight_1);
   }
   if (output) {
     memcpy(output + 0, internal->Beta, internal->dim_Beta * sizeof(double));

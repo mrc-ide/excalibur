@@ -1,12 +1,12 @@
 
 #relations
-deriv(S[]) <- -S[i]*sum(infectiousWeight[i,])
-deriv(I[]) <- S[i]*sum(infectiousWeight[i,]) - I[i]*Gamma - I[i]*Alpha
+deriv(S[]) <- -S[i]*sum(infectiousWeight[,i])
+deriv(I[]) <- S[i]*sum(infectiousWeight[,i]) - I[i]*Gamma - I[i]*Alpha
 deriv(R[]) <- I[i]*Gamma
 deriv(D[]) <- I[i]*Alpha
 #values used in relations
 N[] <- S[i] + I[i] + R[i] + D[i]
-infectiousWeight[,] <- Beta[i,j]*I[j]/N[j] #frequency dependent transmission
+infectiousWeight[,] <- Beta[i,j]*I[i]/N[i] #frequency dependent transmission
 #interpolate the betas
 Beta[,] <- interpolate(changeTimes, Betas, "constant")
 output(Beta) <- Beta
