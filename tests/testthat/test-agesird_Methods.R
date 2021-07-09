@@ -61,9 +61,9 @@ test_that("calculateCurrentState - errors", {
                         deaths =
                           matrix(1, nrow = 1, ncol = 3)))
 
-  expect_error(calculateCurrentState(setAgeSIRD(N = c(100,100), Betas = matrix(c(1,0.5,0.2,1), nrow=2, byrow=TRUE),
+  expect_error(suppressWarnings(calculateCurrentState(setAgeSIRD(N = c(100,100), Betas = matrix(c(1,0.5,0.2,1), nrow=2, byrow=TRUE),
                                    Gamma = 1/5, ProbOfDeath = 1/20, I0 = c(1,1)), 10,
-                        deaths = matrix("a", nrow = 1, ncol = 2)))
+                        deaths = matrix("a", nrow = 1, ncol = 2))))
 
 
   expect_error(calculateCurrentState(setAgeSIRD(N = c(100,100), Betas = matrix(c(1,0.5,0.2,1), nrow=2, byrow=TRUE),
