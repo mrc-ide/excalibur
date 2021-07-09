@@ -12,7 +12,7 @@ with a total count of deaths so far}
 S and I estimated.}
 
 \item{deaths}{The total death count for this model, up to each of the
-changeTimes so far. Rows relate to age groups and columns to changeTimes.}
+changeTimes so far. Rows relate to changeTimes and columns to age groups.}
 }
 \value{
 An object of class agesirdModel with the values for S and I updated

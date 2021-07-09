@@ -29,7 +29,7 @@ These values are then stored in the list in the slot "currentState".
 model <- setAgeSIRD(N = c(100,100), Betas = matrix(c(1,0.5,0.2,1), nrow=2, byrow=TRUE),
                     Gamma = 1/5, ProbOfDeath = 1/20, I0 = c(1,1))
 #Set the deaths (only one vector is required)
-deaths <- matrix(c(20,50),byrow=TRUE,ncol = 1)
+deaths <- matrix(c(20,50), byrow=TRUE, ncol = 2)
 #call this function
 model <- excalibur::calculateDownstreamExponentialNodes(model, deaths=deaths)
 
