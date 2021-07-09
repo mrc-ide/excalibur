@@ -21,6 +21,27 @@ test_that("calculateCurrentState - Compare to known results", {
   expect_true(all(abs(estSusceptible - susceptible)/susceptible < accuracy))
   expect_true(all(abs(estRecovered - recovered)/recovered < accuracy))
 
+  model <- setAgeSIRD(N = c(100,100,200), Betas = matrix(c(1,0.5,1,0.2,1,1.1,0.5,0.7,0.1), nrow=3, byrow=TRUE),
+                      Gamma = 1/5, ProbOfDeath = 1/20, I0 = c(1,1,0))
+  #simulate a result
+  time <- 10
+  results <- simulate(model, t = time)
+  infected <- results[,names(results) %in% c("I[1]", "I[2]", "I[3]")]
+  susceptible <- results[,names(results) %in% c("S[1]", "S[2]", "S[3]")]
+  recovered <- results[,names(results) %in% c("R[1]", "R[2]", "R[3]")]
+  deaths <- results[,names(results) %in% c("D[1]", "D[2]", "D[3]")]
+  #estimate
+  model <- calculateCurrentState(model, time, deaths)
+  current <- currentState(model)
+  estInfected <- current[,names(current) %in% c("I[1]", "I[2]", "I[3]")]
+  estSusceptible <- current[,names(current) %in% c("S[1]", "S[2]", "S[3]")]
+  estRecovered <- current[,names(current) %in% c("R[1]", "R[2]", "R[3]")]
+  #compare
+  accuracy <- 0.01 #allow leway due to round etc.
+  expect_true(all(abs(estInfected - infected)/infected < accuracy))
+  expect_true(all(abs(estSusceptible - susceptible)/susceptible < accuracy))
+  expect_true(all(abs(estRecovered - recovered)/recovered < accuracy))
+
 
   Betas <- array(NA, dim=c(2,2,2)) #set up array, the first dimension will be time
   Betas[1,,] <- matrix(c(1,0.5,

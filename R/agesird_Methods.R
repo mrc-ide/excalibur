@@ -163,7 +163,7 @@ setMethod("estimateInfectiousNode", signature("agesirdModel"),
             for(a in seq_along(S)){
               S[a] <- S0[a]*exp(-(1/Alpha)* #scale by death rate
                                   sum(#sum of the weights
-                                    newD*Betas[,,a]/N #negative infectious weight for each age-group to this one
+                                    t(t(newD*Betas[,,a])/N) #infectious weight for each age-group to this one
                                     )
                                 )
             }
