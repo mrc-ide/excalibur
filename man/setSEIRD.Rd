@@ -11,7 +11,7 @@ setSEIRD(N, Beta, Lambda, Gamma, ProbOfDeath, I0, changeTimes = NULL)
 
 \item{Beta}{Transmission parameter(s).}
 
-\item{Lambda}{Rate of transition from exposed to infectious}
+\item{Lambda}{Rate of transition from exposed to infectious.}
 
 \item{Gamma}{Rate of recovery.}
 

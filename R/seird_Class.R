@@ -23,7 +23,7 @@ methods::setClass(
 #'
 #' @param N Total population.
 #' @param Beta Transmission parameter(s).
-#' @param Lambda Rate of transition from exposed to infectious
+#' @param Lambda Rate of transition from exposed to infectious.
 #' @param Gamma Rate of recovery.
 #' @param ProbOfDeath Instantaneous probability of death whilst infected.
 #' @param I0 Size of initial infected population.
