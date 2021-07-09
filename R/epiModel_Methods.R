@@ -105,6 +105,24 @@ setMethod("currentState", signature("epiModel"),
                 listState[[i]] <- NA
               }
             }
-            return(as.data.frame(listState))
+            if(nrow(as.data.frame(listState)) > 1){
+              #if each compartment has more than one entry we will add [ to their
+              #names
+              listNames <- names(listState)
+              listNames[listNames != "t"] <- paste0(listNames[listNames != "t"],"[")
+              names(listState) <- listNames
+              changeNames <- TRUE
+            } else{
+              changeNames <- FALSE
+            }
+            #unlist and make into a dataframe
+            state_df <- as.data.frame(t(unlist(listState)))
+            if(changeNames){
+              #add "]" to names
+              dfNames <- names(state_df)
+              dfNames[dfNames != "t"] <- paste0(dfNames[dfNames != "t"],"]")
+              names(state_df) <- dfNames
+            }
+            return(state_df)
           }
 )

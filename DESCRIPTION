@@ -27,8 +27,10 @@ Config/testthat/edition: 3
 URL: https://github.com/mrc-ide/excalibur
 BugReports: https://github.com/mrc-ide/excalibur/issues
 Collate: 
-    'currentState_Generics.R'
     'epiModel_Class.R'
+    'agesird_Class.R'
+    'currentState_Generics.R'
+    'agesird_Methods.R'
     'epiModel_Methods.R'
     'excalibur.R'
     'odin.R'

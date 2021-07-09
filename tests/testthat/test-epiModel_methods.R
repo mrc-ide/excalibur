@@ -22,7 +22,8 @@ test_that("Check print current state", {
   #assign a list to slot
   model@currentState$t <- 1
   model@currentState$S <- 100
-  expect_equal(currentState(model), data.frame(t=1, S=100, I = NA, R = NA, D=NA))
+  expect_equal(currentState(model), data.frame(t=1, S=100, I = as.double(NA), R = as.double(NA), D=as.double(NA)),
+               ignore_attr = TRUE)
   model@currentState$I <- 100
   model@currentState$R <- 100
   model@currentState$D <- 100

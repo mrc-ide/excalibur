@@ -62,7 +62,7 @@ setSIRD <- function(N, Beta, Gamma, ProbOfDeath, I0, changeTimes = NULL){
   #calculate death rate
   Alpha <- riskToRate(ProbOfDeath)
   #setup odin model
-  modelObject@odinModel <- sirdGenerator(
+  modelObject@odinModel <- sirdGenerator$new(
     Betas = Beta,
     changeTimes = changeTimes,
     Gamma = Gamma,
