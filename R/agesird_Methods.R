@@ -24,6 +24,9 @@ NULL
 #' @export
 setMethod("calculateCurrentState", signature("agesirdModel"),
           function(epiModel, deaths){
+            #ensure deaths is a matrix with no names
+            names(deaths) <- NULL
+            deaths <- as.matrix(deaths)
             epiModel <- calculateDownstreamExponentialNodes(epiModel, deaths)
             epiModel <- estimateInfectiousNode(epiModel, deaths)
             return(epiModel)
@@ -48,7 +51,7 @@ setMethod("calculateCurrentState", signature("agesirdModel"),
 #' model <- setAgeSIRD(N = c(100,100), Betas = matrix(c(1,0.5,0.2,1), nrow=2, byrow=TRUE),
 #'                     Gamma = 1/5, ProbOfDeath = 1/20, I0 = c(1,1))
 #' #Set the deaths (only one vector is required)
-#' deaths <- matrix(c(20,50),byrow=TRUE,ncol = 1)
+#' deaths <- matrix(c(20,50), byrow=TRUE, ncol = 2)
 #' #call this function
 #' model <- excalibur::calculateDownstreamExponentialNodes(model, deaths=deaths)
 #'
@@ -56,7 +59,8 @@ setMethod("calculateCurrentState", signature("agesirdModel"),
 #' @export
 setMethod("calculateDownstreamExponentialNodes", signature("agesirdModel"),
           function(epiModel, deaths){
-            totalDeaths <- deaths[,ncol(deaths)]
+            totalDeaths <- as.vector(deaths[nrow(deaths),], mode = "double")
+            #this removes any names etc.
             #check for errors in deaths
             agesird_Methods_errorChecks(epiModel, deaths, totalDeaths)
             #Get model parameters
@@ -84,7 +88,7 @@ setMethod("calculateDownstreamExponentialNodes", signature("agesirdModel"),
 #' @param epiModel The epidemic model of class age-SIRD to have the current state of
 #' S and I estimated.
 #' @param deaths The total death count for this model, up to each of the
-#' changeTimes so far. Rows relate to age groups and columns to changeTimes.
+#' changeTimes so far. Rows relate to changeTimes and columns to age groups.
 #' @return An object of class agesirdModel with the values for S and I updated
 #' for the current state.
 #' @examples
@@ -129,7 +133,7 @@ setMethod("calculateDownstreamExponentialNodes", signature("agesirdModel"),
 setMethod("estimateInfectiousNode", signature("agesirdModel"),
           function(epiModel, deaths){
             #check for errors in death specification
-            agesird_Methods_errorChecks(epiModel, deaths, deaths[,ncol(deaths)])
+            agesird_Methods_errorChecks(epiModel, deaths, deaths[nrow(deaths),])
             #get model parameters
             Alpha <- epiModel@parameters$Alpha
             Gamma <- epiModel@parameters$Gamma
@@ -141,22 +145,25 @@ setMethod("estimateInfectiousNode", signature("agesirdModel"),
             D0 <- epiModel@initialState$D0
             N <- epiModel@initialState$N
             #more errors checks
-            if(ncol(deaths) != dim(Betas)[1] | ncol(deaths) != length(changeTimes)){
+            if(nrow(deaths) != dim(Betas)[1] | nrow(deaths) != length(changeTimes)){
               stop("'deaths' should be a cumulative time series counting the
-                      total number of deaths upto a change time for Beta. This
-                      means that ncol(deaths) = dim(Beta)[1] = length(changeTimes) + 1.")
+                      total number of deaths up to a change time for Beta. This
+                      means that nrow(deaths) = dim(Beta)[1] = length(changeTimes) + 1.")
             }
-            else if(any(deaths - D0 < 0)){
+            else if(any(t(deaths) - D0 < 0)){
               stop("'deaths' is lower than the initial number of deaths D0")
             }
             #add initial states and changes over each beta value
-            newD <- t(diff(t(cbind(D0, deaths))))/N
+            newD <-diff(
+              #convert to matrix so we can use diff()
+              rbind(D0, deaths)
+            )
             #Calculate S
             S <- rep(NA, length(S0))
             for(a in seq_along(S)){
-              S[a] <- S0[a]*exp((1/Alpha)* #scale by death rate
+              S[a] <- S0[a]*exp(-(1/Alpha)* #scale by death rate
                                   sum(#sum of the weights
-                                    t(-newD)*Betas[,,a]/N #negative infectious weight for each age-group to this one
+                                    newD*Betas[,,a]/N #negative infectious weight for each age-group to this one
                                     )
                                 )
             }
@@ -173,9 +180,11 @@ setMethod("estimateInfectiousNode", signature("agesirdModel"),
 #' @noRd
 agesird_Methods_errorChecks <- function(epiModel, deaths, totalDeaths){
   if(nrow(deaths) != length(epiModel@parameters$changeTimes) |
-     ncol(deaths) != length(epiModel@initialState$N))
+     ncol(deaths) != length(epiModel@initialState$N)){
+    stop("deaths has incorrect dimensions")
+  }
   #checking deaths are in the correct format
-  if(any(deaths - totalDeaths > 0) |
+  else if(any(t(deaths) - totalDeaths > 0) |
      !is.numeric(deaths)){
     stop("deaths must be a series of the cumulative number of deaths up to this time.")
   }
