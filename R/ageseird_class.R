@@ -88,7 +88,7 @@ setAgeSIRD <- function(N, Betas, Lambda, Gamma, ProbOfDeath, I0, changeTimes = N
   #calculate death rate
   Alpha <- riskToRate(ProbOfDeath)
   #setup odin model
-  modelObject@odinModel <- agesirdGenerator$new(
+  modelObject@odinModel <- ageseirdGenerator$new(
     Betas = Betas,
     changeTimes = changeTimes,
     Lambda = Lambda,
@@ -96,6 +96,7 @@ setAgeSIRD <- function(N, Betas, Lambda, Gamma, ProbOfDeath, I0, changeTimes = N
     Alpha = Alpha,
     I0 = I0,
     S0 = N - I0,
+    E0 = rep(0,length(N)),
     R0 = rep(0,length(N)),
     D0 = rep(0,length(N))
   )
