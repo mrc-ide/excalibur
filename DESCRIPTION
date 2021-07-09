@@ -28,8 +28,10 @@ BugReports: https://github.com/mrc-ide/excalibur/issues
 Collate: 
     'epiModel_Class.R'
     'agesird_Class.R'
-    'ageseird_class.R'
+    'ageseird_Class.R'
     'currentState_Generics.R'
+    'ageseird_Methods.R'
+    'ageseird_Methods_NthDeriv.R'
     'agesird_Methods.R'
     'epiModel_Methods.R'
     'excalibur.R'
