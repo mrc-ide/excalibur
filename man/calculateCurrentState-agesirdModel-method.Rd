@@ -25,7 +25,7 @@ the infectious population in turn.
 model <- setAgeSIRD(N = c(100,100), Betas = matrix(c(1,0.5,0.2,1), nrow=2, byrow=TRUE),
                     Gamma = 1/5, ProbOfDeath = 1/20, I0 = c(1,1))
 #Set the deaths
-deaths <- c(10,20)
+deaths <- matrix(c(10,20), nrow = 1, ncol = 2)
 time <- 10
 #calculate current state
 model <- calculateCurrentState(model, time, deaths)

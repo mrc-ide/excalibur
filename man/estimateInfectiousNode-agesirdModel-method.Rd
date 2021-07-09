@@ -30,7 +30,7 @@ These values are then stored in the list in the slot "currentState".
 model <- setAgeSIRD(N = c(100,100), Betas = matrix(c(1,0.5,0.2,1), nrow=2, byrow=TRUE),
                     Gamma = 1/5, ProbOfDeath = 1/20, I0 = c(1,1))
 #Set the deaths (only one entry is required)
-deaths <- matrix(c(20,50),byrow=TRUE, ncol = 1)
+deaths <- matrix(c(20,50),byrow=TRUE, ncol = 2)
 #Set the time, makes no difference to this calculation, only used for simulate
 time <- 10
 #call this + the D+R node function
