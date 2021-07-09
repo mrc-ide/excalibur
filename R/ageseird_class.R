@@ -49,7 +49,7 @@ methods::setClass(
 #' @export
 setAgeSEIRD <- function(N, Betas, Lambda, Gamma, ProbOfDeath, I0, changeTimes = NULL){
   #set class
-  modelObject <- methods::new("agesirdModel")
+  modelObject <- methods::new("ageseirdModel")
   #check for incorrect inputs
   if(ProbOfDeath > 1 | ProbOfDeath < 0){
     stop("Probability of death must be between 0 and 1, to convert a rate to a
