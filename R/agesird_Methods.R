@@ -145,7 +145,7 @@ setMethod("estimateInfectiousNode", signature("agesirdModel"),
             D0 <- epiModel@initialState$D0
             N <- epiModel@initialState$N
             #more errors checks
-            if(nrow(deaths) != dim(Betas)[1] | nrow(deaths) != length(changeTimes)){
+            if(nrow(deaths) != dim(Betas)[1] | dim(Betas)[1] != length(changeTimes)){
               stop("'deaths' should be a cumulative time series counting the
                       total number of deaths up to a change time for Beta. This
                       means that nrow(deaths) = dim(Beta)[1] = length(changeTimes) + 1.")
@@ -182,10 +182,11 @@ agesird_Methods_errorChecks <- function(epiModel, deaths, totalDeaths){
   if(nrow(deaths) != length(epiModel@parameters$changeTimes) |
      ncol(deaths) != length(epiModel@initialState$N)){
     stop("deaths has incorrect dimensions")
+  } else if(!is.numeric(deaths)){
+    stop("deaths must be numeric")
   }
   #checking deaths are in the correct format
-  else if(any(t(deaths) - totalDeaths > 0) |
-     !is.numeric(deaths)){
+  else if(any(t(deaths) - totalDeaths > 0)){
     stop("deaths must be a series of the cumulative number of deaths up to this time.")
   }
   #checking there are not more deaths than people in model
