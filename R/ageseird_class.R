@@ -47,7 +47,7 @@ methods::setClass(
 #' model <- setAgeSIRD(N = c(100,100), Beta = Betas,
 #' Gamma = 1/5, Lambda = 1/2, ProbOfDeath = 1/20, I0 = c(1,1), changeTimes = 5)
 #' @export
-setAgeSIRD <- function(N, Betas, Lambda, Gamma, ProbOfDeath, I0, changeTimes = NULL){
+setAgeSEIRD <- function(N, Betas, Lambda, Gamma, ProbOfDeath, I0, changeTimes = NULL){
   #set class
   modelObject <- methods::new("agesirdModel")
   #check for incorrect inputs
